@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Services.PlayerResourcesService;
 
 namespace Api {
     public class Startup {
@@ -49,6 +50,8 @@ namespace Api {
             app.UseSignalR (routes => {
                 routes.MapHub<MatchHub> ("/match");
             });
+
+            PlayerResourcesService.Initialize();
         }
     }
 }
