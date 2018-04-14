@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/switchMap';
+import { PlayerResource } from './PlayerResource';
 
 @Component({
   selector: 'app-root',
@@ -19,20 +20,24 @@ export class AppComponent {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
 
+  private connected: boolean = false;
+
   private center: [number, number];
   private gridTopLeft: [number, number];
-
-  private cellColor: string;
 
   private marginBottom: number;
   private nrCells: number;
   private cellSize: number;
 
-  private playerNum: number;
+  private playerResources: Array<object>;
+  private playerNum: number = -1;
 
   private cells: number[][];
 
   private mouseDown: boolean = false;
+
+  private game: Array<number[][]>;
+  private counter: number = 0;
 
   constructor() {
     this.marginBottom = 50;
@@ -50,7 +55,7 @@ export class AppComponent {
     for (var i: number = 0; i < this.nrCells; i++) {
       this.cells[i] = [];
       for (var j: number = 0; j < this.nrCells; j++) {
-        this.cells[i][j] = 0;
+        this.cells[i][j] = -1;
       }
     }
   }
@@ -59,7 +64,7 @@ export class AppComponent {
     this.hubConnection = new HubConnection('http://localhost:5000/match');
 
     this.hubConnection.on('SendConnected', playerResources => {
-      this.cellColor = playerResources.color;
+      this.playerResources = playerResources;
       this.playerNum = playerResources.number;
     });
 
@@ -72,6 +77,19 @@ export class AppComponent {
       console.log(data);
     });
 
+    this.hubConnection.on('SendGame', data => {
+      console.log(data);
+      this.game = data;
+
+      setInterval(() => {
+        if (this.counter != this.game.length) {
+          this.cells = this.game[this.counter];
+          this.drawGrid();
+          this.counter += 1;
+        }
+      }, 60);
+    });
+
     this.hubConnection
       .start()
       .then(() => this.onHubConnected())
@@ -79,7 +97,7 @@ export class AppComponent {
   }
 
   onHubConnected() {
-    
+    this.connected = true;
   }
 
   sendConfig() {
@@ -96,8 +114,8 @@ export class AppComponent {
   drawCell(base, i, j) {
     let x = base + j * this.cellSize;
     let y = base + i * this.cellSize;
-    if (this.cells[i][j] !== 0) {
-      this.ctx.fillStyle = this.cellColor;
+    if (this.cells[i][j] !== -1) {
+      this.ctx.fillStyle = this.playerResources["allPlayersRes"][this.cells[i][j]]["color"];
     }
     else {
       this.ctx.fillStyle = "white";
@@ -158,8 +176,8 @@ export class AppComponent {
 
         if (i >= 0 && i < this.nrCells && j >= 0 && j < this.nrCells) {
           this.cells[i][j] = this.playerNum;
-          /* console.log(i, j, x ,y);
-          console.log(this.cells); */
+          console.log(this.playerResources);
+          console.log(this.playerResources["allPlayersRes"][this.playerNum]["color"]);
           this.drawGrid();
         }
 
@@ -184,8 +202,8 @@ export class AppComponent {
         let x = pos.x - this.gridTopLeft["0"];
         let y = pos.y - this.gridTopLeft["1"];
 
-        let i = Math.floor(x / this.cellSize);
-        let j = Math.floor(y / this.cellSize);
+        let i = Math.floor(y / this.cellSize);
+        let j = Math.floor(x / this.cellSize);
 
         if (i > 0 && i < this.nrCells && j > 0 && j < this.nrCells) {
           this.cells[i][j] = this.playerNum;
