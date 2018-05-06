@@ -6,7 +6,4 @@ c:\DIESEL\Others\Facultate\Final Project\Back\Services\obj\Debug\netcoreapp2.1\S
 c:\DIESEL\Others\Facultate\Final Project\Back\Services\obj\Debug\netcoreapp2.1\Services.AssemblyInfo.cs
 c:\DIESEL\Others\Facultate\Final Project\Back\Services\obj\Debug\netcoreapp2.1\Services.dll
 c:\DIESEL\Others\Facultate\Final Project\Back\Services\obj\Debug\netcoreapp2.1\Services.pdb
-C:\DIESEL\Others\Facultate\Final Project\Back\Services\bin\Debug\netcoreapp2.1\Persistence.dll
-C:\DIESEL\Others\Facultate\Final Project\Back\Services\bin\Debug\netcoreapp2.1\Persistence.pdb
-C:\DIESEL\Others\Facultate\Final Project\Back\Services\obj\Debug\netcoreapp2.1\Services.csproj.CopyComplete
 C:\DIESEL\Others\Facultate\Final Project\Back\Services\obj\Debug\netcoreapp2.1\Services.csprojAssemblyReference.cache

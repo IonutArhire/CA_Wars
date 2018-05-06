@@ -4515,22 +4515,9 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Persistence/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
-        "compile": {
-          "bin/placeholder/Persistence.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Persistence.dll": {}
-        }
-      },
       "Services/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.1",
-        "dependencies": {
-          "Persistence": "1.0.0"
-        },
         "compile": {
           "bin/placeholder/Services.dll": {}
         },
@@ -11672,11 +11659,6 @@
         "system.xml.xpath.xdocument.4.3.0.nupkg.sha512",
         "system.xml.xpath.xdocument.nuspec"
       ]
-    },
-    "Persistence/1.0.0": {
-      "type": "project",
-      "path": "../Persistence/Persistence.csproj",
-      "msbuildProject": "../Persistence/Persistence.csproj"
     },
     "Services/1.0.0": {
       "type": "project",

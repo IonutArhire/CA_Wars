@@ -523,18 +523,7 @@
           "Microsoft.NETCore.Platforms": "2.1.0-preview2-26406-04"
         }
       },
-      "Persistence/1.0.0": {
-        "runtime": {
-          "Persistence.dll": {}
-        },
-        "compile": {
-          "Persistence.dll": {}
-        }
-      },
       "Services/1.0.0": {
-        "dependencies": {
-          "Persistence": "1.0.0"
-        },
         "runtime": {
           "Services.dll": {}
         },
@@ -5583,11 +5572,6 @@
       "sha512": "sha512-oA6nwv9MhEKYvLpjZ0ggSpb1g4CQViDVQjLUcDWg598jtvJbpfeP2reqwI1GLW2TbxC/Ml7xL6BBR1HmKPXlTg==",
       "path": "netstandard.library/2.0.1",
       "hashPath": "netstandard.library.2.0.1.nupkg.sha512"
-    },
-    "Persistence/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     },
     "Services/1.0.0": {
       "type": "project",

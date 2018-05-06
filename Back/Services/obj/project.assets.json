@@ -207,16 +207,6 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
-      },
-      "Persistence/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
-        "compile": {
-          "bin/placeholder/Persistence.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Persistence.dll": {}
-        }
       }
     }
   },
@@ -678,17 +668,11 @@
         "build/netstandard2.0/ref/netstandard.xml",
         "lib/netstandard1.0/_._"
       ]
-    },
-    "Persistence/1.0.0": {
-      "type": "project",
-      "path": "../Persistence/Persistence.csproj",
-      "msbuildProject": "../Persistence/Persistence.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.1": [
-      "Microsoft.NETCore.App >= 2.1.0-preview2-26406-04",
-      "Persistence >= 1.0.0"
+      "Microsoft.NETCore.App >= 2.1.0-preview2-26406-04"
     ]
   },
   "packageFolders": {
@@ -723,11 +707,7 @@
       },
       "frameworks": {
         "netcoreapp2.1": {
-          "projectReferences": {
-            "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\Persistence.csproj": {
-              "projectPath": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\Persistence.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {

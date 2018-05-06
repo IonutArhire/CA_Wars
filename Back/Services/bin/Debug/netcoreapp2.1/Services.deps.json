@@ -7,27 +7,14 @@
   "targets": {
     ".NETCoreApp,Version=v2.1": {
       "Services/1.0.0": {
-        "dependencies": {
-          "Persistence": "1.0.0"
-        },
         "runtime": {
           "Services.dll": {}
-        }
-      },
-      "Persistence/1.0.0": {
-        "runtime": {
-          "Persistence.dll": {}
         }
       }
     }
   },
   "libraries": {
     "Services/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Persistence/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

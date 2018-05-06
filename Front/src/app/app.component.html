@@ -1,2 +1,2 @@
 <canvas #playGrid (window:resize)="onResize($event)">Loading...</canvas>
-<button (click)="sendConfig()" *ngIf="connected">Send to Server</button>
+<button (click)="sendConfig()" *ngIf="_connected">Send to Server</button>

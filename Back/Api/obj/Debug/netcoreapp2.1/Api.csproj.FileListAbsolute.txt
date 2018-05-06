@@ -8,10 +8,8 @@ c:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.As
 c:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.AssemblyInfo.cs
 c:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.dll
 c:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.pdb
-C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\Persistence.dll
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\Services.dll
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\Services.pdb
-C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\Persistence.pdb
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.csproj.CopyComplete
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\refs\Microsoft.AspNetCore.Antiforgery.dll
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\refs\Microsoft.AspNetCore.Authentication.Abstractions.dll

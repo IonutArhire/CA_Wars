@@ -1,11 +1,13 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HubConnection } from '@aspnet/signalr';
-import { Observable } from 'rxjs/Observable';
 
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/switchMap';
-import { PlayerResource } from './PlayerResource';
+import { Observable } from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import 'rxjs/add/observable/of'
+
+import { MatchService } from './services/match.service';
+
+import { IPlayerResources } from './PlayerResources';
 
 @Component({
   selector: 'app-root',
@@ -14,94 +16,99 @@ import { PlayerResource } from './PlayerResource';
 })
 export class AppComponent {
 
-  private hubConnection: HubConnection
+  private _hubConnection: HubConnection
 
   @ViewChild('playGrid') playGrid: ElementRef;
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
 
-  private connected: boolean = false;
+  private _connected: boolean = false;
+  private _connectedStatus: BehaviorSubject<boolean>;
 
-  private center: [number, number];
-  private gridTopLeft: [number, number];
+  private _nrCells: number;
 
-  private marginBottom: number;
-  private nrCells: number;
-  private cellSize: number;
+  private _playerResources: IPlayerResources;
+  private _playerNum: number = -1;
 
-  private playerResources: Array<object>;
-  private playerNum: number = -1;
+  private _cells: number[][];
 
-  private cells: number[][];
+  private _gameStates: Array<number[][]>;
+  private _currGameStateIdx: number = 0;
 
-  private mouseDown: boolean = false;
-
-  private game: Array<number[][]>;
-  private counter: number = 0;
-
-  constructor() {
-    this.marginBottom = 50;
-    this.nrCells = 20;
-    this.cellSize = 30;
-
-    this.center = [0, 0];
-    this.gridTopLeft = [0, 0];
-
+  constructor(private _matchService: MatchService) {
+    this._nrCells = 20;
     this.initializeCells();
+    this._connectedStatus = new BehaviorSubject<boolean>(false);
+  }
+
+  getConnectedStatus(): Observable<boolean> {
+    return this._connectedStatus.asObservable();
+  }
+
+  setConnectedStatus(newValue: boolean) {
+    this._connected = newValue;
+    this._connectedStatus.next(newValue);
   }
 
   initializeCells() {
-    this.cells = []
-    for (var i: number = 0; i < this.nrCells; i++) {
-      this.cells[i] = [];
-      for (var j: number = 0; j < this.nrCells; j++) {
-        this.cells[i][j] = -1;
+    this._cells = []
+    for (var i: number = 0; i < this._nrCells; i++) {
+      this._cells[i] = [];
+      for (var j: number = 0; j < this._nrCells; j++) {
+        this._cells[i][j] = -1;
       }
     }
   }
 
   ngOnInit() {
-    this.hubConnection = new HubConnection('http://localhost:5000/match');
+    this._hubConnection = new HubConnection('http://localhost:5000/match');
 
-    this.hubConnection.on('SendConnected', playerResources => {
-      this.playerResources = playerResources;
-      this.playerNum = playerResources.number;
-    });
+    this._hubConnection.on('SendConnected', (data) => {this.SendConnected(data)});
 
-    this.hubConnection.on('SendDisconnected', data => {
-      console.log(data);
-      console.log('disconnected');
-    });
+    this._hubConnection.on('SendDisconnected', (data) => {this.SendDisconnected(data)});
 
-    this.hubConnection.on('SendMessage', data => {
-      console.log(data);
-    });
+    this._hubConnection.on('SendMessage', (data) => {this.SendMessage(data)});
 
-    this.hubConnection.on('SendGame', data => {
-      console.log(data);
-      this.game = data;
+    this._hubConnection.on('SendGame', (data) => {this.SendGame(data)});
 
-      setInterval(() => {
-        if (this.counter != this.game.length) {
-          this.cells = this.game[this.counter];
-          this.drawGrid();
-          this.counter += 1;
-        }
-      }, 60);
-    });
-
-    this.hubConnection
+    this._hubConnection
       .start()
       .then(() => this.onHubConnected())
       .catch(err => console.log(err));
   }
 
   onHubConnected() {
-    this.connected = true;
+    console.log("connected!");
+  }
+
+  SendConnected(playerResources: IPlayerResources) {
+    this._playerResources = playerResources;
+    this._playerNum = playerResources.number;
+    this.setConnectedStatus(true);
+  }
+
+  SendDisconnected(data) {
+    console.log(data);
+    console.log('disconnected');
+  }
+
+  SendMessage(data) {
+    console.log(data);
+  }
+
+  SendGame(data) {
+    console.log(data);
+    this._gameStates = data;
+
+    setInterval(() => {
+      if (this._currGameStateIdx != this._gameStates.length) {
+        this._cells = this._gameStates[this._currGameStateIdx];
+        this._matchService.drawGrid(this._cells, this._nrCells, this._playerResources);
+        this._currGameStateIdx += 1;
+      }
+    }, 60);
   }
 
   sendConfig() {
-    this.hubConnection.invoke('send', this.cells);
+    this._hubConnection.invoke('send', this._cells);
   }
 
   onResize(event) {
@@ -111,106 +118,14 @@ export class AppComponent {
     //this.canvas.height = event.target.innerHeight;
   }
 
-  drawCell(base, i, j) {
-    let x = base + j * this.cellSize;
-    let y = base + i * this.cellSize;
-    if (this.cells[i][j] !== -1) {
-      this.ctx.fillStyle = this.playerResources["allPlayersRes"][this.cells[i][j]]["color"];
-    }
-    else {
-      this.ctx.fillStyle = "white";
-    }
-    this.ctx.fillRect(x, y, this.cellSize, this.cellSize);
-    this.ctx.strokeRect(x, y, this.cellSize, this.cellSize);
-  }
-
-  drawGrid() {
-    let base = 0 - this.nrCells / 2 * this.cellSize;
-
-    for (var i: number = 0; i < this.nrCells; i++) {
-      for (var j: number = 0; j < this.nrCells; j++) {
-        this.drawCell(base, i, j);
+  ngAfterViewInit() {
+    this.getConnectedStatus().subscribe((_connected) => {
+      if (_connected) {
+        this._matchService.init(this.playGrid.nativeElement, this._nrCells);
+        this._matchService.drawGrid(this._cells, this._nrCells, this._playerResources);
+        this._matchService.captureEvents(this._cells, this._nrCells, this._playerResources, this._playerNum);
       }
-    }
-
-  }
-
-  ngAfterViewInit(): void {
-    this.canvas = <HTMLCanvasElement>this.playGrid.nativeElement;
-    let width = this.canvas.width = window.innerWidth;
-    let height = this.canvas.height = window.innerHeight - this.marginBottom;
-
-    this.ctx = this.canvas.getContext('2d');
-
-    this.center["0"] = width / 2;
-    this.center["1"] = height / 2;
-
-    this.gridTopLeft["0"] = this.center["0"] - this.nrCells / 2 * this.cellSize;
-    this.gridTopLeft["1"] = this.center["1"] - this.nrCells / 2 * this.cellSize;
-
-    this.ctx.translate(this.center["0"], this.center["1"]);
-
-    this.ctx.strokeStyle = "black";
-    this.ctx.lineWidth = 1.0;
-
-    this.drawGrid();
-    this.captureEvents();
-  }
-
-  captureEvents() {
-    Observable
-      .fromEvent(this.canvas, 'mousedown')
-      .subscribe((res: MouseEvent) => {
-        const rect = this.canvas.getBoundingClientRect();
-
-        const pos = {
-          x: res.clientX - rect.left,
-          y: res.clientY - rect.top
-        };
-
-        let x = pos.x - this.gridTopLeft["0"];
-        let y = pos.y - this.gridTopLeft["1"];
-
-        let i = Math.floor(y / this.cellSize);
-        let j = Math.floor(x / this.cellSize);
-
-        if (i >= 0 && i < this.nrCells && j >= 0 && j < this.nrCells) {
-          this.cells[i][j] = this.playerNum;
-          console.log(this.playerResources);
-          console.log(this.playerResources["allPlayersRes"][this.playerNum]["color"]);
-          this.drawGrid();
-        }
-
-      });
-
-    Observable
-      .fromEvent(this.canvas, 'mousedown')
-      .switchMap((e) => {
-        return Observable
-          .fromEvent(this.canvas, 'mousemove')
-          .takeUntil(Observable.fromEvent(this.canvas, 'mouseup'))
-          .takeUntil(Observable.fromEvent(this.canvas, 'mouseleave'))
-      })
-      .subscribe((res: MouseEvent) => {
-        const rect = this.canvas.getBoundingClientRect();
-
-        const pos = {
-          x: res.clientX - rect.left,
-          y: res.clientY - rect.top
-        };
-
-        let x = pos.x - this.gridTopLeft["0"];
-        let y = pos.y - this.gridTopLeft["1"];
-
-        let i = Math.floor(y / this.cellSize);
-        let j = Math.floor(x / this.cellSize);
-
-        if (i > 0 && i < this.nrCells && j > 0 && j < this.nrCells) {
-          this.cells[i][j] = this.playerNum;
-          this.drawGrid();
-        }
-
-      });
+    });
   }
 
 }

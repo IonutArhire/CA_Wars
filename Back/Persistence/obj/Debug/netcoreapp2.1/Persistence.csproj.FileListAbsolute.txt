@@ -1,9 +1,0 @@
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.deps.json
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.dll
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.pdb
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.csproj.CoreCompileInputs.cache
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.AssemblyInfoInputs.cache
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.AssemblyInfo.cs
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.dll
-c:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.pdb
-C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.csprojAssemblyReference.cache

@@ -5,24 +5,36 @@ using System.Linq;
 namespace Services.AlgorithmService {
     public class AlgorithmService {
 
-        private static float[][] grid;
+        private static float[][] _grid;
 
         private static int _size;
 
         private static int _nrPlayers = 2;
 
-        private static float[][] CombineConfigs (List<float[][]> configs, int size) {
-            float[][] result = Enumerable.Range (0, size).Select (i => new float[size]).ToArray ();
-            for (var i = 0; i < size; i++) {
-                for (var j = 0; j < size; j++) {
-                    result[i][j] = -1;
+        private static float[][] CreateEmptyMatrix(int size) {
+            return Enumerable.Range(0, size).Select(i => new float[size]).ToArray();
+        }
+
+        private static float[][] CopyMatrix(float[][] matrix) {
+            var result = CreateEmptyMatrix(matrix.Length);
+
+            for (var i = 0; i < matrix.Length; i++) {
+                for (var j = 0; j < matrix.Length; j++) {
+                    result[i][j] = matrix[i][j];
                 }
             }
+
+            return result;
+        }
+
+        private static float[][] CombineInitialConfigs(List<float[][]> configs, int size) {
+            float[][] result = CreateEmptyMatrix(size);
+
             for (var i = 0; i < size; i++) {
                 for (var j = 0; j < size; j++) {
-                    for (var z = 0; z < configs.Count; z++) {
-                        if (configs[z][i][j] != -1) {
-                            result[i][j] = configs[z][i][j];
+                    for (var k = 0; k < configs.Count; k++) {
+                        result[i][j] = configs[k][i][j];
+                        if (configs[k][i][j] != -1) {
                             break;
                         }
                     }
@@ -32,22 +44,15 @@ namespace Services.AlgorithmService {
             return result;
         }
 
-        public static float[][] Initialize (List<float[][]> configs, int size) {
-            grid = CombineConfigs (configs, size);
-            _size = size;
+        private static List<float> getNeighbors(int x, int z) {
+            int mod(int l, int r) {
+                return (l % r + r) % r;
+            }
 
-            return grid;
-        }
-
-        private static int mod (int x, int m) {
-            return (x % m + m) % m;
-        }
-
-        private static List<float> getNeighbors (int x, int z) {
             var result = new List<float> ();
 
             for (int i = 0; i < _nrPlayers; i++) {
-                result.Add (0);
+                result.Add(0);
             }
 
             for (int i = x - 1; i <= x + 1; i++) {
@@ -59,7 +64,7 @@ namespace Services.AlgorithmService {
                     var iAux = mod(i, _size);
                     var jAux = mod(j, _size);
 
-                    var owner = Convert.ToInt32 (grid[iAux][jAux]);
+                    var owner = Convert.ToInt32 (_grid[iAux][jAux]);
                     if (owner != -1) {
                         result[owner] += 1;
                     }
@@ -69,46 +74,41 @@ namespace Services.AlgorithmService {
             return result;
         }
 
-        private static float[][] CopyMatrix(float[][] matrix) {
-            var result = Enumerable.Range (0, matrix.Length).Select (i => new float[matrix.Length]).ToArray ();
+        public static float[][] Initialize(List<float[][]> configs, int size) {
+            _grid = CombineInitialConfigs(configs, size);
+            _size = size;
 
-            for (var i = 0; i < matrix.Length; i++) {
-                for (var j = 0; j < matrix.Length; j++) {
-                    result[i][j] = matrix[i][j];
-                }
-            }
-
-            return result;
+            return _grid;
         }
 
-        public static float[][] RunNextGen () {
+        public static float[][] RunNextGen() {
             var GOF = new Dictionary<bool, List<float>> () { { false, new List<float> () { { 3 } } }, { true, new List<float> () { { 2 }, { 3 } } }
                 };
 
-            var resultGrid = CopyMatrix(grid);
+            var resultGrid = CopyMatrix(_grid);
 
             for (var i = 0; i < _size; i++) {
                 for (var j = 0; j < _size; j++) {
-                    var neighbors = getNeighbors (i, j);
-                    var results = new List<float> ();
-                    for (int z = 0; z < _nrPlayers; z++) {
-                        var isAlive = grid[i][j] == z ? true : false;
-                        var result = Convert.ToInt32(GOF[isAlive].FindLast(x => x == neighbors[z]));
-                        if (result != 0) {
-                            results.Add (z);
+                    var neighbors = getNeighbors(i, j);
+                    var candidatePlayers = new List<float>();
+                    for (int playerIdx = 0; playerIdx < _nrPlayers; playerIdx++) {
+                        var isAlive = _grid[i][j] == playerIdx ? true : false;
+                        
+                        if (GOF[isAlive].FindLast(x => x == neighbors[playerIdx]) != 0) {
+                            candidatePlayers.Add(playerIdx);
                         }
                     }
 
-                    if (results.Count == 1) {
-                        resultGrid[i][j] = results[0];
+                    if (candidatePlayers.Count == 1) {
+                        resultGrid[i][j] = candidatePlayers[0];
                     } else {
                         resultGrid[i][j] = -1;
                     }
                 }
             }
 
-            grid = CopyMatrix(resultGrid);
-            return grid;
+            _grid = CopyMatrix(resultGrid);
+            return _grid;
         }
 
         public static bool isGridEmpty() {
@@ -116,7 +116,7 @@ namespace Services.AlgorithmService {
             {
                 for (int j = 0; j < _size; j++)
                 {
-                    if (grid[i][j] != -1) {
+                    if (_grid[i][j] != -1) {
                         return false;
                     }
                 }
@@ -124,6 +124,5 @@ namespace Services.AlgorithmService {
 
             return true;
         }
-
     }
 }
