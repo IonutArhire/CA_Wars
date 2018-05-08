@@ -135,12 +135,12 @@ export class MatchService {
     }, 60);
   }
   
-  resetMatch() {
+  resetMatch(playerResources: IPlayerResources) {
     clearInterval(this._interval);
     this._currGameStateIdx = 0;
     this._cells = this.initializeCells();
     this.clearCanvas();
-    this.drawGrid();
+    this.drawGrid(playerResources);
   }
 
 

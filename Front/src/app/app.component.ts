@@ -106,7 +106,7 @@ export class AppComponent {
   }
 
   resetMatch() {
-    this._matchService.resetMatch();
+    this._matchService.resetMatch(this._playerResources);
   }
 
 }
