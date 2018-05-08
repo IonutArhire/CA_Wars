@@ -13,8 +13,8 @@ namespace Api.Hubs {
 
         private static ConcurrentDictionary<string, int> _players = new ConcurrentDictionary<string, int> (StringComparer.OrdinalIgnoreCase);
 
-        public override async Task OnConnectedAsync () {
-            var resources = PlayerResourcesService.getPlayerResources ();
+        public override async Task OnConnectedAsync() {
+            var resources = PlayerResourcesService.getPlayerResources();
             await Clients.Caller.SendAsync("SendConnected", resources);
         }
 
@@ -33,7 +33,8 @@ namespace Api.Hubs {
                     generations.Add(AlgorithmService.RunNextGen());
                     counter++;
                 }
-                await Clients.All.SendAsync("SendGame", generations);
+                var result = new { generations = generations, winner = AlgorithmService.getWinner() };
+                await Clients.All.SendAsync("SendGame", result);
                 configurations.Clear();
             }
         }

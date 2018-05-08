@@ -59,11 +59,8 @@ namespace Services.PlayerResourcesService
             InitializeNumbers();
         }
         
-        public static Dictionary<string, object> getPlayerResources() {
-            var result = new Dictionary<string, object>();
-            result.Add("allPlayersRes", _resources);
-            result.Add("number", getNewNumber());
-            return result;
+        public static Object getPlayerResources() {
+            return new { allPlayersRes = _resources, number = getNewNumber() };
         }
     }
 }

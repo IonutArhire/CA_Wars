@@ -44,16 +44,22 @@ namespace Services.AlgorithmService {
             return result;
         }
 
+        private static List<float> createPlayerArray() {
+            var result = new List<float>();
+
+            for (int i = 0; i < _nrPlayers; i++) {
+                result.Add(0);
+            }
+
+            return result;
+        }
+
         private static List<float> getNeighbors(int x, int z) {
             int mod(int l, int r) {
                 return (l % r + r) % r;
             }
 
-            var result = new List<float> ();
-
-            for (int i = 0; i < _nrPlayers; i++) {
-                result.Add(0);
-            }
+            var owners = createPlayerArray();
 
             for (int i = x - 1; i <= x + 1; i++) {
                 for (int j = z - 1; j <= z + 1; j++) {
@@ -64,14 +70,14 @@ namespace Services.AlgorithmService {
                     var iAux = mod(i, _size);
                     var jAux = mod(j, _size);
 
-                    var owner = Convert.ToInt32 (_grid[iAux][jAux]);
+                    var owner = Convert.ToInt32(_grid[iAux][jAux]);
                     if (owner != -1) {
-                        result[owner] += 1;
+                        owners[owner] += 1;
                     }
                 }
             }
 
-            return result;
+            return owners;
         }
 
         public static float[][] Initialize(List<float[][]> configs, int size) {
@@ -123,6 +129,30 @@ namespace Services.AlgorithmService {
             }
 
             return true;
+        }
+
+        public static int getWinner() {
+            var owners = createPlayerArray();
+
+            for (int i = 0; i < _size; i++)
+            {
+                for (int j = 0; j < _size; j++)
+                {
+                    var owner = Convert.ToInt32(_grid[i][j]);
+                    if (owner != -1) {
+                        owners[owner] += 1;
+                    }
+                }
+            }
+
+            var maxValue = owners.Max();
+            var maxIndex = owners.IndexOf(maxValue);
+
+            if (maxValue == 0) {
+                return -1;
+            } else {
+                return maxIndex;
+            }
         }
     }
 }
