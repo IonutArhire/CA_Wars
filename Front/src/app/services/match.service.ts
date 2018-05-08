@@ -9,7 +9,7 @@ import 'rxjs/add/operator/pairwise';
 import { IPlayerResources } from '../models/player-resources';
 
 @Injectable()
-export class MatchUIService {
+export class MatchService {
 
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;

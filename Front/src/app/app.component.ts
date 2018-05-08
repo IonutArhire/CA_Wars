@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of'
 
-import { MatchUIService } from './services/match-ui.service';
+import { MatchService } from './services/match.service';
 
 import { IPlayerResources } from './models/player-resources';
 
@@ -29,7 +29,7 @@ export class AppComponent {
   private _playerNum: number = -1;
 
 
-  constructor(private _matchUIService: MatchUIService) {
+  constructor(private _matchService: MatchService) {
     this._nrCells = 20;
     this._connectedStatus = new BehaviorSubject<boolean>(false);
   }
@@ -80,11 +80,11 @@ export class AppComponent {
   }
 
   SendGame(data) {
-    this._matchUIService.runGame(data.generations, data.winner, this._playerResources);
+    this._matchService.runGame(data.generations, data.winner, this._playerResources);
   }
 
   sendConfig() {
-    this._hubConnection.invoke('send', this._matchUIService.getCells());
+    this._hubConnection.invoke('send', this._matchService.getCells());
   }
 
   onResize(event) {
@@ -97,9 +97,9 @@ export class AppComponent {
   ngAfterViewInit() {
     this.getConnectedStatus().subscribe((_connected) => {
       if (_connected) {//we need to connect to the server, get the player resources and have the view initialized before starting the UI
-        this._matchUIService.init(this.playGrid.nativeElement, this._nrCells);
-        this._matchUIService.drawGrid(this._playerResources);
-        this._matchUIService.captureEvents(this._playerResources, this._playerNum);
+        this._matchService.init(this.playGrid.nativeElement, this._nrCells);
+        this._matchService.drawGrid(this._playerResources);
+        this._matchService.captureEvents(this._playerResources, this._playerNum);
       }
     });
   }

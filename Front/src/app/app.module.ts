@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { MatchUIService } from './services/match-ui.service';
+import { MatchService } from './services/match.service';
 
 @NgModule({
   declarations: [
@@ -11,7 +11,7 @@ import { MatchUIService } from './services/match-ui.service';
   imports: [
     BrowserModule
   ],
-  providers: [MatchUIService],
+  providers: [MatchService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
