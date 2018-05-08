@@ -80,6 +80,7 @@ export class AppComponent {
   }
 
   SendGame(data) {
+    this._playerResources.allPlayersRes[data.winner].wins += 1;
     this._matchService.runGame(data.generations, data.winner, this._playerResources);
   }
 
@@ -102,6 +103,10 @@ export class AppComponent {
         this._matchService.captureEvents(this._playerResources, this._playerNum);
       }
     });
+  }
+
+  resetMatch() {
+    this._matchService.resetMatch();
   }
 
 }

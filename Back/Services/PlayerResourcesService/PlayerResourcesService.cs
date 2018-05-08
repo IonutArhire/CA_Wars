@@ -50,10 +50,11 @@ namespace Services.PlayerResourcesService
             {
                 var color = getNewColor();
 
-                var playersResources = new Dictionary<string, object>();
-                playersResources.Add("color", color);
+                var playerResources = new Dictionary<string, object>();
+                playerResources.Add("color", color);
+                playerResources.Add("wins", 0);
 
-                _resources.Add(playersResources);
+                _resources.Add(playerResources);
             }
             
             InitializeNumbers();

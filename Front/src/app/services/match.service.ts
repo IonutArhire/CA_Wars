@@ -22,8 +22,12 @@ export class MatchService {
 
   private _marginBottom: number;
 
+  private _currGameStateIdx: number = 0;
+
+  private _interval: any;
+
   constructor() {
-    this._marginBottom = 75;
+    this._marginBottom = 200;
     this._cellSize = 30;
     this._center = [0, 0];
   }
@@ -121,11 +125,8 @@ export class MatchService {
     this._center["1"] += y;
   }
 
-  
-  private _currGameStateIdx: number = 0;
-
   runGame(generations, winner, playerResources) {
-    setInterval(() => {
+    this._interval = setInterval(() => {
       if (this._currGameStateIdx < generations.length) {
         this._cells = generations[this._currGameStateIdx];
         this.drawGrid(playerResources);
@@ -133,6 +134,18 @@ export class MatchService {
       }
     }, 60);
   }
+  
+  resetMatch() {
+    clearInterval(this._interval);
+    this._currGameStateIdx = 0;
+    this._cells = this.initializeCells();
+    this.clearCanvas();
+    this.drawGrid();
+  }
+
+
+
+
 
   captureEvents(playerResources: IPlayerResources, playerNum: number) {
     this.captureLeftClick(playerResources, playerNum);

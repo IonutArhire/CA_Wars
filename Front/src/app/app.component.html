@@ -1,2 +1,9 @@
-<canvas #playGrid (window:resize)="onResize($event)">Loading...</canvas>
-<button (click)="sendConfig()" *ngIf="_connected">Send to Server</button>
+<canvas id='play-grid' #playGrid (window:resize)="onResize($event)">Loading...</canvas>
+<button id='send-to-server-btn' (click)="sendConfig()" *ngIf="_connected">Send to Server</button>
+<button id='reset-match-btn' (click)="resetMatch()" *ngIf="_connected">Reset Match</button>
+
+<div id='score-board' *ngIf="_connected">
+  <span class='scores' *ngFor="let player of _playerResources.allPlayersRes;" [ngStyle]="{'color': player.color }">
+    {{ player.wins }}
+  </span>
+</div>
