@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Services.AlgorithmService;
+using Services.GameResourcesService;
 using Services.PlayerResourcesService;
 
 namespace Api.Hubs {
     public class MatchHub : Hub {
         private static List<float[][]> configurations = new List<float[][]> ();
-        private static int size = 20;
+        private static int size = 30;
 
         private static ConcurrentDictionary<string, int> _players = new ConcurrentDictionary<string, int> (StringComparer.OrdinalIgnoreCase);
 
         public override async Task OnConnectedAsync() {
-            var resources = PlayerResourcesService.getPlayerResources();
+            var resources = GameResourcesService.getGameResources();
             await Clients.Caller.SendAsync("SendConnected", resources);
         }
 

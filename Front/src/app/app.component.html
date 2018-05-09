@@ -1,6 +1,6 @@
 <canvas id='play-grid' #playGrid (window:resize)="onResize($event)">Loading...</canvas>
-<button id='send-to-server-btn' (click)="sendConfig()" *ngIf="_connected">Send to Server</button>
-<button id='reset-match-btn' (click)="resetMatch()" *ngIf="_connected">Reset Match</button>
+<button id='send-to-server-btn' class="btn btn-outline-dark" (click)="sendConfig()" *ngIf="_connected">Send to Server</button>
+<button id='reset-match-btn' class="btn btn-outline-dark" (click)="resetMatch()" *ngIf="_connected">Reset Match</button>
 
 <div id='score-board' *ngIf="_connected">
   <span class='scores' *ngFor="let player of _playerResources.allPlayersRes;" [ngStyle]="{'color': player.color }">

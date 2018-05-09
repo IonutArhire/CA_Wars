@@ -8,6 +8,7 @@ import 'rxjs/add/observable/of'
 import { MatchService } from './services/match.service';
 
 import { IPlayerResources } from './models/player-resources';
+import { IGameResources } from './models/game-resources';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,6 @@ export class AppComponent {
 
 
   constructor(private _matchService: MatchService) {
-    this._nrCells = 20;
     this._connectedStatus = new BehaviorSubject<boolean>(false);
   }
 
@@ -64,9 +64,10 @@ export class AppComponent {
     console.log("connected!");
   }
 
-  SendConnected(playerResources: IPlayerResources) {
-    this._playerResources = playerResources;
-    this._playerNum = playerResources.number;
+  SendConnected(gameResources: IGameResources) {
+    this._playerResources = gameResources.playerResources;
+    this._playerNum = gameResources.playerResources.number;
+    this._nrCells = gameResources.size;
     this.setConnectedStatus(true);
   }
 

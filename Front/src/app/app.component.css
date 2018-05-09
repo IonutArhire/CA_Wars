@@ -2,14 +2,6 @@
     border-bottom: 1px solid black;
 }
 
-#send-to-server-btn {
-    margin-top: 25px;
-}
-
-#score-board {
-    margin-top: 25px;
-}
-
 .scores {
     font-size: 100px;
 }
