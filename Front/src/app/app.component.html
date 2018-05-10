@@ -3,7 +3,7 @@
 <button id='reset-match-btn' class="btn btn-outline-dark" (click)="resetMatch()" *ngIf="_connected">Reset Match</button>
 
 <div id='score-board' *ngIf="_connected">
-  <span class='scores' *ngFor="let player of _playerResources.allPlayersRes;" [ngStyle]="{'color': player.color }">
+  <span class='scores' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
     {{ player.wins }}
   </span>
 </div>

@@ -6,7 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/pairwise';
 
-import { IPlayerResources } from '../models/player-resources';
+import { IPlayerResource } from '../models/player-resources';
 
 @Injectable()
 export class MatchService {
@@ -74,12 +74,12 @@ export class MatchService {
     };
   }
 
-  drawCell(base, i: number, j: number, playerResources: IPlayerResources) {
+  drawCell(base, i: number, j: number, playerResources: Array<IPlayerResource>) {
     let x = base + j * this._cellSize;
     let y = base + i * this._cellSize;
     let cellValue = this._cells[i][j]
     if (cellValue !== -1) {
-      this._ctx.fillStyle = playerResources.allPlayersRes[cellValue].color;
+      this._ctx.fillStyle = playerResources[cellValue].color;
     }
     else {
       this._ctx.fillStyle = "white";
@@ -88,13 +88,13 @@ export class MatchService {
     this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
   }
 
-  updateCell(i: number, j: number, playerNum: number, playerResources: IPlayerResources) {
+  updateCell(i: number, j: number, playerNum: number, playerResources: Array<IPlayerResource>) {
       this._cells[i][j] = playerNum;
       let base = 0 - this._nrCells / 2 * this._cellSize;
       this.drawCell(base, i, j, playerResources);
   }
 
-  drawGrid(playerResources: IPlayerResources) {
+  drawGrid(playerResources: Array<IPlayerResource>) {
     let base = 0 - this._nrCells / 2 * this._cellSize;
 
     for (var i: number = 0; i < this._nrCells; i++) {
@@ -135,7 +135,7 @@ export class MatchService {
     }, 60);
   }
   
-  resetMatch(playerResources: IPlayerResources) {
+  resetMatch(playerResources: Array<IPlayerResource>) {
     clearInterval(this._interval);
     this._currGameStateIdx = 0;
     this._cells = this.initializeCells();
@@ -147,14 +147,14 @@ export class MatchService {
 
 
 
-  captureEvents(playerResources: IPlayerResources, playerNum: number) {
+  captureEvents(playerResources: Array<IPlayerResource>, playerNum: number) {
     this.captureLeftClick(playerResources, playerNum);
     this.captureLeftDrag(playerResources, playerNum);
     this.captureRightDrag(playerResources);
     this.captureMouseWheel(playerResources);
   }
 
-  captureLeftClick(playerResources: IPlayerResources, playerNum: number) {
+  captureLeftClick(playerResources: Array<IPlayerResource>, playerNum: number) {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .subscribe((res: MouseEvent) => {
@@ -181,7 +181,7 @@ export class MatchService {
       });
   }
 
-  captureLeftDrag(playerResources: IPlayerResources, playerNum: number) {
+  captureLeftDrag(playerResources: Array<IPlayerResource>, playerNum: number) {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .switchMap((e) => {
@@ -214,7 +214,7 @@ export class MatchService {
       });
   }
 
-  captureRightDrag(playerResources: IPlayerResources) {
+  captureRightDrag(playerResources: Array<IPlayerResource>) {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .switchMap((e) => {
@@ -246,7 +246,7 @@ export class MatchService {
       });
   }
 
-  captureMouseWheel(playerResources: IPlayerResources) {
+  captureMouseWheel(playerResources: Array<IPlayerResource>) {
     Observable
       .fromEvent(this._canvas, 'mousewheel')
       .subscribe((res: MouseWheelEvent) => {

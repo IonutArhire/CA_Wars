@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Services.Models;
 
 namespace Services.PlayerResourcesService
 {
@@ -8,7 +9,7 @@ namespace Services.PlayerResourcesService
         private static List<string> _colors;
         private static List<int> _numbers;
 
-        private static List<Dictionary<string, object>> _resources = new List<Dictionary<string, object>>();
+        private static List<PlayerModel> _resources = new List<PlayerModel>();
         private static int _nrPlayers = 2;
 
         private static string getNewColor() {
@@ -28,7 +29,23 @@ namespace Services.PlayerResourcesService
             }
         }
 
-        private static int getNewNumber() {
+        public static void Initialize() {
+            _colors = new List<string>();
+            _colors.Add("#f28910"); //orange
+            _colors.Add("#099fef"); //blue
+
+            for (int i = 0; i < _nrPlayers; i++)
+            {
+                var color = getNewColor();
+
+                var playerResources = new PlayerModel(color, 0);
+
+                _resources.Add(playerResources);
+            }
+            
+            InitializeNumbers();
+        }
+        public static int getNewNumber() {
             Random randomizer = new Random();
             int idx = randomizer.Next(_numbers.Count);
             int result = _numbers[idx];
@@ -40,28 +57,9 @@ namespace Services.PlayerResourcesService
 
             return result;
         }
-
-        public static void Initialize() {
-            _colors = new List<string>();
-            _colors.Add("#f28910"); //orange
-            _colors.Add("#099fef"); //blue
-
-            for (int i = 0; i < _nrPlayers; i++)
-            {
-                var color = getNewColor();
-
-                var playerResources = new Dictionary<string, object>();
-                playerResources.Add("color", color);
-                playerResources.Add("wins", 0);
-
-                _resources.Add(playerResources);
-            }
-            
-            InitializeNumbers();
-        }
         
-        public static Object getPlayerResources() {
-            return new { allPlayersRes = _resources, number = getNewNumber() };
+        public static List<PlayerModel> getPlayerResources() {
+            return _resources;
         }
     }
 }

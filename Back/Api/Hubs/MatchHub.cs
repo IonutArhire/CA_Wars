@@ -3,42 +3,58 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using Services.AlgorithmService;
+using Services.Models;
 using Services.GameResourcesService;
+using Services.AlgorithmService;
 using Services.PlayerResourcesService;
 
 namespace Api.Hubs {
-    public class MatchHub : Hub {
-        private static List<float[][]> configurations = new List<float[][]> ();
-        private static int size = 30;
+    public class MatchHub : Hub 
+    {
+        private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
 
-        private static ConcurrentDictionary<string, int> _players = new ConcurrentDictionary<string, int> (StringComparer.OrdinalIgnoreCase);
+        private void TestingInitializations() {
+            var test_gameModel = GameResourcesService.getGameResources(20, 2, 100);
+
+            _games.AddOrUpdate("1", test_gameModel, (key, gamemodel) => { return gamemodel;});
+        }
 
         public override async Task OnConnectedAsync() {
-            var resources = GameResourcesService.getGameResources();
-            await Clients.Caller.SendAsync("SendConnected", resources);
+            TestingInitializations();
+            await Clients.Caller.SendAsync("SendConnected", Context.ConnectionId);
         }
 
         public override async Task OnDisconnectedAsync(Exception ex) {
             await Clients.All.SendAsync("SendDisconnected", Context.ConnectionId);
         }
 
-        public async Task Send (float[][] matrix) {
-            configurations.Add(matrix);
-            var counter = 0;
+        public async Task Resources(string gameKey) {
+            var game = _games[gameKey];
+            var assignedNumber = PlayerResourcesService.getNewNumber();
+            var resources = new ResourcesModel(game, assignedNumber);
 
-            if (configurations.Count == 2) {
+            await Clients.Caller.SendAsync("SendResources", resources);
+        }
+
+        public async Task InputConfig(string gameKey, float[][] playerConfig) {
+            var game = _games[gameKey];
+            game.Configs.Add(playerConfig);
+
+            if (game.Configs.Count == game.NrPlayers) {
+                var counter = 0;
+                
                 List<float[][]> generations = new List<float[][]>();
-                generations.Add(AlgorithmService.Initialize(configurations, size));
-                while (!AlgorithmService.isGridEmpty() && counter != 500) {
+                generations.Add(AlgorithmService.Initialize(game.Configs, game.Size));
+                while (!AlgorithmService.isGridEmpty() && counter != game.MaxGenerations) {
                     generations.Add(AlgorithmService.RunNextGen());
                     counter++;
                 }
-                var result = new { generations = generations, winner = AlgorithmService.getWinner() };
+
+                var result = new GameResultModel(generations, AlgorithmService.getWinner());
+                
                 await Clients.All.SendAsync("SendGame", result);
-                configurations.Clear();
+                game.Configs.Clear();
             }
         }
-
     }
 }

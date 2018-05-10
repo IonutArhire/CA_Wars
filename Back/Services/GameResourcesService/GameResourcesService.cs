@@ -1,13 +1,17 @@
 using System;
+using System.Collections.Generic;
+using Services.Models;
+using static Services.PlayerResourcesService.PlayerResourcesService;
 
 namespace Services.GameResourcesService
 {
     public static class GameResourcesService
     {
-        private static int size = 30;
-        public static Object getGameResources() {
-            var playerResources = PlayerResourcesService.PlayerResourcesService.getPlayerResources();
-            return new {size = size, playerResources = playerResources};
+        public static GameModel getGameResources(int size, int nrPlayers, int maxGenerations) {
+            var playerResources = getPlayerResources();
+            var result = new GameModel(size, nrPlayers, maxGenerations, playerResources, new List<float[][]>());
+
+            return result;
         }
     }
 }

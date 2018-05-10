@@ -7,8 +7,8 @@ import 'rxjs/add/observable/of'
 
 import { MatchService } from './services/match.service';
 
-import { IPlayerResources } from './models/player-resources';
-import { IGameResources } from './models/game-resources';
+import { IPlayerResource } from './models/player-resources';
+import { IResources } from './models/resources';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +26,7 @@ export class AppComponent {
 
   private _nrCells: number;
 
-  private _playerResources: IPlayerResources;
+  private _playerResources: Array<IPlayerResource>;
   private _playerNum: number = -1;
 
 
@@ -54,6 +54,8 @@ export class AppComponent {
 
     this._hubConnection.on('SendGame', (data) => {this.SendGame(data)});
 
+    this._hubConnection.on('SendResources', (data) => {this.Resources(data)});
+
     this._hubConnection
       .start()
       .then(() => this.onHubConnected())
@@ -61,13 +63,19 @@ export class AppComponent {
   }
 
   onHubConnected() {
-    console.log("connected!");
   }
 
-  SendConnected(gameResources: IGameResources) {
-    this._playerResources = gameResources.playerResources;
-    this._playerNum = gameResources.playerResources.number;
-    this._nrCells = gameResources.size;
+  SendConnected(data) {
+    console.log(data);
+    console.log('connected');
+
+    this._hubConnection.invoke('Resources', '1');
+  }
+
+  Resources(resources: IResources) {
+    this._playerResources = resources.game.players;
+    this._playerNum = resources.assignedNumber;
+    this._nrCells = resources.game.size;
     this.setConnectedStatus(true);
   }
 
@@ -81,12 +89,12 @@ export class AppComponent {
   }
 
   SendGame(data) {
-    this._playerResources.allPlayersRes[data.winner].wins += 1;
+    this._playerResources[data.winner].wins += 1;
     this._matchService.runGame(data.generations, data.winner, this._playerResources);
   }
 
   sendConfig() {
-    this._hubConnection.invoke('send', this._matchService.getCells());
+    this._hubConnection.invoke('InputConfig', '1', this._matchService.getCells());
   }
 
   onResize(event) {
