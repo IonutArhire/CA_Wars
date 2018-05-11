@@ -6,60 +6,62 @@ namespace Services.PlayerResourcesService
 {
     public class PlayerResourcesService
     {
-        private static List<string> _colors;
-        private static List<int> _numbers;
+        public static List<string> InitializeColors() {
+            return new List<string>()
+            {   
+                "#f28910", //orange
+                "#099fef", //blue
+                "#792ab2", //violet
+                "#5bdb15"  //green
+            };
+        }
 
-        private static List<PlayerModel> _resources = new List<PlayerModel>();
-        private static int _nrPlayers = 2;
-
-        private static string getNewColor() {
-            Random randomizer = new Random();
-            int idx = randomizer.Next(_colors.Count);
-            string result = _colors[idx];
-            _colors.RemoveAt(idx);
+        private static string GetNewColor(List<string> colors) {
+            var randomizer = new Random();
+            var idx = randomizer.Next(colors.Count);
+            var result = colors[idx];
+            colors.RemoveAt(idx);
 
             return result;
         }
 
-        private static void InitializeNumbers() {
-            _numbers = new List<int>();
-            for (int i = 0; i < _nrPlayers; i++)
+        public static List<int> InitPlayerNumbers(int nrPlayers) {
+            var result = new List<int>();
+            for (int i = 0; i < nrPlayers; i++)
             {
-                _numbers.Add(i);
+                result.Add(i);
             }
+            return result;
         }
 
-        public static void Initialize() {
-            _colors = new List<string>();
-            _colors.Add("#f28910"); //orange
-            _colors.Add("#099fef"); //blue
+        public static int AssignNumber(GameModel game) {
+            var playerNumbers = game.PlayerNumbers;
 
-            for (int i = 0; i < _nrPlayers; i++)
+            var randomizer = new Random();
+            var idx = randomizer.Next(playerNumbers.Count);
+            var result = playerNumbers[idx];
+            playerNumbers.RemoveAt(idx);
+
+            if (playerNumbers.Count == 0)
             {
-                var color = getNewColor();
-
-                var playerResources = new PlayerModel(color, 0);
-
-                _resources.Add(playerResources);
-            }
-            
-            InitializeNumbers();
-        }
-        public static int getNewNumber() {
-            Random randomizer = new Random();
-            int idx = randomizer.Next(_numbers.Count);
-            int result = _numbers[idx];
-            _numbers.RemoveAt(idx);
-
-            if(_numbers.Count == 0) {
-                InitializeNumbers();
+                game.PlayerNumbers = InitPlayerNumbers(game.NrPlayers);
             }
 
             return result;
         }
         
-        public static List<PlayerModel> getPlayerResources() {
-            return _resources;
+        public static List<PlayerModel> GetPlayerResources(int nrPlayers) {
+            var colors = InitializeColors();
+            var results = new List<PlayerModel>();
+            for (int i = 0; i < nrPlayers; i++)
+            {
+                var color = GetNewColor(colors);
+
+                var playerResources = new PlayerModel(color, 0);
+
+                results.Add(playerResources);
+            }
+            return results;
         }
     }
 }

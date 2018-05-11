@@ -14,9 +14,11 @@ namespace Api.Hubs {
         private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
 
         private void TestingInitializations() {
-            var test_gameModel = GameResourcesService.getGameResources(20, 2, 100);
+            var test_gameModel1 = GameResourcesService.GetGameResources(20, 2, 100);
+            var test_gameModel2 = GameResourcesService.GetGameResources(10, 2, 50);
 
-            _games.AddOrUpdate("1", test_gameModel, (key, gamemodel) => { return gamemodel;});
+            _games.AddOrUpdate("1", test_gameModel1, (key, gamemodel) => { return gamemodel;});
+            _games.AddOrUpdate("2", test_gameModel2, (key, gamemodel) => { return gamemodel;});
         }
 
         public override async Task OnConnectedAsync() {
@@ -30,7 +32,7 @@ namespace Api.Hubs {
 
         public async Task SendResources(string gameKey) {
             var game = _games[gameKey];
-            var assignedNumber = PlayerResourcesService.getNewNumber();
+            var assignedNumber = PlayerResourcesService.AssignNumber(game);
             var resources = new ResourcesModel(game, assignedNumber);
 
             await Clients.Caller.SendAsync("Resources", resources);

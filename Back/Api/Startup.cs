@@ -50,8 +50,6 @@ namespace Api {
             app.UseSignalR (routes => {
                 routes.MapHub<MatchHub> ("/match");
             });
-
-            PlayerResourcesService.Initialize();
         }
     }
 }
