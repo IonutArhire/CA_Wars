@@ -15,7 +15,7 @@ namespace Api.Hubs {
 
         private void TestingInitializations() {
             var test_gameModel1 = GameResourcesService.GetGameResources(20, 2, 100);
-            var test_gameModel2 = GameResourcesService.GetGameResources(10, 2, 50);
+            var test_gameModel2 = GameResourcesService.GetGameResources(10, 4, 50);
 
             _games.AddOrUpdate("1", test_gameModel1, (key, gamemodel) => { return gamemodel;});
             _games.AddOrUpdate("2", test_gameModel2, (key, gamemodel) => { return gamemodel;});
