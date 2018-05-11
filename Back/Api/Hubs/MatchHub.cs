@@ -21,22 +21,22 @@ namespace Api.Hubs {
 
         public override async Task OnConnectedAsync() {
             TestingInitializations();
-            await Clients.Caller.SendAsync("SendConnected", Context.ConnectionId);
+            await Clients.Caller.SendAsync("Connected", Context.ConnectionId);
         }
 
         public override async Task OnDisconnectedAsync(Exception ex) {
-            await Clients.All.SendAsync("SendDisconnected", Context.ConnectionId);
+            await Clients.All.SendAsync("Disconnected", Context.ConnectionId);
         }
 
-        public async Task Resources(string gameKey) {
+        public async Task SendResources(string gameKey) {
             var game = _games[gameKey];
             var assignedNumber = PlayerResourcesService.getNewNumber();
             var resources = new ResourcesModel(game, assignedNumber);
 
-            await Clients.Caller.SendAsync("SendResources", resources);
+            await Clients.Caller.SendAsync("Resources", resources);
         }
 
-        public async Task InputConfig(string gameKey, float[][] playerConfig) {
+        public async Task SendInputConfig(string gameKey, float[][] playerConfig) {
             var game = _games[gameKey];
             game.Configs.Add(playerConfig);
 
@@ -52,7 +52,7 @@ namespace Api.Hubs {
 
                 var result = new GameResultModel(generations, AlgorithmService.getWinner());
                 
-                await Clients.All.SendAsync("SendGame", result);
+                await Clients.All.SendAsync("Game", result);
                 game.Configs.Clear();
             }
         }

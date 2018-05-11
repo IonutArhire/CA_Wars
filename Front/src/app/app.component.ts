@@ -46,15 +46,13 @@ export class AppComponent {
   ngOnInit() {
     this._hubConnection = new HubConnection('http://localhost:5000/match');
 
-    this._hubConnection.on('SendConnected', (data) => {this.SendConnected(data)});
+    this._hubConnection.on('Connected', (data) => {this.SendConnected(data)});
 
-    this._hubConnection.on('SendDisconnected', (data) => {this.SendDisconnected(data)});
+    this._hubConnection.on('Disconnected', (data) => {this.SendDisconnected(data)});
 
-    this._hubConnection.on('SendMessage', (data) => {this.SendMessage(data)});
+    this._hubConnection.on('Game', (data) => {this.Game(data)});
 
-    this._hubConnection.on('SendGame', (data) => {this.SendGame(data)});
-
-    this._hubConnection.on('SendResources', (data) => {this.Resources(data)});
+    this._hubConnection.on('Resources', (data) => {this.Resources(data)});
 
     this._hubConnection
       .start()
@@ -69,7 +67,7 @@ export class AppComponent {
     console.log(data);
     console.log('connected');
 
-    this._hubConnection.invoke('Resources', '1');
+    this._hubConnection.invoke('SendResources', '1');
   }
 
   Resources(resources: IResources) {
@@ -84,17 +82,13 @@ export class AppComponent {
     console.log('disconnected');
   }
 
-  SendMessage(data) {
-    console.log(data);
-  }
-
-  SendGame(data) {
+  Game(data) {
     this._playerResources[data.winner].wins += 1;
     this._matchService.runGame(data.generations, data.winner, this._playerResources);
   }
 
   sendConfig() {
-    this._hubConnection.invoke('InputConfig', '1', this._matchService.getCells());
+    this._hubConnection.invoke('SendInputConfig', '1', this._matchService.getCells());
   }
 
   onResize(event) {
