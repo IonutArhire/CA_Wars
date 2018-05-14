@@ -6,7 +6,9 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/pairwise';
 
-import { IPlayerResource } from '../models/player-resources';
+import { IPlayerResource } from '../resources/player-resources';
+import { IDimensionsResources } from '../resources/dimensions-resources';
+import { Point } from '../entities/point-entity';
 
 @Injectable()
 export class MatchService {
@@ -15,7 +17,7 @@ export class MatchService {
   private _ctx: CanvasRenderingContext2D;
   
   private _cells: number[][];
-  private _nrCells: number;
+  private _dimensions: IDimensionsResources;
   private _cellSize: number;
 
   private _center: [number, number];
@@ -32,9 +34,9 @@ export class MatchService {
     this._center = [0, 0];
   }
 
-  init(canvas: HTMLCanvasElement, nrCells: number) {
+  init(canvas: HTMLCanvasElement, dimensions: IDimensionsResources) {
     this._canvas = canvas;
-    this._nrCells = nrCells;
+    this._dimensions = dimensions;
     this._cells = this.initializeCells();
 
     let width = this._canvas.width = window.innerWidth;
@@ -55,9 +57,9 @@ export class MatchService {
 
   initializeCells(): number[][] {
     let cells = []
-    for (var i: number = 0; i < this._nrCells; i++) {
+    for (var i: number = 0; i < this._dimensions.height; i++) {
       cells[i] = [];
-      for (var j: number = 0; j < this._nrCells; j++) {
+      for (var j: number = 0; j < this._dimensions.width; j++) {
         cells[i][j] = -1;
       }
     }
@@ -74,9 +76,9 @@ export class MatchService {
     };
   }
 
-  drawCell(base, i: number, j: number, playerResources: Array<IPlayerResource>) {
-    let x = base + j * this._cellSize;
-    let y = base + i * this._cellSize;
+  drawCell(base: Point, i: number, j: number, playerResources: Array<IPlayerResource>) {
+    let x = base.x + j * this._cellSize;
+    let y = base.y + i * this._cellSize;
     let cellValue = this._cells[i][j]
     if (cellValue !== -1) {
       this._ctx.fillStyle = playerResources[cellValue].color;
@@ -90,23 +92,28 @@ export class MatchService {
 
   updateCell(i: number, j: number, playerNum: number, playerResources: Array<IPlayerResource>) {
       this._cells[i][j] = playerNum;
-      let base = 0 - this._nrCells / 2 * this._cellSize;
+      let base = this.getGridBasePoint();
       this.drawCell(base, i, j, playerResources);
   }
 
   drawGrid(playerResources: Array<IPlayerResource>) {
-    let base = 0 - this._nrCells / 2 * this._cellSize;
+    let base = this.getGridBasePoint();
 
-    for (var i: number = 0; i < this._nrCells; i++) {
-      for (var j: number = 0; j < this._nrCells; j++) {
+    for (var i: number = 0; i < this._dimensions.height; i++) {
+      for (var j: number = 0; j < this._dimensions.width; j++) {
         this.drawCell(base, i, j, playerResources);
       }
     }
   }
 
+  getGridBasePoint(): Point {
+    return new Point(0 - this._dimensions.width / 2 * this._cellSize,
+                     0 - this._dimensions.height / 2 * this._cellSize);
+  }
+
   getGridTopLeft(): [number, number] {
-    return [this._center["0"] - this._nrCells / 2 * this._cellSize,
-            this._center["1"] - this._nrCells / 2 * this._cellSize];
+    return [this._center["0"] - this._dimensions.width / 2 * this._cellSize,
+            this._center["1"] - this._dimensions.height / 2 * this._cellSize];
   }
 
   clearCanvas() {
@@ -174,7 +181,7 @@ export class MatchService {
           let i = Math.floor(y / this._cellSize);
           let j = Math.floor(x / this._cellSize);
 
-          if (i >= 0 && i < this._nrCells && j >= 0 && j < this._nrCells) {
+          if (i >= 0 && i < this._dimensions.height && j >= 0 && j < this._dimensions.width) {
             this.updateCell(i, j, playerNum, playerResources);
           }
         }
@@ -207,7 +214,7 @@ export class MatchService {
           let i = Math.floor(y / this._cellSize);
           let j = Math.floor(x / this._cellSize);
 
-          if (i >= 0 && i < this._nrCells && j >= 0 && j < this._nrCells) {
+          if (i >= 0 && i < this._dimensions.height && j >= 0 && j < this._dimensions.width) {
             this.updateCell(i, j, playerNum, playerResources);
           }
         }

@@ -1,40 +1,45 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Services.Models;
 
 namespace Services.AlgorithmService {
     public class AlgorithmService {
 
-        private static float[][] _grid;
+        private static float[,] _grid;
 
-        private static int _size;
+        private static DimensionsModel _dimensions;
 
         private static int _nrPlayers = 2;
 
-        private static float[][] CreateEmptyMatrix(int size) {
-            return Enumerable.Range(0, size).Select(i => new float[size]).ToArray();
+        private static float[,] CreateEmptyMatrix(DimensionsModel dimensions) {
+            return new float[dimensions.Height, dimensions.Width];
         }
 
-        private static float[][] CopyMatrix(float[][] matrix) {
-            var result = CreateEmptyMatrix(matrix.Length);
+        private static float[,] CopyMatrix(float[,] matrix) {
+            var matrixHeight = matrix.GetLength(0);
+            var matrixWidth = matrix.GetLength(1);
 
-            for (var i = 0; i < matrix.Length; i++) {
-                for (var j = 0; j < matrix.Length; j++) {
-                    result[i][j] = matrix[i][j];
+            var dimensions = new DimensionsModel(matrixHeight, matrixWidth);
+            var result = CreateEmptyMatrix(dimensions);
+
+            for (var i = 0; i < matrixHeight; i++) {
+                for (var j = 0; j < matrixWidth; j++) {
+                    result[i,j] = matrix[i,j];
                 }
             }
 
             return result;
         }
 
-        private static float[][] CombineInitialConfigs(List<float[][]> configs, int size) {
-            float[][] result = CreateEmptyMatrix(size);
+        private static float[,] CombineInitialConfigs(List<float[,]> configs, DimensionsModel dimensions) {
+            float[,] result = CreateEmptyMatrix(dimensions);
 
-            for (var i = 0; i < size; i++) {
-                for (var j = 0; j < size; j++) {
+            for (var i = 0; i < dimensions.Height; i++) {
+                for (var j = 0; j < dimensions.Width; j++) {
                     for (var k = 0; k < configs.Count; k++) {
-                        result[i][j] = configs[k][i][j];
-                        if (configs[k][i][j] != -1) {
+                        result[i,j] = configs[k][i,j];
+                        if (configs[k][i,j] != -1) {
                             break;
                         }
                     }
@@ -67,10 +72,10 @@ namespace Services.AlgorithmService {
                         continue;
                     }
 
-                    var iAux = mod(i, _size);
-                    var jAux = mod(j, _size);
+                    var iAux = mod(i, _dimensions.Height);
+                    var jAux = mod(j, _dimensions.Width);
 
-                    var owner = Convert.ToInt32(_grid[iAux][jAux]);
+                    var owner = Convert.ToInt32(_grid[iAux,jAux]);
                     if (owner != -1) {
                         owners[owner] += 1;
                     }
@@ -80,25 +85,25 @@ namespace Services.AlgorithmService {
             return owners;
         }
 
-        public static float[][] Initialize(List<float[][]> configs, int size) {
-            _grid = CombineInitialConfigs(configs, size);
-            _size = size;
+        public static float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions) {
+            _grid = CombineInitialConfigs(configs, dimensions);
+            _dimensions = dimensions;
 
             return _grid;
         }
 
-        public static float[][] RunNextGen() {
+        public static float[,] RunNextGen() {
             var GOF = new Dictionary<bool, List<float>> () { { false, new List<float> () { { 3 } } }, { true, new List<float> () { { 2 }, { 3 } } }
                 };
 
             var resultGrid = CopyMatrix(_grid);
 
-            for (var i = 0; i < _size; i++) {
-                for (var j = 0; j < _size; j++) {
+            for (var i = 0; i < _dimensions.Height; i++) {
+                for (var j = 0; j < _dimensions.Width; j++) {
                     var neighbors = getNeighbors(i, j);
                     var candidatePlayers = new List<float>();
                     for (int playerIdx = 0; playerIdx < _nrPlayers; playerIdx++) {
-                        var isAlive = _grid[i][j] == playerIdx ? true : false;
+                        var isAlive = _grid[i,j] == playerIdx ? true : false;
                         
                         if (GOF[isAlive].FindLast(x => x == neighbors[playerIdx]) != 0) {
                             candidatePlayers.Add(playerIdx);
@@ -106,9 +111,9 @@ namespace Services.AlgorithmService {
                     }
 
                     if (candidatePlayers.Count == 1) {
-                        resultGrid[i][j] = candidatePlayers[0];
+                        resultGrid[i,j] = candidatePlayers[0];
                     } else {
-                        resultGrid[i][j] = -1;
+                        resultGrid[i,j] = -1;
                     }
                 }
             }
@@ -118,11 +123,11 @@ namespace Services.AlgorithmService {
         }
 
         public static bool isGridEmpty() {
-            for (int i = 0; i < _size; i++)
+            for (int i = 0; i < _dimensions.Height; i++)
             {
-                for (int j = 0; j < _size; j++)
+                for (int j = 0; j < _dimensions.Width; j++)
                 {
-                    if (_grid[i][j] != -1) {
+                    if (_grid[i,j] != -1) {
                         return false;
                     }
                 }
@@ -134,11 +139,11 @@ namespace Services.AlgorithmService {
         public static int getWinner() {
             var owners = createPlayerArray();
 
-            for (int i = 0; i < _size; i++)
+            for (int i = 0; i < _dimensions.Height; i++)
             {
-                for (int j = 0; j < _size; j++)
+                for (int j = 0; j < _dimensions.Width; j++)
                 {
-                    var owner = Convert.ToInt32(_grid[i][j]);
+                    var owner = Convert.ToInt32(_grid[i,j]);
                     if (owner != -1) {
                         owners[owner] += 1;
                     }

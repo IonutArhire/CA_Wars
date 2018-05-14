@@ -14,8 +14,8 @@ namespace Api.Hubs {
         private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
 
         private void TestingInitializations() {
-            var test_gameModel1 = GameResourcesService.GetGameResources(20, 2, 100);
-            var test_gameModel2 = GameResourcesService.GetGameResources(10, 4, 50);
+            var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(20, 10), 2, 100);
+            var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 4, 50);
 
             _games.AddOrUpdate("1", test_gameModel1, (key, gamemodel) => { return gamemodel;});
             _games.AddOrUpdate("2", test_gameModel2, (key, gamemodel) => { return gamemodel;});
@@ -38,15 +38,15 @@ namespace Api.Hubs {
             await Clients.Caller.SendAsync("Resources", resources);
         }
 
-        public async Task SendInputConfig(string gameKey, float[][] playerConfig) {
+        public async Task SendInputConfig(string gameKey, float[,] playerConfig) {
             var game = _games[gameKey];
             game.Configs.Add(playerConfig);
 
             if (game.Configs.Count == game.NrPlayers) {
                 var counter = 0;
                 
-                List<float[][]> generations = new List<float[][]>();
-                generations.Add(AlgorithmService.Initialize(game.Configs, game.Size));
+                List<float[,]> generations = new List<float[,]>();
+                generations.Add(AlgorithmService.Initialize(game.Configs, game.Dimensions));
                 while (!AlgorithmService.isGridEmpty() && counter != game.MaxGenerations) {
                     generations.Add(AlgorithmService.RunNextGen());
                     counter++;

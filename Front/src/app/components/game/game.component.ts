@@ -8,8 +8,9 @@ import 'rxjs/add/observable/of'
 
 import { MatchService } from '../../services/match.service';
 
-import { IPlayerResource } from '../../models/player-resources';
-import { IResources } from '../../models/resources';
+import { IPlayerResource } from '../../resources/player-resources';
+import { IResources } from '../../resources/resources';
+import { IDimensionsResources } from '../../resources/dimensions-resources';
 
 @Component({
   selector: 'app-game',
@@ -25,7 +26,7 @@ export class GameComponent {
   private _connected: boolean = false;
   private _connectedStatus: BehaviorSubject<boolean>;
 
-  private _nrCells: number;
+  private _dimensions: IDimensionsResources;
 
   private _playerResources: Array<IPlayerResource>;
   private _playerNum: number = -1;
@@ -78,7 +79,7 @@ export class GameComponent {
   Resources(resources: IResources) {
     this._playerResources = resources.game.players;
     this._playerNum = resources.assignedNumber;
-    this._nrCells = resources.game.size;
+    this._dimensions = resources.game.dimensions;
     this.setConnectedStatus(true);
   }
 
@@ -106,7 +107,7 @@ export class GameComponent {
   ngAfterViewInit() {
     this.getConnectedStatus().subscribe((_connected) => {
       if (_connected) {//we need to connect to the server, get the player resources and have the view initialized before starting the UI
-        this._matchService.init(this.playGrid.nativeElement, this._nrCells);
+        this._matchService.init(this.playGrid.nativeElement, this._dimensions);
         this._matchService.drawGrid(this._playerResources);
         this._matchService.captureEvents(this._playerResources, this._playerNum);
       }
