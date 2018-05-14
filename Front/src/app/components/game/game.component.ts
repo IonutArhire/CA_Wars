@@ -23,19 +23,26 @@ export class GameComponent {
 
   @ViewChild('playGrid') playGrid: ElementRef;
 
-  private _connected: boolean = false;
+  private _connected: boolean;
   private _connectedStatus: BehaviorSubject<boolean>;
 
   private _dimensions: IDimensionsResources;
 
   private _playerResources: Array<IPlayerResource>;
-  private _playerNum: number = -1;
+  private _playerNum: number;
 
   private _gameKey: number;
+
+  private _isPlaying: boolean;
+  private _hasGameArrived: boolean;
 
 
   constructor(private _matchService: MatchService, private _route: ActivatedRoute) {
     this._connectedStatus = new BehaviorSubject<boolean>(false);
+
+    this._connected = false;
+    this._playerNum = -1;
+    this._isPlaying = false;
   }
 
   getConnectedStatus(): Observable<boolean> {
@@ -90,7 +97,8 @@ export class GameComponent {
 
   Game(data) {
     this._playerResources[data.winner].wins += 1;
-    this._matchService.runGame(data.generations, data.winner, this._playerResources);
+    this._matchService.runGame(data.generations, this._playerResources);
+    this._hasGameArrived = true;
   }
 
   sendConfig() {
@@ -116,6 +124,36 @@ export class GameComponent {
 
   resetMatch() {
     this._matchService.resetMatch(this._playerResources);
+    this._hasGameArrived = false;
   }
 
+  stopSimulation() {
+    this._isPlaying = false;
+    this._matchService.stopSimulation();
+  }
+
+  startSimulation() {
+    this._isPlaying = true;
+    this._matchService.startSimulation(this._playerResources);
+  }
+
+  skipSimulationBack() {
+    this._isPlaying = false;
+    this._matchService.skipSimulationBack(this._playerResources);
+  }
+
+  skipSimulationForward() {
+    this._isPlaying = false;
+    this._matchService.skipSimulationForward(this._playerResources);
+  }
+
+  stepSimulationBack() {
+    this._isPlaying = false;
+    this._matchService.stepSimulationBack(this._playerResources);
+  }
+
+  stepSimulationForward() {
+    this._isPlaying = false;
+    this._matchService.stepSimulationForward(this._playerResources);
+  }
 }

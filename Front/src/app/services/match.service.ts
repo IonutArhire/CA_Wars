@@ -24,15 +24,23 @@ export class MatchService {
 
   private _marginBottom: number;
 
-  private _currGameStateIdx: number = 0;
+  private _currGameStateIdx: number;
+  private _generations: Array<number[][]>;
 
   private _interval: any;
 
   constructor() {
-    this._marginBottom = 200;
+    this._marginBottom = 300;
     this._cellSize = 30;
     this._center = [0, 0];
+    this._currGameStateIdx = 0;
   }
+
+
+
+  /*
+  * Initialization and Rendering Section.
+  */
 
   init(canvas: HTMLCanvasElement, dimensions: IDimensionsResources) {
     this._canvas = canvas;
@@ -132,14 +140,17 @@ export class MatchService {
     this._center["1"] += y;
   }
 
-  runGame(generations, winner, playerResources) {
-    this._interval = setInterval(() => {
-      if (this._currGameStateIdx < generations.length) {
-        this._cells = generations[this._currGameStateIdx];
-        this.drawGrid(playerResources);
-        this._currGameStateIdx += 1;
-      }
-    }, 60);
+
+
+
+  /*
+  * Game Simulation Section.
+  */
+
+  runGame(generations: Array<number[][]>, playerResources: Array<IPlayerResource>) {
+    this._generations = generations;
+    this._cells = generations[this._currGameStateIdx];
+    this.drawGrid(playerResources);
   }
   
   resetMatch(playerResources: Array<IPlayerResource>) {
@@ -150,9 +161,59 @@ export class MatchService {
     this.drawGrid(playerResources);
   }
 
+  startSimulation(playerResources: Array<IPlayerResource>) {
+    this._interval = setInterval(() => {
+      if (this._currGameStateIdx < this._generations.length - 1) {
+        this._currGameStateIdx += 1;
+        this._cells = this._generations[this._currGameStateIdx];
+        this.drawGrid(playerResources);
+      }
+    }, 60);
+  }
+
+  stopSimulation() {
+    clearInterval(this._interval);
+  }
+
+  skipSimulationBack(playerResources: Array<IPlayerResource>) {
+    clearInterval(this._interval);
+    this._currGameStateIdx = 0;
+    this._cells = this._generations[this._currGameStateIdx];
+    this.drawGrid(playerResources);
+  }
+
+  skipSimulationForward(playerResources: Array<IPlayerResource>) {
+    clearInterval(this._interval);
+    this._currGameStateIdx = this._generations.length - 1;
+    this._cells = this._generations[this._currGameStateIdx];
+    this.drawGrid(playerResources);
+  }
+
+  stepSimulationBack(playerResources: Array<IPlayerResource>) {
+    clearInterval(this._interval);
+    if(this._currGameStateIdx > 0) {
+      this._currGameStateIdx -= 1;
+      this._cells = this._generations[this._currGameStateIdx];
+      this.drawGrid(playerResources);
+    }
+  }
+
+  stepSimulationForward(playerResources: Array<IPlayerResource>) {
+    clearInterval(this._interval);
+    if (this._currGameStateIdx < this._generations.length - 1) {
+      this._currGameStateIdx += 1;
+      this._cells = this._generations[this._currGameStateIdx];
+      this.drawGrid(playerResources);
+    }
+  }
 
 
 
+
+
+  /*
+  * Events Handling Section.
+  */
 
   captureEvents(playerResources: Array<IPlayerResource>, playerNum: number) {
     this.captureLeftClick(playerResources, playerNum);
@@ -264,5 +325,4 @@ export class MatchService {
         }
       })
   }
-
 }

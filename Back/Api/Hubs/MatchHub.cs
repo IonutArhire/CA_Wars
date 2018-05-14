@@ -14,8 +14,8 @@ namespace Api.Hubs {
         private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
 
         private void TestingInitializations() {
-            var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(20, 10), 2, 100);
-            var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 4, 50);
+            var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100);
+            var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 200);
 
             _games.AddOrUpdate("1", test_gameModel1, (key, gamemodel) => { return gamemodel;});
             _games.AddOrUpdate("2", test_gameModel2, (key, gamemodel) => { return gamemodel;});

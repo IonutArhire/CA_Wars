@@ -1,4 +1,14 @@
-<canvas id='play-grid' #playGrid (window:resize)="onResize($event)">Loading...</canvas>
+<div class="toolbar" *ngIf="_connected" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
+  <span class="oi oi-media-play" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></span>
+  <span class="oi oi-media-pause" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></span>
+  <span class="oi oi-media-skip-forward" (click)="skipSimulationForward()" style="cursor:pointer;"></span>
+  <span class="oi oi-media-skip-backward" (click)="skipSimulationBack()" style="cursor:pointer;"></span>
+  <span class="oi oi-media-step-forward" (click)="stepSimulationForward()" style="cursor:pointer;"></span>
+  <span class="oi oi-media-step-backward" (click)="stepSimulationBack()" style="cursor:pointer;"></span>
+</div>
+
+
+<canvas id='play-grid' #playGrid (window:resize)="onResize($event)"></canvas>
 <button id='send-to-server-btn' class="btn btn-outline-dark" (click)="sendConfig()" *ngIf="_connected">Send to Server</button>
 <button id='reset-match-btn' class="btn btn-outline-dark" (click)="resetMatch()" *ngIf="_connected">Reset Match</button>
 
