@@ -1,4 +1,4 @@
-<div class="toolbar" *ngIf="_connected" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
+<div class="toolbar" #toolbar [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
   <span class="oi oi-media-play" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></span>
   <span class="oi oi-media-pause" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></span>
   <span class="oi oi-media-skip-forward" (click)="skipSimulationForward()" style="cursor:pointer;"></span>

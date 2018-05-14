@@ -4,8 +4,9 @@
 }
 
 .toolbar {
-    margin-top: 12px;
-    margin-bottom: 12px;
+    height: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .oi {

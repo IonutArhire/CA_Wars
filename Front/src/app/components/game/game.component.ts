@@ -22,6 +22,7 @@ export class GameComponent {
   private _hubConnection: HubConnection
 
   @ViewChild('playGrid') playGrid: ElementRef;
+  @ViewChild('toolbar') toolbar: ElementRef;
 
   private _connected: boolean;
   private _connectedStatus: BehaviorSubject<boolean>;
@@ -106,16 +107,13 @@ export class GameComponent {
   }
 
   onResize(event) {
-    //console.log(event.target.innerWidth); 
-    //console.log(event.target.innerHeight); 
-    //this.canvas.width = event.target.innerWidth;
-    //this.canvas.height = event.target.innerHeight;
+    this._matchService.resizeCanvas(event, this._playerResources);
   }
 
   ngAfterViewInit() {
     this.getConnectedStatus().subscribe((_connected) => {
       if (_connected) {//we need to connect to the server, get the player resources and have the view initialized before starting the UI
-        this._matchService.init(this.playGrid.nativeElement, this._dimensions);
+        this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions);
         this._matchService.drawGrid(this._playerResources);
         this._matchService.captureEvents(this._playerResources, this._playerNum);
       }

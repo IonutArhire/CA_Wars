@@ -22,6 +22,7 @@ export class MatchService {
 
   private _center: [number, number];
 
+  private _marginTop: number;
   private _marginBottom: number;
 
   private _currGameStateIdx: number;
@@ -42,20 +43,18 @@ export class MatchService {
   * Initialization and Rendering Section.
   */
 
-  init(canvas: HTMLCanvasElement, dimensions: IDimensionsResources) {
+  init(canvas: HTMLCanvasElement, toolbar: HTMLDivElement, dimensions: IDimensionsResources) {
     this._canvas = canvas;
     this._dimensions = dimensions;
     this._cells = this.initializeCells();
+    this._marginTop = toolbar.offsetHeight;
 
     let width = this._canvas.width = window.innerWidth;
-    let height = this._canvas.height = window.innerHeight - this._marginBottom;
+    let height = this._canvas.height = window.innerHeight - this._marginTop - this._marginBottom;
 
     this._ctx = this._canvas.getContext('2d');
 
-    this._center["0"] = width / 2;
-    this._center["1"] = height / 2;
-
-    this._ctx.translate(this._center["0"], this._center["1"]);
+    this.updateCenter(width, height);
 
     this._ctx.strokeStyle = "black";
     this._ctx.lineWidth = 1.0;
@@ -138,6 +137,23 @@ export class MatchService {
     this._ctx.translate(x, y);
     this._center["0"] += x;
     this._center["1"] += y;
+  }
+
+  updateCenter(width: number, height: number) {
+    this._center["0"] = width / 2;
+    this._center["1"] = height / 2;
+    
+    this._ctx.translate(this._center["0"], this._center["1"]);
+  }
+
+  resizeCanvas(event, playerResources) {
+    this.clearCanvas();
+
+    let width = this._canvas.width = event.target.innerWidth;
+    let height = this._canvas.height = event.target.innerHeight - this._marginTop - this._marginBottom ;
+    this.updateCenter(width, height);
+
+    this.drawGrid(playerResources);
   }
 
 
