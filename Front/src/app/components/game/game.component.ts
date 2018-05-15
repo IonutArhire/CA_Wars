@@ -36,6 +36,7 @@ export class GameComponent {
 
   private _isPlaying: boolean;
   private _hasGameArrived: boolean;
+  private _hasSent: boolean;
 
 
   constructor(private _matchService: MatchService, private _route: ActivatedRoute) {
@@ -44,6 +45,7 @@ export class GameComponent {
     this._connected = false;
     this._playerNum = -1;
     this._isPlaying = false;
+    this._hasSent = false;
   }
 
   getConnectedStatus(): Observable<boolean> {
@@ -104,6 +106,7 @@ export class GameComponent {
 
   sendConfig() {
     this._hubConnection.invoke('SendInputConfig', this._gameKey, this._matchService.getCells());
+    this._hasSent = true;
   }
 
   onResize(event) {
@@ -123,6 +126,7 @@ export class GameComponent {
   resetMatch() {
     this._matchService.resetMatch(this._playerResources);
     this._hasGameArrived = false;
+    this._hasSent = false;
   }
 
   stopSimulation() {
