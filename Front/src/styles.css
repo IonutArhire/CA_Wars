@@ -2,8 +2,15 @@
 
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
+html {
+    min-height: 100%;
+    margin: 0;
+}
+
 body {
     margin: 0;
+    height: 100%;
     text-align: center;
     overflow: hidden;
+    background-color: #fcfcfc;
 }

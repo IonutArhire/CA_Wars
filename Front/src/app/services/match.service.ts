@@ -31,7 +31,7 @@ export class MatchService {
   private _interval: any;
 
   constructor() {
-    this._marginBottom = 300;
+    this._marginBottom = 216;
     this._cellSize = 30;
     this._center = [0, 0];
     this._currGameStateIdx = 0;
@@ -148,6 +148,8 @@ export class MatchService {
 
   resizeCanvas(event, playerResources) {
     this.clearCanvas();
+
+    console.log(event.target.innerWidth, event.target.innerHeight);
 
     let width = this._canvas.width = event.target.innerWidth;
     let height = this._canvas.height = event.target.innerHeight - this._marginTop - this._marginBottom ;

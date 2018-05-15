@@ -9,11 +9,11 @@
 
 
 <canvas id='play-grid' #playGrid (window:resize)="onResize($event)"></canvas>
-<button id='send-to-server-btn' class="btn btn-outline-dark" (click)="sendConfig()" *ngIf="_connected">Send to Server</button>
-<button id='reset-match-btn' class="btn btn-outline-dark" (click)="resetMatch()" *ngIf="_connected">Reset Match</button>
+<button id='send-to-server-btn' class="btn btn-outline-dark game-btn" (click)="sendConfig()" *ngIf="_connected && !_hasGameArrived">Send to Server</button>
+<button id='reset-match-btn' class="btn btn-outline-dark game-btn" (click)="resetMatch()" *ngIf="_connected && _hasGameArrived">Reset Match</button>
 
 <div id='score-board' *ngIf="_connected">
-  <span class='scores' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
+  <span class='score' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
     {{ player.wins }}
   </span>
 </div>
