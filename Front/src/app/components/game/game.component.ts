@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { HubConnection } from '@aspnet/signalr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Event } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -24,13 +24,13 @@ export class GameComponent {
   @ViewChild('playGrid') playGrid: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
 
-  private _connected: boolean;
-  private _connectedStatus: BehaviorSubject<boolean>;
+  private _hasResources: boolean;
+  private _resourcesStatus: BehaviorSubject<boolean>;
 
   private _dimensions: IDimensionsResources;
 
   private _playerResources: Array<IPlayerResource>;
-  private _playerNum: number;
+  private _assignedNum: number;
 
   private _gameKey: number;
 
@@ -40,21 +40,15 @@ export class GameComponent {
 
 
   constructor(private _matchService: MatchService, private _route: ActivatedRoute) {
-    this._connectedStatus = new BehaviorSubject<boolean>(false);
+    this._hasResources = false;
+    this._resourcesStatus = new BehaviorSubject<boolean>(false);
+    
+    this._assignedNum = -1;
+    this._gameKey = -1;
 
-    this._connected = false;
-    this._playerNum = -1;
     this._isPlaying = false;
+    this._hasGameArrived = false;
     this._hasSent = false;
-  }
-
-  getConnectedStatus(): Observable<boolean> {
-    return this._connectedStatus.asObservable();
-  }
-
-  setConnectedStatus(newValue: boolean) {
-    this._connected = newValue;
-    this._connectedStatus.next(newValue);
   }
 
   ngOnInit() {
@@ -62,69 +56,76 @@ export class GameComponent {
 
     this._hubConnection = new HubConnection('http://localhost:5000/match');
 
-    this._hubConnection.on('Connected', (data) => {this.SendConnected(data)});
+    this._hubConnection.on('Connected', (data) => {this.connected(data)});
 
-    this._hubConnection.on('Disconnected', (data) => {this.SendDisconnected(data)});
+    this._hubConnection.on('Disconnected', (data) => {this.disconnected(data)});
 
-    this._hubConnection.on('Game', (data) => {this.Game(data)});
+    this._hubConnection.on('Game', (data) => {this.game(data)});
 
-    this._hubConnection.on('Resources', (data) => {this.Resources(data)});
+    this._hubConnection.on('Resources', (data) => {this.resources(data)});
 
     this._hubConnection
       .start()
-      .then(() => this.onHubConnected())
+      .then(() => {})
       .catch(err => console.log(err));
   }
 
-  onHubConnected() {
+  getResourcesStatus(): Observable<boolean> {
+    return this._resourcesStatus.asObservable();
   }
 
-  SendConnected(data) {
+  setResourcesStatus(newValue: boolean) {
+    this._hasResources = newValue;
+    this._resourcesStatus.next(newValue);
+  }
+
+  connected(data) {
     console.log(data);
     console.log('connected');
 
     this._hubConnection.invoke('SendResources', this._gameKey);
   }
 
-  Resources(resources: IResources) {
+  resources(resources: IResources) {
     this._playerResources = resources.game.players;
-    this._playerNum = resources.assignedNumber;
+    this._assignedNum = resources.assignedNumber;
     this._dimensions = resources.game.dimensions;
-    this.setConnectedStatus(true);
+    this.setResourcesStatus(true);
   }
 
-  SendDisconnected(data) {
+  disconnected(data) {
     console.log(data);
     console.log('disconnected');
   }
 
-  Game(data) {
+  game(data) {
     this._playerResources[data.winner].wins += 1;
-    this._matchService.runGame(data.generations, this._playerResources);
+    this._matchService.updatePlayerResources(this._playerResources);
+    this._matchService.runSimulation(data.generations);
     this._hasGameArrived = true;
   }
 
   sendConfig() {
-    this._hubConnection.invoke('SendInputConfig', this._gameKey, this._matchService.getCells());
+    this._hubConnection.invoke('SendConfig', this._gameKey, this._matchService.getCells());
     this._hasSent = true;
   }
 
-  onResize(event) {
-    this._matchService.resizeCanvas(event, this._playerResources);
-  }
-
   ngAfterViewInit() {
-    this.getConnectedStatus().subscribe((_connected) => {
+    this.getResourcesStatus().subscribe((_connected) => {
       if (_connected) {//we need to connect to the server, get the player resources and have the view initialized before starting the UI
-        this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions);
-        this._matchService.drawGrid(this._playerResources);
-        this._matchService.captureEvents(this._playerResources, this._playerNum);
+        this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions, this._playerResources);
+        this._matchService.drawGrid();
+        this._matchService.captureEvents(this._assignedNum);
       }
     });
   }
 
+  onResize(event) {
+    this._matchService.resizeCanvas(event.target.innerWidth, event.target.innerHeight);
+  }
+
   resetMatch() {
-    this._matchService.resetMatch(this._playerResources);
+    this._matchService.resetMatch();
     this._hasGameArrived = false;
     this._hasSent = false;
   }
@@ -136,26 +137,26 @@ export class GameComponent {
 
   startSimulation() {
     this._isPlaying = true;
-    this._matchService.startSimulation(this._playerResources);
+    this._matchService.startSimulation();
   }
 
   skipSimulationBack() {
     this._isPlaying = false;
-    this._matchService.skipSimulationBack(this._playerResources);
+    this._matchService.skipSimulationBack();
   }
 
   skipSimulationForward() {
     this._isPlaying = false;
-    this._matchService.skipSimulationForward(this._playerResources);
+    this._matchService.skipSimulationForward();
   }
 
   stepSimulationBack() {
     this._isPlaying = false;
-    this._matchService.stepSimulationBack(this._playerResources);
+    this._matchService.stepSimulationBack();
   }
 
   stepSimulationForward() {
     this._isPlaying = false;
-    this._matchService.stepSimulationForward(this._playerResources);
+    this._matchService.stepSimulationForward();
   }
 }

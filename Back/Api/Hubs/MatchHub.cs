@@ -38,7 +38,7 @@ namespace Api.Hubs {
             await Clients.Caller.SendAsync("Resources", resources);
         }
 
-        public async Task SendInputConfig(string gameKey, float[,] playerConfig) {
+        public async Task SendConfig(string gameKey, float[,] playerConfig) {
             var game = _games[gameKey];
             game.Configs.Add(playerConfig);
 

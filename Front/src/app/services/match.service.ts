@@ -20,6 +20,8 @@ export class MatchService {
   private _dimensions: IDimensionsResources;
   private _cellSize: number;
 
+  private _playerResources: Array<IPlayerResource>;
+
   private _center: [number, number];
 
   private _marginTop: number;
@@ -28,7 +30,7 @@ export class MatchService {
   private _currGameStateIdx: number;
   private _generations: Array<number[][]>;
 
-  private _interval: any;
+  private _simulationInterval: NodeJS.Timer;
 
   constructor() {
     this._marginBottom = 216;
@@ -43,11 +45,12 @@ export class MatchService {
   * Initialization and Rendering Section.
   */
 
-  init(canvas: HTMLCanvasElement, toolbar: HTMLDivElement, dimensions: IDimensionsResources) {
+  init(canvas: HTMLCanvasElement, toolbar: HTMLDivElement, dimensions: IDimensionsResources, playerResources: Array<IPlayerResource>) {
     this._canvas = canvas;
     this._dimensions = dimensions;
-    this._cells = this.initializeCells();
     this._marginTop = toolbar.offsetHeight;
+    this._playerResources = playerResources;
+    this._cells = this.initializeCells();
 
     let width = this._canvas.width = window.innerWidth;
     let height = this._canvas.height = window.innerHeight - this._marginTop - this._marginBottom;
@@ -83,12 +86,12 @@ export class MatchService {
     };
   }
 
-  drawCell(base: Point, i: number, j: number, playerResources: Array<IPlayerResource>) {
+  drawCell(base: Point, i: number, j: number) {
     let x = base.x + j * this._cellSize;
     let y = base.y + i * this._cellSize;
     let cellValue = this._cells[i][j]
     if (cellValue !== -1) {
-      this._ctx.fillStyle = playerResources[cellValue].color;
+      this._ctx.fillStyle = this._playerResources[cellValue].color;
     }
     else {
       this._ctx.fillStyle = "white";
@@ -97,18 +100,18 @@ export class MatchService {
     this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
   }
 
-  updateCell(i: number, j: number, playerNum: number, playerResources: Array<IPlayerResource>) {
-      this._cells[i][j] = playerNum;
+  updateCell(i: number, j: number, assignedNum: number) {
+      this._cells[i][j] = assignedNum;
       let base = this.getGridBasePoint();
-      this.drawCell(base, i, j, playerResources);
+      this.drawCell(base, i, j);
   }
 
-  drawGrid(playerResources: Array<IPlayerResource>) {
+  drawGrid() {
     let base = this.getGridBasePoint();
 
     for (var i: number = 0; i < this._dimensions.height; i++) {
       for (var j: number = 0; j < this._dimensions.width; j++) {
-        this.drawCell(base, i, j, playerResources);
+        this.drawCell(base, i, j);
       }
     }
   }
@@ -118,22 +121,21 @@ export class MatchService {
                      0 - this._dimensions.height / 2 * this._cellSize);
   }
 
-  getGridTopLeft(): [number, number] {
-    return [this._center["0"] - this._dimensions.width / 2 * this._cellSize,
-            this._center["1"] - this._dimensions.height / 2 * this._cellSize];
+  getGridTopLeft(): Point {
+    return new Point(this._center["0"] - this._dimensions.width / 2 * this._cellSize,
+                     this._center["1"] - this._dimensions.height / 2 * this._cellSize);
   }
 
   clearCanvas() {
     this._ctx.save();
 
-    // Use the identity matrix while clearing the canvas
     this._ctx.setTransform(1, 0, 0, 1, 0, 0);
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
     this._ctx.restore();
   }
 
-  translateAndUpdate(x, y) {
+  translateAndUpdate(x: number, y: number) {
     this._ctx.translate(x, y);
     this._center["0"] += x;
     this._center["1"] += y;
@@ -146,18 +148,19 @@ export class MatchService {
     this._ctx.translate(this._center["0"], this._center["1"]);
   }
 
-  resizeCanvas(event, playerResources) {
+  resizeCanvas(windowWidth: number, windowHeight: number) {
     this.clearCanvas();
 
-    console.log(event.target.innerWidth, event.target.innerHeight);
-
-    let width = this._canvas.width = event.target.innerWidth;
-    let height = this._canvas.height = event.target.innerHeight - this._marginTop - this._marginBottom ;
+    let width = this._canvas.width = windowWidth;
+    let height = this._canvas.height = windowHeight - this._marginTop - this._marginBottom ;
     this.updateCenter(width, height);
 
-    this.drawGrid(playerResources);
+    this.drawGrid();
   }
 
+  updatePlayerResources(playerResources: Array<IPlayerResource>) {
+    this._playerResources = playerResources;
+  }
 
 
 
@@ -165,67 +168,65 @@ export class MatchService {
   * Game Simulation Section.
   */
 
-  runGame(generations: Array<number[][]>, playerResources: Array<IPlayerResource>) {
-    this._generations = generations;
-    this._cells = generations[this._currGameStateIdx];
-    this.drawGrid(playerResources);
-  }
-  
-  resetMatch(playerResources: Array<IPlayerResource>) {
-    clearInterval(this._interval);
-    this._currGameStateIdx = 0;
-    this._cells = this.initializeCells();
-    this.clearCanvas();
-    this.drawGrid(playerResources);
+  renderSimulation() {
+    this._cells = this._generations[this._currGameStateIdx];
+    this.drawGrid();
   }
 
-  startSimulation(playerResources: Array<IPlayerResource>) {
-    this._interval = setInterval(() => {
-      if (this._currGameStateIdx < this._generations.length - 1) {
-        this._currGameStateIdx += 1;
-        this._cells = this._generations[this._currGameStateIdx];
-        this.drawGrid(playerResources);
+  runSimulation(generations: Array<number[][]>, ) {
+    this._generations = generations;
+    this._cells = generations[this._currGameStateIdx];
+    this.drawGrid();
+  }
+
+  startSimulation() {
+    this._simulationInterval = setInterval(() => {
+    if (this._currGameStateIdx < this._generations.length - 1) {
+      this._currGameStateIdx += 1;
+        this.renderSimulation();
       }
     }, 60);
   }
 
   stopSimulation() {
-    clearInterval(this._interval);
+    clearInterval(this._simulationInterval);
   }
 
-  skipSimulationBack(playerResources: Array<IPlayerResource>) {
-    clearInterval(this._interval);
+  skipSimulationBack() {
+    clearInterval(this._simulationInterval);
     this._currGameStateIdx = 0;
-    this._cells = this._generations[this._currGameStateIdx];
-    this.drawGrid(playerResources);
+    this.renderSimulation();
   }
 
-  skipSimulationForward(playerResources: Array<IPlayerResource>) {
-    clearInterval(this._interval);
+  skipSimulationForward() {
+    clearInterval(this._simulationInterval);
     this._currGameStateIdx = this._generations.length - 1;
-    this._cells = this._generations[this._currGameStateIdx];
-    this.drawGrid(playerResources);
+    this.renderSimulation();
   }
 
-  stepSimulationBack(playerResources: Array<IPlayerResource>) {
-    clearInterval(this._interval);
+  stepSimulationBack() {
+    clearInterval(this._simulationInterval);
     if(this._currGameStateIdx > 0) {
       this._currGameStateIdx -= 1;
-      this._cells = this._generations[this._currGameStateIdx];
-      this.drawGrid(playerResources);
+      this.renderSimulation();
     }
   }
 
-  stepSimulationForward(playerResources: Array<IPlayerResource>) {
-    clearInterval(this._interval);
+  stepSimulationForward() {
+    clearInterval(this._simulationInterval);
     if (this._currGameStateIdx < this._generations.length - 1) {
       this._currGameStateIdx += 1;
-      this._cells = this._generations[this._currGameStateIdx];
-      this.drawGrid(playerResources);
+      this.renderSimulation();
     }
   }
 
-
+  resetMatch() {
+    clearInterval(this._simulationInterval);
+    this._currGameStateIdx = 0;
+    this._cells = this.initializeCells();
+    this.clearCanvas();
+    this.drawGrid();
+  }
 
 
 
@@ -233,14 +234,14 @@ export class MatchService {
   * Events Handling Section.
   */
 
-  captureEvents(playerResources: Array<IPlayerResource>, playerNum: number) {
-    this.captureLeftClick(playerResources, playerNum);
-    this.captureLeftDrag(playerResources, playerNum);
-    this.captureRightDrag(playerResources);
-    this.captureMouseWheel(playerResources);
+  captureEvents(assignedNum: number) {
+    this.captureLeftClick(assignedNum);
+    this.captureLeftDrag(assignedNum);
+    this.captureRightDrag();
+    this.captureMouseWheel();
   }
 
-  captureLeftClick(playerResources: Array<IPlayerResource>, playerNum: number) {
+  captureLeftClick(assignedNum: number) {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .subscribe((res: MouseEvent) => {
@@ -254,20 +255,20 @@ export class MatchService {
 
           let gridTopLeft = this.getGridTopLeft();
 
-          let x = pos.x - gridTopLeft["0"];
-          let y = pos.y - gridTopLeft["1"];
+          let x = pos.x - gridTopLeft.x;
+          let y = pos.y - gridTopLeft.y;
 
           let i = Math.floor(y / this._cellSize);
           let j = Math.floor(x / this._cellSize);
 
           if (i >= 0 && i < this._dimensions.height && j >= 0 && j < this._dimensions.width) {
-            this.updateCell(i, j, playerNum, playerResources);
+            this.updateCell(i, j, assignedNum);
           }
         }
       });
   }
 
-  captureLeftDrag(playerResources: Array<IPlayerResource>, playerNum: number) {
+  captureLeftDrag(assignedNum: number) {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .switchMap((e) => {
@@ -287,20 +288,20 @@ export class MatchService {
 
           let gridTopLeft = this.getGridTopLeft();
 
-          let x = pos.x - gridTopLeft["0"];
-          let y = pos.y - gridTopLeft["1"];
+          let x = pos.x - gridTopLeft.x;
+          let y = pos.y - gridTopLeft.y;
 
           let i = Math.floor(y / this._cellSize);
           let j = Math.floor(x / this._cellSize);
 
           if (i >= 0 && i < this._dimensions.height && j >= 0 && j < this._dimensions.width) {
-            this.updateCell(i, j, playerNum, playerResources);
+            this.updateCell(i, j, assignedNum);
           }
         }
       });
   }
 
-  captureRightDrag(playerResources: Array<IPlayerResource>) {
+  captureRightDrag() {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .switchMap((e) => {
@@ -326,20 +327,20 @@ export class MatchService {
 
           this.clearCanvas();
           this.translateAndUpdate(currentPos.x - prevPos.x, currentPos.y - prevPos.y);
-          this.drawGrid(playerResources);
+          this.drawGrid();
         }
         
       });
   }
 
-  captureMouseWheel(playerResources: Array<IPlayerResource>) {
+  captureMouseWheel() {
     Observable
       .fromEvent(this._canvas, 'mousewheel')
       .subscribe((res: MouseWheelEvent) => {
         if(this._cellSize >= 10 || res.deltaY < 0) {
           this._cellSize += -res.deltaY / 50;
           this.clearCanvas();
-          this.drawGrid(playerResources);
+          this.drawGrid();
         }
       })
   }
