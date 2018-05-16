@@ -1,0 +1,89 @@
+---
+title: "Cellular Automata Wars"
+author: "Arhire Ionut"
+date: "15 mai 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+\newpage
+
+# I.Introduction
+
+## View
+
+My main inspiration for this project was my interest in cellular automata. I wanted to do something innovative,
+something that would appeal to anyone: CA enthusiasts, other programmers, as well as people without a computer science background.
+
+As such, a browser-based multiplayer game was the ideal solution. Furthermore, it was a new technological challenge for me as I never
+used websockets-based frameworks until now and never did a multiplayer game before, so I took it as my chance to try it, learn something new,
+and have fun with it.
+
+## Game Flow:
+
+* Step 1: Map Generation
+
+A simple 2D square grid of size, let’s say, 20x20, that is partitioned such as each player would get the same amount of territory.
+
+* Step 2: Initial Configurations
+
+Each player will activate cells as to create the most favorable initial configuration for himself. This process will finish after some time runs out.
+
+* Step 3: Automata Evolution
+
+We will now analyze a simplified case of automata evolution that can happen during the game:
+
+We will start from the following initial configuration: (Figure 1.).
+
+![Initial Configuration](images/init.png){width=100px}
+
+Here, player I has the orange cells and player II the blue ones.
+
+The rule we’ll be using is Conway’s Game of Life (GOF) (in the future, the game could accommodate multiple rules, 
+that can be applied to different cells, so as to make it more interesting and stop players from abusing the “best” patterns).
+
+1. Any live cell with fewer than two live neighbors dies, as if caused by under population.
+2. Any live cell with two or three live neighbors lives on to the next generation.
+3. Any live cell with more than three live neighbors dies, as if by overpopulation.
+4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+
+We can see in the picture that player I has a “Glider”, a pattern of GOF under the category: “spaceship” (for the way it “moves”). 
+Player II has a “Boat”, a “still life”.
+
+The initial configuration evolves as follows: (Figure 2.).
+
+![First Evolution Stages](images/first-evolution-stages.png){width=150px}
+
+The last panel shows how a cell can overwrite an opponent cell.
+
+At each iteration of the evolution, the transitions for a player are calculated as if the opponent’s cells are all dead.
+The only problem here would be the case when a cell wants to be activated with orange and blue at the same time. In this case the cell will remain dead.
+
+Getting back to the evolution, the next state is: (Figure 3.).
+
+![Fifth Generation](images/fifth-generation.png){width=100px}
+
+To analyze how we arrived at this state we will use this: (Figure 4.).
+
+![Evolution Analysis](images/evolution-analysis.png){width=100px}
+
+
+Cell 1: died because of rule 1  
+Cell 2: was born because of rule 4; neighbors: {1,5,6}  
+Cell 3: died because of rule 1  
+Cell 4: lived because of rule 2  
+Cell 5: died because of rule 3  
+Cell 6: was reborn as a blue cell because of rule 4; neighbors: {3,4,12}  
+Cell 7: stayed dead  
+Cell 8: lived because of rule 2  
+Cell 9: lived because of rule 2  
+Cell 10: lived because of rule 2  
+Cell 11: was born because of rule 4; neighbors: {5,6,10}  
+Cell 12: died because of rule 1  
+
+The next state is: (Figure 5.).
+
+![Last Generation](images/last-generation.png){width=100px}
+
+After this state follows simultaneous death for both players’ cells.
