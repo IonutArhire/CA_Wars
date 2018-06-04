@@ -8,8 +8,8 @@ namespace Services.Models
             this.Wins = wins;
         }
 
-        public string Color { get; set; }
+        public string Color { get; private set; }
 
-        public int Wins { get; set; }
+        public int Wins { get; private set; }
     }
 }

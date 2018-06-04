@@ -16,18 +16,18 @@ namespace Services.Models
             this.Configs = new List<float[,]>();
         }
 
-        public DimensionsModel Dimensions { get; set; }
+        public DimensionsModel Dimensions { get; private set; }
 
-        public int NrPlayers { get; set; }
+        public int NrPlayers { get; private set; }
 
-        public int MaxGenerations { get; set; }
+        public int MaxGenerations { get; private set; }
 
-        public List<PlayerModel> Players { get; set; }
+        public List<PlayerModel> Players { get; private set; }
         
-        public List<float[,]> Configs { get; set; }
+        public List<float[,]> Configs { get; private set; }
 
         public List<int> PlayerNumbers { get; set; }
 
-        public float[,] Map { get; set; }
+        public float[,] Map { get; private set; }
     }
 }

@@ -10,8 +10,8 @@ namespace Services.Models
             this.Winner = winner;
         }
 
-        public List<float[,]> Generations { get; set; }
+        public List<float[,]> Generations { get; private set; }
 
-        public int Winner { get; set; }
+        public int Winner { get; private set; }
     }
 }
