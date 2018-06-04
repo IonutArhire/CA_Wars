@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Services.Models;
+using static Services.MatrixService.MatrixService;
 
 namespace Services.PlayerResourcesService
 {
@@ -62,6 +63,25 @@ namespace Services.PlayerResourcesService
                 results.Add(playerResources);
             }
             return results;
+        }
+
+        public static float[,] GetPersonalizedMap(float[,] map, int assignedNumber) {
+            var pmap = CopyMatrix(map);
+
+            for (int i = 0; i < pmap.GetLength(0); i++)
+            {
+                for (int j = 0; j < pmap.GetLength(1); j++)
+                {
+                    if(pmap[i,j] == assignedNumber) {
+                        pmap[i,j] = -2;
+                    }
+                    else {
+                        pmap[i,j] = -1;
+                    }
+                }
+            }
+
+            return pmap;
         }
     }
 }

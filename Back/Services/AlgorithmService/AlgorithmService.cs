@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Services.Models;
+using static Services.MatrixService.MatrixService;
 
 namespace Services.AlgorithmService {
     public class AlgorithmService {
@@ -11,35 +12,21 @@ namespace Services.AlgorithmService {
         private static DimensionsModel _dimensions;
 
         private static int _nrPlayers = 2;
-
-        private static float[,] CreateEmptyMatrix(DimensionsModel dimensions) {
-            return new float[dimensions.Height, dimensions.Width];
-        }
-
-        private static float[,] CopyMatrix(float[,] matrix) {
-            var matrixHeight = matrix.GetLength(0);
-            var matrixWidth = matrix.GetLength(1);
-
-            var dimensions = new DimensionsModel(matrixHeight, matrixWidth);
-            var result = CreateEmptyMatrix(dimensions);
-
-            for (var i = 0; i < matrixHeight; i++) {
-                for (var j = 0; j < matrixWidth; j++) {
-                    result[i,j] = matrix[i,j];
-                }
-            }
-
-            return result;
-        }
-
+        
         private static float[,] CombineInitialConfigs(List<float[,]> configs, DimensionsModel dimensions) {
             float[,] result = CreateEmptyMatrix(dimensions);
 
             for (var i = 0; i < dimensions.Height; i++) {
                 for (var j = 0; j < dimensions.Width; j++) {
                     for (var k = 0; k < configs.Count; k++) {
-                        result[i,j] = configs[k][i,j];
-                        if (configs[k][i,j] != -1) {
+                        var val = configs[k][i,j];
+                        if (val == -2) {
+                            val = -1;
+                        }
+
+                        result[i,j] = val;
+
+                        if (val >= 0) {
                             break;
                         }
                     }
@@ -76,7 +63,7 @@ namespace Services.AlgorithmService {
                     var jAux = mod(j, _dimensions.Width);
 
                     var owner = Convert.ToInt32(_grid[iAux,jAux]);
-                    if (owner != -1) {
+                    if (owner >= 0) {
                         owners[owner] += 1;
                     }
                 }

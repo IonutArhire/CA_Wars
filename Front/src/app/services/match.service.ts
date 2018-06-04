@@ -32,6 +32,8 @@ export class MatchService {
 
   private _simulationInterval: NodeJS.Timer;
 
+  private _map: number[][];
+
   constructor() {
     this._marginBottom = 216;
     this._cellSize = 30;
@@ -45,12 +47,18 @@ export class MatchService {
   * Initialization and Rendering Section.
   */
 
-  public init(canvas: HTMLCanvasElement, toolbar: HTMLDivElement, dimensions: IDimensionsResources, playerResources: Array<IPlayerResource>): void {
+  public init(canvas: HTMLCanvasElement, 
+              toolbar: HTMLDivElement, 
+              dimensions: IDimensionsResources, 
+              playerResources: Array<IPlayerResource>,
+              map: number[][]): void {
+
     this._canvas = canvas;
     this._dimensions = dimensions;
     this._marginTop = toolbar.offsetHeight;
     this._playerResources = playerResources;
-    this._cells = this.initializeCells();
+    this._map = map;
+    this._cells = map;
 
     let width = this._canvas.width = window.innerWidth;
     let height = this._canvas.height = window.innerHeight - this._marginTop - this._marginBottom;
@@ -63,17 +71,6 @@ export class MatchService {
     this._ctx.lineWidth = 1.0;
 
     this.disableContextMenu();
-  }
-
-  public initializeCells(): number[][] {
-    let cells = []
-    for (var i: number = 0; i < this._dimensions.height; i++) {
-      cells[i] = [];
-      for (var j: number = 0; j < this._dimensions.width; j++) {
-        cells[i][j] = -1;
-      }
-    }
-    return cells;
   }
 
   public getCells(): number[][] {
@@ -90,20 +87,27 @@ export class MatchService {
     let x = base.x + j * this._cellSize;
     let y = base.y + i * this._cellSize;
     let cellValue = this._cells[i][j]
-    if (cellValue !== -1) {
-      this._ctx.fillStyle = this._playerResources[cellValue].color;
-    }
-    else {
+
+    if (cellValue == -1) {
       this._ctx.fillStyle = "white";
     }
+    else if(cellValue == -2) {
+      this._ctx.fillStyle = "grey";
+    }
+    else {
+      this._ctx.fillStyle = this._playerResources[cellValue].color;
+    }
+
     this._ctx.fillRect(x, y, this._cellSize, this._cellSize);
     this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
   }
 
   public updateCell(i: number, j: number, assignedNum: number): void {
+    if (this._cells[i][j] != -2) {
       this._cells[i][j] = assignedNum;
-      let base = this.getGridBasePoint();
-      this.drawCell(base, i, j);
+    }
+    let base = this.getGridBasePoint();
+    this.drawCell(base, i, j);
   }
 
   public drawGrid(): void {
@@ -223,7 +227,7 @@ export class MatchService {
   public resetMatch(): void {
     clearInterval(this._simulationInterval);
     this._currGameStateIdx = 0;
-    this._cells = this.initializeCells();
+    this._cells = this._map;
     this.clearCanvas();
     this.drawGrid();
   }

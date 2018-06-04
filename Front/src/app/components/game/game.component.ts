@@ -9,8 +9,8 @@ import 'rxjs/add/observable/of'
 import { MatchService } from '../../services/match.service';
 
 import { IPlayerResource } from '../../resources/player-resources';
-import { IResources } from '../../resources/resources';
 import { IDimensionsResources } from '../../resources/dimensions-resources';
+import { IGameResources } from '../../resources/game-resources';
 
 @Component({
   selector: 'app-game',
@@ -37,6 +37,8 @@ export class GameComponent {
   private _isPlaying: boolean;
   private _hasGameArrived: boolean;
   private _hasSent: boolean;
+
+  private _map: number[][];
 
 
   constructor(private _matchService: MatchService, private _route: ActivatedRoute) {
@@ -86,10 +88,11 @@ export class GameComponent {
     this._hubConnection.invoke('SendResources', this._gameKey);
   }
 
-  public resources(resources: IResources): void {
-    this._playerResources = resources.game.players;
+  public resources(resources: IGameResources): void {
+    this._playerResources = resources.players;
     this._assignedNum = resources.assignedNumber;
-    this._dimensions = resources.game.dimensions;
+    this._dimensions = resources.dimensions;
+    this._map = resources.map;
     this.setResourcesStatus(true);
   }
 
@@ -113,7 +116,7 @@ export class GameComponent {
   public ngAfterViewInit(): void {
     this.getResourcesStatus().subscribe((_connected) => {
       if (_connected) {//we need to connect to the server, get the player resources and have the view initialized before starting the UI
-        this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions, this._playerResources);
+        this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions, this._playerResources, this._map);
         this._matchService.drawGrid();
         this._matchService.captureEvents(this._assignedNum);
       }
@@ -126,6 +129,7 @@ export class GameComponent {
 
   public resetMatch(): void {
     this._matchService.resetMatch();
+    this._isPlaying = false;
     this._hasGameArrived = false;
     this._hasSent = false;
   }

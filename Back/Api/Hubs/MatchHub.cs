@@ -7,6 +7,7 @@ using Services.Models;
 using Services.GameResourcesService;
 using Services.AlgorithmService;
 using Services.PlayerResourcesService;
+using Api.Dtos;
 
 namespace Api.Hubs {
     public class MatchHub : Hub 
@@ -14,8 +15,8 @@ namespace Api.Hubs {
         private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
 
         private void TestingInitializations() {
-            var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100);
-            var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 200);
+            var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 10);
+            var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 100);
 
             _games.AddOrUpdate("1", test_gameModel1, (key, gamemodel) => { return gamemodel;});
             _games.AddOrUpdate("2", test_gameModel2, (key, gamemodel) => { return gamemodel;});
@@ -33,7 +34,8 @@ namespace Api.Hubs {
         public async Task SendResources(string gameKey) {
             var game = _games[gameKey];
             var assignedNumber = PlayerResourcesService.AssignNumber(game);
-            var resources = new ResourcesModel(game, assignedNumber);
+            var personalizedMap = PlayerResourcesService.GetPersonalizedMap(game.Map, assignedNumber);
+            var resources = new GameModelDto(game.Dimensions, assignedNumber, game.NrPlayers, game.MaxGenerations, game.Players, personalizedMap);
 
             await Clients.Caller.SendAsync("Resources", resources);
         }

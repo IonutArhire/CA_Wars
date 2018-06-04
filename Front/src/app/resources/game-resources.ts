@@ -6,4 +6,5 @@ export interface IGameResources {
     nrPlayers: number;
     players: Array<IPlayerResource>
     assignedNumber: number;
+    map: number[][];
 }
