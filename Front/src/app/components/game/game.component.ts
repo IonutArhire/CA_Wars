@@ -70,47 +70,47 @@ export class GameComponent {
       .catch(err => console.log(err));
   }
 
-  getResourcesStatus(): Observable<boolean> {
+  public getResourcesStatus(): Observable<boolean> {
     return this._resourcesStatus.asObservable();
   }
 
-  setResourcesStatus(newValue: boolean) {
+  public setResourcesStatus(newValue: boolean): void {
     this._hasResources = newValue;
     this._resourcesStatus.next(newValue);
   }
 
-  connected(data) {
+  public connected(data): void {
     console.log(data);
     console.log('connected');
 
     this._hubConnection.invoke('SendResources', this._gameKey);
   }
 
-  resources(resources: IResources) {
+  public resources(resources: IResources): void {
     this._playerResources = resources.game.players;
     this._assignedNum = resources.assignedNumber;
     this._dimensions = resources.game.dimensions;
     this.setResourcesStatus(true);
   }
 
-  disconnected(data) {
+  public disconnected(data): void {
     console.log(data);
     console.log('disconnected');
   }
 
-  game(data) {
+  public game(data): void {
     this._playerResources[data.winner].wins += 1;
     this._matchService.updatePlayerResources(this._playerResources);
     this._matchService.runSimulation(data.generations);
     this._hasGameArrived = true;
   }
 
-  sendConfig() {
+  public sendConfig(): void {
     this._hubConnection.invoke('SendConfig', this._gameKey, this._matchService.getCells());
     this._hasSent = true;
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit(): void {
     this.getResourcesStatus().subscribe((_connected) => {
       if (_connected) {//we need to connect to the server, get the player resources and have the view initialized before starting the UI
         this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions, this._playerResources);
@@ -120,42 +120,42 @@ export class GameComponent {
     });
   }
 
-  onResize(event) {
+  public onResize(event): void {
     this._matchService.resizeCanvas(event.target.innerWidth, event.target.innerHeight);
   }
 
-  resetMatch() {
+  public resetMatch(): void {
     this._matchService.resetMatch();
     this._hasGameArrived = false;
     this._hasSent = false;
   }
 
-  stopSimulation() {
+  public stopSimulation(): void {
     this._isPlaying = false;
     this._matchService.stopSimulation();
   }
 
-  startSimulation() {
+  public startSimulation(): void {
     this._isPlaying = true;
     this._matchService.startSimulation();
   }
 
-  skipSimulationBack() {
+  public skipSimulationBack(): void {
     this._isPlaying = false;
     this._matchService.skipSimulationBack();
   }
 
-  skipSimulationForward() {
+  public skipSimulationForward(): void {
     this._isPlaying = false;
     this._matchService.skipSimulationForward();
   }
 
-  stepSimulationBack() {
+  public stepSimulationBack(): void {
     this._isPlaying = false;
     this._matchService.stepSimulationBack();
   }
 
-  stepSimulationForward() {
+  public stepSimulationForward(): void {
     this._isPlaying = false;
     this._matchService.stepSimulationForward();
   }

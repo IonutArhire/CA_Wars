@@ -11,7 +11,7 @@ output:
 
 # I.Introduction
 
-## View
+## Idea and motivation:
 
 My main inspiration for this project was my interest in cellular automata. I wanted to do something innovative,
 something that would appeal to anyone: CA enthusiasts, other programmers, as well as people without a computer science background.
@@ -28,7 +28,7 @@ A simple 2D square grid of size, let’s say, 20x20, that is partitioned such as
 
 * Step 2: Initial Configurations
 
-Each player will activate cells as to create the most favorable initial configuration for himself. This process will finish after some time runs out.
+Each player will activate cells as to create the most favorable initial configuration for himself.
 
 * Step 3: Automata Evolution
 
@@ -40,8 +40,10 @@ We will start from the following initial configuration: (Figure 1.).
 
 Here, player I has the orange cells and player II the blue ones.
 
-The rule we’ll be using is Conway’s Game of Life (GOF) (in the future, the game could accommodate multiple rules, 
+The cellular automata we’ll be using is Conway’s Game of Life (GOF) (in the future, the game could accommodate multiple CAs, 
 that can be applied to different cells, so as to make it more interesting and stop players from abusing the “best” patterns).
+
+GOF consists of the following transitions/rules:  
 
 1. Any live cell with fewer than two live neighbors dies, as if caused by under population.
 2. Any live cell with two or three live neighbors lives on to the next generation.
@@ -53,7 +55,9 @@ Player II has a “Boat”, a “still life”.
 
 The initial configuration evolves as follows: (Figure 2.).
 
-![First Evolution Stages](images/first-evolution-stages.png){width=150px}
+![First Evolution Stages](images/first-evolution-stages.png){width=100px}
+
+\newpage
 
 The last panel shows how a cell can overwrite an opponent cell.
 
@@ -81,6 +85,8 @@ Cell 9: lived because of rule 2
 Cell 10: lived because of rule 2  
 Cell 11: was born because of rule 4; neighbors: {5,6,10}  
 Cell 12: died because of rule 1  
+
+\newpage
 
 The next state is: (Figure 5.).
 

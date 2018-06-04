@@ -45,7 +45,7 @@ export class MatchService {
   * Initialization and Rendering Section.
   */
 
-  init(canvas: HTMLCanvasElement, toolbar: HTMLDivElement, dimensions: IDimensionsResources, playerResources: Array<IPlayerResource>) {
+  public init(canvas: HTMLCanvasElement, toolbar: HTMLDivElement, dimensions: IDimensionsResources, playerResources: Array<IPlayerResource>): void {
     this._canvas = canvas;
     this._dimensions = dimensions;
     this._marginTop = toolbar.offsetHeight;
@@ -65,7 +65,7 @@ export class MatchService {
     this.disableContextMenu();
   }
 
-  initializeCells(): number[][] {
+  public initializeCells(): number[][] {
     let cells = []
     for (var i: number = 0; i < this._dimensions.height; i++) {
       cells[i] = [];
@@ -76,17 +76,17 @@ export class MatchService {
     return cells;
   }
 
-  getCells(): number[][] {
+  public getCells(): number[][] {
     return this._cells;
   }
   
-  disableContextMenu() {
+  public disableContextMenu(): void {
     this._canvas.oncontextmenu = function (e) {
       e.preventDefault();
     };
   }
 
-  drawCell(base: Point, i: number, j: number) {
+  public drawCell(base: Point, i: number, j: number): void {
     let x = base.x + j * this._cellSize;
     let y = base.y + i * this._cellSize;
     let cellValue = this._cells[i][j]
@@ -100,13 +100,13 @@ export class MatchService {
     this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
   }
 
-  updateCell(i: number, j: number, assignedNum: number) {
+  public updateCell(i: number, j: number, assignedNum: number): void {
       this._cells[i][j] = assignedNum;
       let base = this.getGridBasePoint();
       this.drawCell(base, i, j);
   }
 
-  drawGrid() {
+  public drawGrid(): void {
     let base = this.getGridBasePoint();
 
     for (var i: number = 0; i < this._dimensions.height; i++) {
@@ -116,17 +116,17 @@ export class MatchService {
     }
   }
 
-  getGridBasePoint(): Point {
+  public getGridBasePoint(): Point {
     return new Point(0 - this._dimensions.width / 2 * this._cellSize,
                      0 - this._dimensions.height / 2 * this._cellSize);
   }
 
-  getGridTopLeft(): Point {
+  public getGridTopLeft(): Point {
     return new Point(this._center["0"] - this._dimensions.width / 2 * this._cellSize,
                      this._center["1"] - this._dimensions.height / 2 * this._cellSize);
   }
 
-  clearCanvas() {
+  public clearCanvas(): void {
     this._ctx.save();
 
     this._ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -135,20 +135,20 @@ export class MatchService {
     this._ctx.restore();
   }
 
-  translateAndUpdate(x: number, y: number) {
+  public translateAndUpdate(x: number, y: number): void {
     this._ctx.translate(x, y);
     this._center["0"] += x;
     this._center["1"] += y;
   }
 
-  updateCenter(width: number, height: number) {
+  public updateCenter(width: number, height: number): void {
     this._center["0"] = width / 2;
     this._center["1"] = height / 2;
     
     this._ctx.translate(this._center["0"], this._center["1"]);
   }
 
-  resizeCanvas(windowWidth: number, windowHeight: number) {
+  public resizeCanvas(windowWidth: number, windowHeight: number): void {
     this.clearCanvas();
 
     let width = this._canvas.width = windowWidth;
@@ -158,7 +158,7 @@ export class MatchService {
     this.drawGrid();
   }
 
-  updatePlayerResources(playerResources: Array<IPlayerResource>) {
+  public updatePlayerResources(playerResources: Array<IPlayerResource>): void {
     this._playerResources = playerResources;
   }
 
@@ -168,18 +168,18 @@ export class MatchService {
   * Game Simulation Section.
   */
 
-  renderSimulation() {
+  public renderSimulation(): void {
     this._cells = this._generations[this._currGameStateIdx];
     this.drawGrid();
   }
 
-  runSimulation(generations: Array<number[][]>, ) {
+  public runSimulation(generations: Array<number[][]>): void {
     this._generations = generations;
     this._cells = generations[this._currGameStateIdx];
     this.drawGrid();
   }
 
-  startSimulation() {
+  public startSimulation(): void {
     this._simulationInterval = setInterval(() => {
     if (this._currGameStateIdx < this._generations.length - 1) {
       this._currGameStateIdx += 1;
@@ -188,23 +188,23 @@ export class MatchService {
     }, 60);
   }
 
-  stopSimulation() {
+  public stopSimulation(): void {
     clearInterval(this._simulationInterval);
   }
 
-  skipSimulationBack() {
+  public skipSimulationBack(): void {
     clearInterval(this._simulationInterval);
     this._currGameStateIdx = 0;
     this.renderSimulation();
   }
 
-  skipSimulationForward() {
+  public skipSimulationForward(): void {
     clearInterval(this._simulationInterval);
     this._currGameStateIdx = this._generations.length - 1;
     this.renderSimulation();
   }
 
-  stepSimulationBack() {
+  public stepSimulationBack(): void {
     clearInterval(this._simulationInterval);
     if(this._currGameStateIdx > 0) {
       this._currGameStateIdx -= 1;
@@ -212,7 +212,7 @@ export class MatchService {
     }
   }
 
-  stepSimulationForward() {
+  public stepSimulationForward(): void {
     clearInterval(this._simulationInterval);
     if (this._currGameStateIdx < this._generations.length - 1) {
       this._currGameStateIdx += 1;
@@ -220,7 +220,7 @@ export class MatchService {
     }
   }
 
-  resetMatch() {
+  public resetMatch(): void {
     clearInterval(this._simulationInterval);
     this._currGameStateIdx = 0;
     this._cells = this.initializeCells();
@@ -234,14 +234,14 @@ export class MatchService {
   * Events Handling Section.
   */
 
-  captureEvents(assignedNum: number) {
+  public captureEvents(assignedNum: number): void {
     this.captureLeftClick(assignedNum);
     this.captureLeftDrag(assignedNum);
     this.captureRightDrag();
     this.captureMouseWheel();
   }
 
-  captureLeftClick(assignedNum: number) {
+  public captureLeftClick(assignedNum: number): void {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .subscribe((res: MouseEvent) => {
@@ -268,7 +268,7 @@ export class MatchService {
       });
   }
 
-  captureLeftDrag(assignedNum: number) {
+  public captureLeftDrag(assignedNum: number): void {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .switchMap((e) => {
@@ -301,7 +301,7 @@ export class MatchService {
       });
   }
 
-  captureRightDrag() {
+  public captureRightDrag(): void {
     Observable
       .fromEvent(this._canvas, 'mousedown')
       .switchMap((e) => {
@@ -333,7 +333,7 @@ export class MatchService {
       });
   }
 
-  captureMouseWheel() {
+  public captureMouseWheel(): void {
     Observable
       .fromEvent(this._canvas, 'mousewheel')
       .subscribe((res: MouseWheelEvent) => {
