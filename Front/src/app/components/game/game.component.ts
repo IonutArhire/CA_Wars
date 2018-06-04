@@ -1,9 +1,9 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { HubConnection } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { ActivatedRoute, Event } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import 'rxjs/add/observable/of'
 
 import { MatchService } from '../../services/match.service';
@@ -56,7 +56,7 @@ export class GameComponent {
   ngOnInit() {
     this._gameKey = parseInt(this._route.snapshot.paramMap.get('game-key'));
 
-    this._hubConnection = new HubConnection('http://localhost:5000/match');
+    this._hubConnection = new HubConnectionBuilder().withUrl('http://localhost:5000/match').build();
 
     this._hubConnection.on('Connected', (data) => {this.connected(data)});
 

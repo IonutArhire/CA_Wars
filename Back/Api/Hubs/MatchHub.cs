@@ -14,6 +14,10 @@ namespace Api.Hubs {
     {
         private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
 
+        public MatchHub(IDep d) {
+            d.Duck();
+        }
+
         private void TestingInitializations() {
             var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 10);
             var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 100);

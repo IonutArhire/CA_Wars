@@ -34,23 +34,25 @@ namespace Api {
                         .AllowCredentials();
                 });
             });
-            services.AddSignalR ();
+            services.AddSignalR();
+
+            services.AddSingleton<IDep, Dep>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env) {
-            if (env.IsDevelopment ()) {
-                app.UseDeveloperExceptionPage ();
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+            if (env.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
             } else {
-                app.UseHsts ();
+                app.UseHsts();
             }
 
             app.UseCors("AllowAny");
 
-            app.UseMvc ();
+            app.UseMvc();
 
             app.UseSignalR (routes => {
-                routes.MapHub<MatchHub> ("/match");
+                routes.MapHub<MatchHub>("/match");
             });
         }
     }
