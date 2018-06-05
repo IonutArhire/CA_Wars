@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Api.Hubs;
+using Api.Mappings;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +15,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Services.AlgorithmService;
+using Services.GameResourcesService;
+using Services.MapGenerationService;
+using Services.MatchesManagerService;
+using Services.MatrixService;
 using Services.PlayerResourcesService;
 
 namespace Api {
@@ -35,8 +42,14 @@ namespace Api {
                 });
             });
             services.AddSignalR();
+            services.AddAutoMapper();
 
-            services.AddSingleton<IDep, Dep>();
+            services.AddSingleton<IGameResourcesService, GameResourcesService>();
+            services.AddSingleton<IPlayerResourcesService, PlayerResourcesService>();
+            services.AddSingleton<IAlgorithmService, AlgorithmService>();
+            services.AddSingleton<IMatrixService, MatrixService>();
+            services.AddSingleton<IMapGenerationService, MapGenerationService>();
+            services.AddSingleton<IMatchesManagerService, MatchesManagerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

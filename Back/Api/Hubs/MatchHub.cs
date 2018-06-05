@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
@@ -7,23 +5,42 @@ using Services.Models;
 using Services.GameResourcesService;
 using Services.AlgorithmService;
 using Services.PlayerResourcesService;
+using Services.MatchesManagerService;
 using Api.Dtos;
+using AutoMapper;
 
 namespace Api.Hubs {
     public class MatchHub : Hub 
     {
-        private static ConcurrentDictionary<string, GameModel> _games = new ConcurrentDictionary<string, GameModel> (StringComparer.OrdinalIgnoreCase);
+        private IGameResourcesService _gameResourcesService;
 
-        public MatchHub(IDep d) {
-            d.Duck();
+        private IPlayerResourcesService _playerResourcesService;
+
+        private IAlgorithmService _algorithmService;
+
+        private IMatchesManagerService _matchesManagerService;
+
+        private IMapper _mapper;
+
+        public MatchHub(IGameResourcesService gameResourcesService,
+                        IPlayerResourcesService playerResourcesService,
+                        IAlgorithmService algorithmService,
+                        IMatchesManagerService matchesManagerService,
+                        IMapper mapper) {
+
+            this._gameResourcesService = gameResourcesService;
+            this._playerResourcesService = playerResourcesService;
+            this._algorithmService = algorithmService;
+            this._matchesManagerService = matchesManagerService;
+            this._mapper = mapper;
         }
 
         private void TestingInitializations() {
-            var test_gameModel1 = GameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 10);
-            var test_gameModel2 = GameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 100);
+            var test_gameModel1 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 10);
+            var test_gameModel2 = _gameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 100);
 
-            _games.AddOrUpdate("1", test_gameModel1, (key, gamemodel) => { return gamemodel;});
-            _games.AddOrUpdate("2", test_gameModel2, (key, gamemodel) => { return gamemodel;});
+            this._matchesManagerService.Create("1", test_gameModel1);
+            this._matchesManagerService.Create("2", test_gameModel2);
         }
 
         public override async Task OnConnectedAsync() {
@@ -31,37 +48,31 @@ namespace Api.Hubs {
             await Clients.Caller.SendAsync("Connected", Context.ConnectionId);
         }
 
-        public override async Task OnDisconnectedAsync(Exception ex) {
+        public override async Task OnDisconnectedAsync(System.Exception ex) {
             await Clients.All.SendAsync("Disconnected", Context.ConnectionId);
         }
 
         public async Task SendResources(string gameKey) {
-            var game = _games[gameKey];
-            var assignedNumber = PlayerResourcesService.AssignNumber(game);
-            var personalizedMap = PlayerResourcesService.GetPersonalizedMap(game.Map, assignedNumber);
-            var resources = new GameModelDto(game.Dimensions, assignedNumber, game.NrPlayers, game.MaxGenerations, game.Players, personalizedMap);
+            var game = this._matchesManagerService.GetGameModel(gameKey);
+            var gameModelDto = this._mapper.Map<GameModelDto>(game);
 
-            await Clients.Caller.SendAsync("Resources", resources);
+            var assignedNumber = this._playerResourcesService.AssignNumber(game);
+            gameModelDto.AssignedNumber = assignedNumber;
+            var personalizedMap = this._playerResourcesService.GetPersonalizedMap(game.Map, assignedNumber);
+            gameModelDto.Map = personalizedMap;
+
+            await Clients.Caller.SendAsync("Resources", gameModelDto);
         }
 
         public async Task SendConfig(string gameKey, float[,] playerConfig) {
-            var game = _games[gameKey];
-            game.Configs.Add(playerConfig);
+            var game = this._matchesManagerService.GetGameModel(gameKey);
+            game.InitialConfigs.Add(playerConfig);
 
-            if (game.Configs.Count == game.NrPlayers) {
-                var counter = 0;
-                
-                List<float[,]> generations = new List<float[,]>();
-                generations.Add(AlgorithmService.Initialize(game.Configs, game.Dimensions));
-                while (!AlgorithmService.isGridEmpty() && counter != game.MaxGenerations) {
-                    generations.Add(AlgorithmService.RunNextGen());
-                    counter++;
-                }
-
-                var result = new GameResultModel(generations, AlgorithmService.getWinner());
+            if (game.InitialConfigs.Count == game.NrPlayers) {
+                var result = this._algorithmService.RunGame(game);
                 
                 await Clients.All.SendAsync("Game", result);
-                game.Configs.Clear();
+                game.InitialConfigs.Clear();
             }
         }
     }

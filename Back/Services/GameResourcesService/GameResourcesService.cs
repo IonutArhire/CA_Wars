@@ -1,17 +1,28 @@
 using System;
 using System.Collections.Generic;
 using Services.Models;
-using static Services.PlayerResourcesService.PlayerResourcesService;
-using static Services.MapGenerationService.MapGenerationService;
+using Services.MapGenerationService;
+using Services.PlayerResourcesService;
 
 namespace Services.GameResourcesService
 {
-    public static class GameResourcesService
+    public class GameResourcesService: IGameResourcesService
     {
-        public static GameModel GetGameResources(DimensionsModel dimensions, int nrPlayers, int maxGenerations) {
-            var playerResources = GetPlayerResources(nrPlayers);
-            var playerNumbers = InitPlayerNumbers(nrPlayers);
-            var gameMap = RandomGen(dimensions, nrPlayers);
+        private IMapGenerationService _mapGenerationService;
+
+        private IPlayerResourcesService _playerResourcesService;
+
+        public GameResourcesService(IMapGenerationService mapGenerationService,
+                                    IPlayerResourcesService playerResourcesService) {
+            
+            this._mapGenerationService = mapGenerationService;
+            this._playerResourcesService = playerResourcesService;
+        }
+
+        public GameModel GetGameResources(DimensionsModel dimensions, int nrPlayers, int maxGenerations) {
+            var playerResources = this._playerResourcesService.GetPlayerResources(nrPlayers);
+            var playerNumbers = this._playerResourcesService.InitPlayerNumbers(nrPlayers);
+            var gameMap = this._mapGenerationService.RandomGen(dimensions, nrPlayers);
             var result = new GameModel(dimensions, nrPlayers, maxGenerations, playerResources, playerNumbers, gameMap);
 
             return result;

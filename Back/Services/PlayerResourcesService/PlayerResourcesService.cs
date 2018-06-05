@@ -1,13 +1,28 @@
 using System;
 using System.Collections.Generic;
+using Services.MatrixService;
 using Services.Models;
-using static Services.MatrixService.MatrixService;
 
 namespace Services.PlayerResourcesService
 {
-    public class PlayerResourcesService
+    public class PlayerResourcesService: IPlayerResourcesService
     {
-        public static List<string> InitializeColors() {
+        private IMatrixService _matrixService;
+
+        public PlayerResourcesService(IMatrixService matrixService) {
+            this._matrixService = matrixService;
+        }
+        
+        private string GetNewColor(List<string> colors) {
+            var randomizer = new Random();
+            var idx = randomizer.Next(colors.Count);
+            var result = colors[idx];
+            colors.RemoveAt(idx);
+
+            return result;
+        }
+
+        public List<string> InitializeColors() {
             return new List<string>()
             {   
                 "#f28910", //orange
@@ -17,16 +32,7 @@ namespace Services.PlayerResourcesService
             };
         }
 
-        private static string GetNewColor(List<string> colors) {
-            var randomizer = new Random();
-            var idx = randomizer.Next(colors.Count);
-            var result = colors[idx];
-            colors.RemoveAt(idx);
-
-            return result;
-        }
-
-        public static List<int> InitPlayerNumbers(int nrPlayers) {
+        public List<int> InitPlayerNumbers(int nrPlayers) {
             var result = new List<int>();
             for (int i = 0; i < nrPlayers; i++)
             {
@@ -35,7 +41,7 @@ namespace Services.PlayerResourcesService
             return result;
         }
 
-        public static int AssignNumber(GameModel game) {
+        public int AssignNumber(GameModel game) {
             var playerNumbers = game.PlayerNumbers;
 
             var randomizer = new Random();
@@ -51,7 +57,7 @@ namespace Services.PlayerResourcesService
             return result;
         }
         
-        public static List<PlayerModel> GetPlayerResources(int nrPlayers) {
+        public List<PlayerModel> GetPlayerResources(int nrPlayers) {
             var colors = InitializeColors();
             var results = new List<PlayerModel>();
             for (int i = 0; i < nrPlayers; i++)
@@ -65,8 +71,8 @@ namespace Services.PlayerResourcesService
             return results;
         }
 
-        public static float[,] GetPersonalizedMap(float[,] map, int assignedNumber) {
-            var pmap = CopyMatrix(map);
+        public float[,] GetPersonalizedMap(float[,] map, int assignedNumber) {
+            var pmap = this._matrixService.CopyMatrix(map);
 
             for (int i = 0; i < pmap.GetLength(0); i++)
             {

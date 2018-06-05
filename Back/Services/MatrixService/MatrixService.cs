@@ -2,13 +2,13 @@ using Services.Models;
 
 namespace Services.MatrixService
 {
-    public static class MatrixService
+    public class MatrixService: IMatrixService
     {
-        public static float[,] CreateEmptyMatrix(DimensionsModel dimensions) {
+        public float[,] CreateEmptyMatrix(DimensionsModel dimensions) {
             return new float[dimensions.Height, dimensions.Width];
         }
 
-        public static float[,] CopyMatrix(float[,] matrix) {
+        public float[,] CopyMatrix(float[,] matrix) {
             var matrixHeight = matrix.GetLength(0);
             var matrixWidth = matrix.GetLength(1);
 

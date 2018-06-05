@@ -1,13 +1,20 @@
 using System;
+using Services.MatrixService;
 using Services.Models;
 using static Services.MatrixService.MatrixService;
 
 namespace Services.MapGenerationService
 {
-    public static class MapGenerationService
+    public class MapGenerationService: IMapGenerationService
     {
-        public static float[,] RandomGen(DimensionsModel dimensions, int nrPlayers) {
-            var map = CreateEmptyMatrix(dimensions);
+        private IMatrixService _matrixService;
+
+        public MapGenerationService(IMatrixService matrixService) {
+            this._matrixService = matrixService;
+        }
+
+        public float[,] RandomGen(DimensionsModel dimensions, int nrPlayers) {
+            var map = this._matrixService.CreateEmptyMatrix(dimensions);
             var randomizer = new Random();
 
             for (int i = 0; i < map.GetLength(0); i++)

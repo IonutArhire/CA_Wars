@@ -1,20 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Services.MatrixService;
 using Services.Models;
-using static Services.MatrixService.MatrixService;
 
 namespace Services.AlgorithmService {
-    public class AlgorithmService {
+    public class AlgorithmService: IAlgorithmService
+    {
+        private float[,] _grid;
 
-        private static float[,] _grid;
+        private DimensionsModel _dimensions;
 
-        private static DimensionsModel _dimensions;
+        private int _nrPlayers = 2;
 
-        private static int _nrPlayers = 2;
+        private IMatrixService _matrixService;
+
+        public AlgorithmService(IMatrixService matrixService) {
+            this._matrixService = matrixService;
+        }
         
-        private static float[,] CombineInitialConfigs(List<float[,]> configs, DimensionsModel dimensions) {
-            float[,] result = CreateEmptyMatrix(dimensions);
+        private float[,] CombineInitialConfigs(List<float[,]> configs, DimensionsModel dimensions) {
+            float[,] result = this._matrixService.CreateEmptyMatrix(dimensions);
 
             for (var i = 0; i < dimensions.Height; i++) {
                 for (var j = 0; j < dimensions.Width; j++) {
@@ -35,7 +41,7 @@ namespace Services.AlgorithmService {
             return result;
         }
 
-        private static List<float> createPlayerArray() {
+        private List<float> createPlayerArray() {
             var result = new List<float>();
 
             for (int i = 0; i < _nrPlayers; i++) {
@@ -45,7 +51,7 @@ namespace Services.AlgorithmService {
             return result;
         }
 
-        private static List<float> getNeighbors(int x, int z) {
+        private List<float> getNeighbors(int x, int z) {
             int mod(int l, int r) {
                 return (l % r + r) % r;
             }
@@ -71,18 +77,18 @@ namespace Services.AlgorithmService {
             return owners;
         }
 
-        public static float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions) {
+        private float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions) {
             _grid = CombineInitialConfigs(configs, dimensions);
             _dimensions = dimensions;
 
             return _grid;
         }
 
-        public static float[,] RunNextGen() {
+        private float[,] RunNextGen() {
             var GOF = new Dictionary<bool, List<float>> () { { false, new List<float> () { { 3 } } }, { true, new List<float> () { { 2 }, { 3 } } }
                 };
 
-            var resultGrid = CopyMatrix(_grid);
+            var resultGrid = this._matrixService.CopyMatrix(_grid);
 
             for (var i = 0; i < _dimensions.Height; i++) {
                 for (var j = 0; j < _dimensions.Width; j++) {
@@ -104,11 +110,11 @@ namespace Services.AlgorithmService {
                 }
             }
 
-            _grid = CopyMatrix(resultGrid);
+            _grid = this._matrixService.CopyMatrix(resultGrid);
             return _grid;
         }
 
-        public static bool isGridEmpty() {
+        private bool isGridEmpty() {
             for (int i = 0; i < _dimensions.Height; i++)
             {
                 for (int j = 0; j < _dimensions.Width; j++)
@@ -122,7 +128,7 @@ namespace Services.AlgorithmService {
             return true;
         }
 
-        public static int getWinner() {
+        private int getWinner() {
             var owners = createPlayerArray();
 
             for (int i = 0; i < _dimensions.Height; i++)
@@ -144,6 +150,19 @@ namespace Services.AlgorithmService {
             } else {
                 return maxIndex;
             }
+        }
+
+        public GameResultModel RunGame(GameModel game) {
+            var counter = 0;
+                
+            List<float[,]> generations = new List<float[,]>();
+            generations.Add(this.Initialize(game.InitialConfigs, game.Dimensions));
+            while (!this.isGridEmpty() && counter != game.MaxGenerations) {
+                generations.Add(this.RunNextGen());
+                counter++;
+            }
+
+            return new GameResultModel(generations, this.getWinner());
         }
     }
 }
