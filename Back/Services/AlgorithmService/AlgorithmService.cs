@@ -18,15 +18,14 @@ namespace Services.AlgorithmService {
 
             for (var i = 0; i < dimensions.Height; i++) {
                 for (var j = 0; j < dimensions.Width; j++) {
+
+                    result[i,j] = -1;
+
                     for (var k = 0; k < configs.Count; k++) {
-                        var val = configs[k][i,j];
-                        if (val == -2) {
-                            val = -1;
-                        }
+                        var cellValue = configs[k][i,j];
 
-                        result[i,j] = val;
-
-                        if (val >= 0) {
+                        if (cellValue >= 0) {
+                            result[i,j] = cellValue;
                             break;
                         }
                     }
@@ -114,7 +113,7 @@ namespace Services.AlgorithmService {
             {
                 for (int j = 0; j < _dimensions.Width; j++)
                 {
-                    if (_grid[i,j] != -1) {
+                    if (_grid[i,j] >= 0) {
                         return false;
                     }
                 }
@@ -131,7 +130,7 @@ namespace Services.AlgorithmService {
                 for (int j = 0; j < _dimensions.Width; j++)
                 {
                     var owner = Convert.ToInt32(_grid[i,j]);
-                    if (owner != -1) {
+                    if (owner >= 0) {
                         owners[owner] += 1;
                     }
                 }
