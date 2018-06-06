@@ -92,7 +92,7 @@ export class MatchService {
       this._ctx.fillStyle = "white";
     }
     else if(cellValue == -2) {
-      this._ctx.fillStyle = "grey";
+      this._ctx.fillStyle = "#bcbcbc";
     }
     else {
       this._ctx.fillStyle = this._playerResources[cellValue].color;

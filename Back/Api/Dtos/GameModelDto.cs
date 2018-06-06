@@ -11,7 +11,7 @@ namespace Api.Dtos
 
         public int MaxGenerations { get; set; }
 
-        public List<PlayerModel> Players { get; set; }
+        public List<PlayerModelDto> Players { get; set; }
 
         public float[,] Map { get; set; }
     }

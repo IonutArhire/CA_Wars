@@ -7,9 +7,9 @@ namespace Services.MatchesManagerService
     {
         private ConcurrentDictionary<string, GameModel> _matches;
 
-        private ConcurrentDictionary<string, string> _connections;
+        private ConcurrentDictionary<string, GameModel> _connections;
 
-        private int FindPlayerById(string connectionId, GameModel game) {
+        private int FindPlayerId(string connectionId, GameModel game) {
             int result = -1;
             for (int i = 0; i < game.Players.Count; i++)
             {
@@ -23,7 +23,7 @@ namespace Services.MatchesManagerService
         
         public MatchesManagerService() {
             this._matches = new ConcurrentDictionary<string, GameModel>(System.StringComparer.OrdinalIgnoreCase);
-            this._connections = new ConcurrentDictionary<string, string>(System.StringComparer.OrdinalIgnoreCase);
+            this._connections = new ConcurrentDictionary<string, GameModel>(System.StringComparer.OrdinalIgnoreCase);
         }
 
         public void Create(string gameKey, GameModel gameModel) {
@@ -31,17 +31,16 @@ namespace Services.MatchesManagerService
         }
 
         public void RegisterPlayer(string connectionId, int assignedNumber, string gameKey) {
-            this._connections.TryAdd(connectionId, gameKey);
             var game = this._matches[gameKey];
+            this._connections.TryAdd(connectionId, game);
 
             game.Players[assignedNumber].ConnectionId = connectionId;
         }
 
         public void UnRegisterPlayer(string connectionId) {
-            var gameKey = this._connections[connectionId];
-            var game = this._matches[gameKey];
+            var game = this._connections[connectionId];
 
-            var playerId = this.FindPlayerById(connectionId, game);
+            var playerId = this.FindPlayerId(connectionId, game);
             game.Players.RemoveAt(playerId);
         }
 
