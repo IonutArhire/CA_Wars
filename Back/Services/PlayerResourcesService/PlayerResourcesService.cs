@@ -49,11 +49,6 @@ namespace Services.PlayerResourcesService
             var result = playerNumbers[idx];
             playerNumbers.RemoveAt(idx);
 
-            if (playerNumbers.Count == 0)
-            {
-                game.PlayerNumbers = InitPlayerNumbers(game.NrPlayers);
-            }
-
             return result;
         }
         

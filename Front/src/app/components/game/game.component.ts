@@ -58,8 +58,6 @@ export class GameComponent {
 
     this._hubConnection = new HubConnectionBuilder().withUrl('http://localhost:5000/match').build();
 
-    this._hubConnection.serverTimeoutInMilliseconds = 1000 * 1000;
-
     this._hubConnection.on('Connected', (data) => {this.connected(data)});
 
     this._hubConnection.on('Disconnected', (data) => {this.disconnected(data)});
@@ -87,7 +85,11 @@ export class GameComponent {
     console.log(data);
     console.log('connected');
 
-    this._hubConnection.invoke('SendResources', this._gameKey);
+    this._hubConnection.invoke('SendResources', this._gameKey).catch(this.errorHandler);
+  }
+
+  public errorHandler(err): void {
+    console.log(err);
   }
 
   public resources(resources: IGameResources): void {

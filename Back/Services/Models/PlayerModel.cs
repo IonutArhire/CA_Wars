@@ -11,5 +11,7 @@ namespace Services.Models
         public string Color { get; private set; }
 
         public int Wins { get; private set; }
+
+        public string ConnectionId { get; set; }
     }
 }

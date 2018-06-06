@@ -4,10 +4,9 @@ namespace Services.Models
 {
     public class GameModel
     {
-        public GameModel(DimensionsModel dimensions, int nrPlayers, int maxGenerations, List<PlayerModel> players, List<int> playerNumbers, float[,] map) 
+        public GameModel(DimensionsModel dimensions, int maxGenerations, List<PlayerModel> players, List<int> playerNumbers, float[,] map) 
         {
             this.Dimensions = dimensions;
-            this.NrPlayers = nrPlayers;
             this.MaxGenerations = maxGenerations;
             this.Players = players;
             this.PlayerNumbers = playerNumbers;
@@ -17,8 +16,6 @@ namespace Services.Models
         }
 
         public DimensionsModel Dimensions { get; private set; }
-
-        public int NrPlayers { get; private set; }
 
         public int MaxGenerations { get; private set; }
 

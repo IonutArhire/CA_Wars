@@ -8,6 +8,7 @@ using Services.PlayerResourcesService;
 using Services.MatchesManagerService;
 using Api.Dtos;
 using AutoMapper;
+using System;
 
 namespace Api.Hubs {
     public class MatchHub : Hub 
@@ -50,6 +51,7 @@ namespace Api.Hubs {
 
         public override async Task OnDisconnectedAsync(System.Exception ex) {
             await Clients.All.SendAsync("Disconnected", Context.ConnectionId);
+            this._matchesManagerService.UnRegisterPlayer(Context.ConnectionId);
         }
 
         public async Task SendResources(string gameKey) {
@@ -62,16 +64,18 @@ namespace Api.Hubs {
             gameModelDto.Map = personalizedMap;
 
             await Clients.Caller.SendAsync("Resources", gameModelDto);
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameKey);
+            this._matchesManagerService.RegisterPlayer(Context.ConnectionId, assignedNumber, gameKey);
         }
 
         public async Task SendConfig(string gameKey, float[,] playerConfig) {
             var game = this._matchesManagerService.GetGameModel(gameKey);
             game.InitialConfigs.Add(playerConfig);
 
-            if (game.InitialConfigs.Count == game.NrPlayers) {
+            if (game.InitialConfigs.Count == game.Players.Count) {
                 var result = this._algorithmService.RunGame(game);
-                
-                await Clients.All.SendAsync("Game", result);
+
+                await Clients.Group(gameKey).SendAsync("Game", result);
                 game.InitialConfigs.Clear();
             }
         }

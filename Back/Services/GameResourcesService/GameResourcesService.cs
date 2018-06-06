@@ -23,7 +23,7 @@ namespace Services.GameResourcesService
             var playerResources = this._playerResourcesService.GetPlayerResources(nrPlayers);
             var playerNumbers = this._playerResourcesService.InitPlayerNumbers(nrPlayers);
             var gameMap = this._mapGenerationService.RandomGen(dimensions, nrPlayers);
-            var result = new GameModel(dimensions, nrPlayers, maxGenerations, playerResources, playerNumbers, gameMap);
+            var result = new GameModel(dimensions, maxGenerations, playerResources, playerNumbers, gameMap);
 
             return result;
         }
