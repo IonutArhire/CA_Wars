@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
-import { ActivatedRoute, Event } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';

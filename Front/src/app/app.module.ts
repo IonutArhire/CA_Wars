@@ -5,11 +5,13 @@ import { AppComponent } from './app.component';
 import { MatchService } from './services/match.service';
 import { AppRoutingModule } from './app-routing.module';
 import { GameComponent } from './components/game/game.component';
+import { MatchCreateComponent } from './components/match-create/match-create.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent
+    GameComponent,
+    MatchCreateComponent
   ],
   imports: [
     BrowserModule,
