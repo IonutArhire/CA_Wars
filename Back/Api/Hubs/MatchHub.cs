@@ -9,6 +9,8 @@ using Services.MatchesManagerService;
 using Api.Dtos;
 using AutoMapper;
 using System;
+using Microsoft.AspNetCore.Hosting;
+using Services.EnvService;
 
 namespace Api.Hubs {
     public class MatchHub : Hub 
@@ -23,17 +25,27 @@ namespace Api.Hubs {
 
         private IMapper _mapper;
 
+        private IHostingEnvironment _env;
+
+        private IEnvService _envService;
+
         public MatchHub(IGameResourcesService gameResourcesService,
                         IPlayerResourcesService playerResourcesService,
                         IAlgorithmService algorithmService,
                         IMatchesManagerService matchesManagerService,
-                        IMapper mapper) {
+                        IMapper mapper,
+                        IHostingEnvironment env,
+                        IEnvService envService) {
 
             this._gameResourcesService = gameResourcesService;
             this._playerResourcesService = playerResourcesService;
             this._algorithmService = algorithmService;
             this._matchesManagerService = matchesManagerService;
             this._mapper = mapper;
+            this._env = env;
+            this._envService = envService;
+
+            this._envService.IsDevelopment = env.IsDevelopment();
         }
 
         private void TestingInitializations() {
@@ -51,7 +63,13 @@ namespace Api.Hubs {
 
         public override async Task OnDisconnectedAsync(System.Exception ex) {
             await Clients.All.SendAsync("Disconnected", Context.ConnectionId);
-            this._matchesManagerService.UnRegisterPlayer(Context.ConnectionId);
+
+            if (this._envService.IsDevelopment) {
+
+            }
+            else {
+                this._matchesManagerService.UnRegisterPlayer(Context.ConnectionId);
+            }
         }
 
         public async Task SendResources(string gameKey) {

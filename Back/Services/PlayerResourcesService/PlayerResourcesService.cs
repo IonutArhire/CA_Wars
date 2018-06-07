@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Services.EnvService;
 using Services.MatrixService;
 using Services.Models;
 
@@ -9,10 +10,8 @@ namespace Services.PlayerResourcesService
     {
         private IMatrixService _matrixService;
 
-        public PlayerResourcesService(IMatrixService matrixService) {
-            this._matrixService = matrixService;
-        }
-        
+        private IEnvService _env;
+
         private string GetNewColor(List<string> colors) {
             var randomizer = new Random();
             var idx = randomizer.Next(colors.Count);
@@ -20,6 +19,13 @@ namespace Services.PlayerResourcesService
             colors.RemoveAt(idx);
 
             return result;
+        }
+
+        public PlayerResourcesService(IMatrixService matrixService,
+                                        IEnvService env) {
+
+            this._matrixService = matrixService;
+            this._env = env;
         }
 
         public List<string> InitializeColors() {
@@ -48,6 +54,15 @@ namespace Services.PlayerResourcesService
             var idx = randomizer.Next(playerNumbers.Count);
             var result = playerNumbers[idx];
             playerNumbers.RemoveAt(idx);
+
+            if (this._env.IsDevelopment) 
+            {
+                if (playerNumbers.Count == 0)
+                {
+                    game.PlayerNumbers = InitPlayerNumbers(game.Players.Count);
+                }
+            }
+            
 
             return result;
         }

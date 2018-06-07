@@ -34,11 +34,14 @@ export class MatchService {
 
   private _map: number[][];
 
+  private _eraserMode;
+
   constructor() {
     this._marginBottom = 216;
     this._cellSize = 30;
     this._center = [0, 0];
     this._currGameStateIdx = 0;
+    this._eraserMode = false;
   }
 
 
@@ -104,7 +107,12 @@ export class MatchService {
 
   public updateCell(i: number, j: number, assignedNum: number): void {
     if (this._cells[i][j] != -2) {
-      this._cells[i][j] = assignedNum;
+      if (this._eraserMode) {
+        this._cells[i][j] = -1;
+      }
+      else {
+        this._cells[i][j] = assignedNum;
+      }
     }
     let base = this.getGridBasePoint();
     this.drawCell(base, i, j);
@@ -347,5 +355,17 @@ export class MatchService {
           this.drawGrid();
         }
       })
+  }
+
+  public activateEraserMode(): void {
+    this._eraserMode = true;
+  }
+
+  public getEraserMode(): boolean {
+    return this._eraserMode;
+  }
+
+  public deactivateEraserMode(): void {
+    this._eraserMode = false;
   }
 }

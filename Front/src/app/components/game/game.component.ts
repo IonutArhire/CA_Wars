@@ -56,7 +56,9 @@ export class GameComponent {
   ngOnInit() {
     this._gameKey = parseInt(this._route.snapshot.paramMap.get('game-key'));
 
-    this._hubConnection = new HubConnectionBuilder().withUrl('http://localhost:5000/match').build();
+    this._hubConnection = new HubConnectionBuilder()
+                              .withUrl('http://localhost:5000/match')
+                              .build();
 
     this._hubConnection.on('Connected', (data) => {this.connected(data)});
 
@@ -85,10 +87,10 @@ export class GameComponent {
     console.log(data);
     console.log('connected');
 
-    this._hubConnection.invoke('SendResources', this._gameKey).catch(this.errorHandler);
+    this._hubConnection.invoke('SendResources', this._gameKey).catch(this.resourcesError);
   }
 
-  public errorHandler(err): void {
+  public resourcesError(err): void {
     console.log(err);
   }
 
@@ -127,7 +129,7 @@ export class GameComponent {
     });
   }
 
-  public onResize(event): void {
+  public onResize(event): void { //TODO: type of event
     this._matchService.resizeCanvas(event.target.innerWidth, event.target.innerHeight);
   }
 
@@ -166,5 +168,16 @@ export class GameComponent {
   public stepSimulationForward(): void {
     this._isPlaying = false;
     this._matchService.stepSimulationForward();
+  }
+
+  public flipEraserMode(): void {
+    let eraserMode = this._matchService.getEraserMode();
+
+    if (eraserMode) {
+      this._matchService.deactivateEraserMode();
+    }
+    else {
+      this._matchService.activateEraserMode();
+    }
   }
 }
