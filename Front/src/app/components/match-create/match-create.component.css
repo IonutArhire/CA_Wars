@@ -1,3 +1,10 @@
+#back-btn {
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    outline: none;
+}
+
 .my-form-title {
     margin-bottom: 3rem;
 }
