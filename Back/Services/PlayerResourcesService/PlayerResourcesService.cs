@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Services.EnvService;
+using Microsoft.AspNetCore.Hosting;
 using Services.MatrixService;
 using Services.Models;
 
@@ -10,7 +10,7 @@ namespace Services.PlayerResourcesService
     {
         private IMatrixService _matrixService;
 
-        private IEnvService _env;
+        private IHostingEnvironment _env;
 
         private string GetNewColor(List<string> colors) {
             var randomizer = new Random();
@@ -22,7 +22,7 @@ namespace Services.PlayerResourcesService
         }
 
         public PlayerResourcesService(IMatrixService matrixService,
-                                        IEnvService env) {
+                                        IHostingEnvironment env) {
 
             this._matrixService = matrixService;
             this._env = env;
@@ -55,7 +55,7 @@ namespace Services.PlayerResourcesService
             var result = playerNumbers[idx];
             playerNumbers.RemoveAt(idx);
 
-            if (this._env.IsDevelopment) 
+            if (this._env.IsDevelopment()) 
             {
                 if (playerNumbers.Count == 0)
                 {
