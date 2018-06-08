@@ -1,5 +1,5 @@
 .my-form-title {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 }
 
 .my-form-container {
@@ -14,18 +14,12 @@
     border-radius: 25px;
 }
 
-.my-form-content {
-    text-align: initial;
+.mainmenu-btn {
+    width: 8rem;
 }
 
-.my-form-elem { 
-    margin-bottom: 50px;
-}
-
-.my-inline-label { 
-    margin-right: 10px;
-}
-
-#create-btn {
-    margin-top: 25px;
+.row-centered {
+    justify-content: center;
+    height: 40px;
+    margin-bottom: 25px;
 }

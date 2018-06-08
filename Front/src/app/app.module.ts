@@ -6,12 +6,16 @@ import { MatchService } from './services/match.service';
 import { AppRoutingModule } from './app-routing.module';
 import { GameComponent } from './components/game/game.component';
 import { MatchCreateComponent } from './components/match-create/match-create.component';
+import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
-    MatchCreateComponent
+    MatchCreateComponent,
+    MainMenuComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
