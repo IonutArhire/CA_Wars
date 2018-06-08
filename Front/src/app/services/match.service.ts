@@ -10,6 +10,8 @@ import { IPlayerResource } from '../resources/player-resources';
 import { IDimensionsResources } from '../resources/dimensions-resources';
 import { Point } from '../entities/point-entity';
 
+import { saveAs } from 'file-saver';
+
 @Injectable()
 export class MatchService {
 
@@ -180,22 +182,35 @@ export class MatchService {
   * Game Simulation Section.
   */
 
-  public renderSimulation(): void {
+  public renderSimulationStep(): void {
     this._cells = this._generations[this._currGameStateIdx];
     this.drawGrid();
   }
 
   public runSimulation(generations: Array<number[][]>): void {
     this._generations = generations;
-    this._cells = generations[this._currGameStateIdx];
+    this._cells = this._generations[this._currGameStateIdx];
     this.drawGrid();
+
+    this.saveGenerationsAsImgs();
+  }
+
+  public saveGenerationsAsImgs() {
+    for (let index = 0; index < this._generations.length; index++) {
+      this._cells = this._generations[index];
+      this.drawGrid();
+
+      this._canvas.toBlob(function(blob) {
+        saveAs(blob, index + ".png");
+      });
+    }
   }
 
   public startSimulation(): void {
     this._simulationInterval = setInterval(() => {
     if (this._currGameStateIdx < this._generations.length - 1) {
       this._currGameStateIdx += 1;
-        this.renderSimulation();
+        this.renderSimulationStep();
       }
     }, 60);
   }
@@ -207,20 +222,20 @@ export class MatchService {
   public skipSimulationBack(): void {
     clearInterval(this._simulationInterval);
     this._currGameStateIdx = 0;
-    this.renderSimulation();
+    this.renderSimulationStep();
   }
 
   public skipSimulationForward(): void {
     clearInterval(this._simulationInterval);
     this._currGameStateIdx = this._generations.length - 1;
-    this.renderSimulation();
+    this.renderSimulationStep();
   }
 
   public stepSimulationBack(): void {
     clearInterval(this._simulationInterval);
     if(this._currGameStateIdx > 0) {
       this._currGameStateIdx -= 1;
-      this.renderSimulation();
+      this.renderSimulationStep();
     }
   }
 
@@ -228,7 +243,7 @@ export class MatchService {
     clearInterval(this._simulationInterval);
     if (this._currGameStateIdx < this._generations.length - 1) {
       this._currGameStateIdx += 1;
-      this.renderSimulation();
+      this.renderSimulationStep();
     }
   }
 

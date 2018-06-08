@@ -77,9 +77,11 @@ namespace Services.AlgorithmService {
             return owners;
         }
 
-        private float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions) {
+        private float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions, int nrPlayers) {
             _grid = CombineInitialConfigs(configs, dimensions);
             _dimensions = dimensions;
+
+            this._nrPlayers = nrPlayers;
 
             return _grid;
         }
@@ -156,7 +158,7 @@ namespace Services.AlgorithmService {
             var counter = 0;
                 
             List<float[,]> generations = new List<float[,]>();
-            generations.Add(this.Initialize(game.InitialConfigs, game.Dimensions));
+            generations.Add(this.Initialize(game.InitialConfigs, game.Dimensions, game.Players.Count));
             while (!this.isGridEmpty() && counter != game.MaxGenerations) {
                 generations.Add(this.RunNextGen());
                 counter++;

@@ -60,6 +60,8 @@ export class GameComponent {
     this._hubConnection = new HubConnectionBuilder()
                               .withUrl('http://localhost:5000/match')
                               .build();
+                            
+    this._hubConnection.serverTimeoutInMilliseconds = 10000 * 1000;
 
     this._hubConnection.on('Connected', (data) => {this.connected(data)});
 

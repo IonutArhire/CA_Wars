@@ -43,7 +43,7 @@ namespace Api.Hubs {
 
         private void TestingInitializations() {
             var test_gameModel1 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 10);
-            var test_gameModel2 = _gameResourcesService.GetGameResources(new DimensionsModel(5, 15), 2, 100);
+            var test_gameModel2 = _gameResourcesService.GetGameResources(new DimensionsModel(50, 70), 4, 100);
 
             this._matchesManagerService.Create("1", test_gameModel1);
             this._matchesManagerService.Create("2", test_gameModel2);
