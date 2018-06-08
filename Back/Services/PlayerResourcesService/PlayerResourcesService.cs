@@ -22,7 +22,7 @@ namespace Services.PlayerResourcesService
         }
 
         public PlayerResourcesService(IMatrixService matrixService,
-                                        IHostingEnvironment env) {
+                                      IHostingEnvironment env) {
 
             this._matrixService = matrixService;
             this._env = env;

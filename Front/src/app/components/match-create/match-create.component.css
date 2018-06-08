@@ -3,6 +3,13 @@
     top: 36px;
     left: 36px;
     outline: none;
+
+    font-size: 25px;
+    color: #ced4da;
+}
+
+#back-btn:hover {
+    color: black;
 }
 
 .my-form-title {

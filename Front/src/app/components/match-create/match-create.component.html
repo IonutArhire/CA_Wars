@@ -2,58 +2,60 @@
 
   <div class="card-body">
 
-      <form>
-          <span id="back-btn" class="oi oi-chevron-left" style="cursor:pointer;" [routerLink]="['/menu/main']"></span>
-          
-          <p class="h2 text-center py-4 my-form-title">Create Match</p>
+    <form>
+      <a>
+        <i id="back-btn" class="fas fa-chevron-left" style="cursor:pointer;" [routerLink]="['/menu/main']"></i>
+      </a>
+      
+      <p class="h2 text-center py-4 my-form-title">Create Match</p>
 
-          <div class="my-form-content">
+      <div class="my-form-content">
 
-            <div class="my-form-elem">
-              <label class="grey-text font-weight-light">Number of players</label>
-              <select class="form-control form-control-sm">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
+        <div class="my-form-elem">
+          <label class="grey-text font-weight-light">Number of players</label>
+          <select class="form-control form-control-sm">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </div>
+
+        <div class="my-form-elem">
+          <label class="grey-text font-weight-light">Set of rules</label>
+          <select class="form-control form-control-sm">
+            <option>GOF</option>
+          </select>
+        </div>
+
+        <div class="my-form-elem">
+          <label class="grey-text font-weight-light">Maximum number of iterations</label>
+          <input type="text" class="form-control">
+        </div>
+
+        <div class="my-form-elem">
+          <div class="form-row">
+
+            <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+
+              <label class="grey-text font-weight-light my-inline-label">Rows</label>
+              <input type="number" name="quantity" min="1" max="50">
             </div>
-
-            <div class="my-form-elem">
-              <label class="grey-text font-weight-light">Set of rules</label>
-              <select class="form-control form-control-sm">
-                <option>GOF</option>
-              </select>
+    
+            <div class="col-6 col-sm-6 col-md-6 col-lg-6">
+                
+              <label class="grey-text font-weight-light my-inline-label">Columns</label>
+              <input type="number" name="quantity" min="1" max="50">
             </div>
-
-            <div class="my-form-elem">
-              <label class="grey-text font-weight-light">Maximum number of iterations</label>
-              <input type="text" class="form-control">
-            </div>
-
-            <div class="my-form-elem">
-              <div class="form-row">
-
-                <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-
-                  <label class="grey-text font-weight-light my-inline-label">Rows</label>
-                  <input type="number" name="quantity" min="1" max="50">
-                </div>
-        
-                <div class="col-6 col-sm-6 col-md-6 col-lg-6">
-                    
-                  <label class="grey-text font-weight-light my-inline-label">Columns</label>
-                  <input type="number" name="quantity" min="1" max="50">
-                </div>
-              </div>
-            </div>
-
-            
-
           </div>
-          
-          <button id="create-btn" type="button" class="btn btn-outline-dark">Create</button>
-      </form>
+        </div>
+
+        
+
+      </div>
+      
+      <button id="create-btn" type="button" class="btn btn-outline-dark">Create</button>
+    </form>
 
   </div>
 

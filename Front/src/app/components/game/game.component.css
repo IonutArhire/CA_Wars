@@ -14,10 +14,27 @@
     justify-content: space-between;
 }
 
-.oi {
-    font-size: 25px;
+.my-toolbar-btn {
+    font-size: 30px;
+
+    color: #616161;
+}
+
+.my-media-btn {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.my-media-btn:hover {
+    color: #099fef;
+}
+
+#exit-btn:hover {
+    color: #f41f1f;
+}
+
+#eraser-btn:hover {
+    color: #f28910;
 }
 
 .game-btn {

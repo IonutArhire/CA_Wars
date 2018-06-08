@@ -1,20 +1,28 @@
 <div class="toolbar" #toolbar>
 
-  <div class="toolbar-left">
-    <span class="oi oi-account-logout" style="cursor:pointer;"></span>
+  <div class="toolbar-left" *ngIf="_hasResources">
+    <a>
+      <i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" [routerLink]="['/menu/main']" style="cursor:pointer;"></i>
+    </a>
   </div>
 
   <div class="toolbar-middle" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
-    <span class="oi oi-media-play" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></span>
-    <span class="oi oi-media-pause" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></span>
-    <span class="oi oi-media-skip-forward" (click)="skipSimulationForward()" style="cursor:pointer;"></span>
-    <span class="oi oi-media-skip-backward" (click)="skipSimulationBack()" style="cursor:pointer;"></span>
-    <span class="oi oi-media-step-forward" (click)="stepSimulationForward()" style="cursor:pointer;"></span>
-    <span class="oi oi-media-step-backward" (click)="stepSimulationBack()" style="cursor:pointer;"></span>
+    <i class="fas fa-play my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i>
+    <i class="fas fa-pause my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i>
+    <i class="fas fa-forward my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i>
+    <i class="fas fa-backward my-toolbar-btn my-media-btn" (click)="skipSimulationBack()" style="cursor:pointer;"></i>
+    <i class="fas fa-step-forward my-toolbar-btn my-media-btn" (click)="stepSimulationForward()" style="cursor:pointer;"></i>
+    <i class="fas fa-step-backward my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i>
   </div>
 
-  <div class="toolbar-right">
-    <span class="oi oi-ban" (click)="flipEraserMode()" style="cursor:pointer;"></span>
+  <div class="toolbar-right" *ngIf="_hasResources">
+    <a>
+      <i id="eraser-btn"
+         class="fas fa-eraser my-toolbar-btn" 
+         #eraser
+         (click)="flipEraserMode()" 
+         style="cursor:pointer;"></i>
+    </a>
   </div>
   
 </div>

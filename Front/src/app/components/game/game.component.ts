@@ -23,6 +23,7 @@ export class GameComponent {
 
   @ViewChild('playGrid') playGrid: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
+  @ViewChild('eraser') eraser: ElementRef;
 
   private _hasResources: boolean;
   private _resourcesStatus: BehaviorSubject<boolean>;
@@ -175,9 +176,11 @@ export class GameComponent {
 
     if (eraserMode) {
       this._matchService.deactivateEraserMode();
+      (<HTMLElement>this.eraser.nativeElement).style.color = "#616161";
     }
     else {
       this._matchService.activateEraserMode();
+      (<HTMLElement>this.eraser.nativeElement).style.color = "#f28910";
     }
   }
 }
