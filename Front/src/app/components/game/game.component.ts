@@ -193,11 +193,15 @@ export class GameComponent {
 
     if (gridMode) {
       this._matchService.deactivateGridMode();
-      (<HTMLElement>this.gridMode.nativeElement).style.color = "#616161"; //grey
+      (<HTMLElement>this.gridMode.nativeElement).style.color = "#dadada5b";
     }
     else {
       this._matchService.activateGridMode();
-      (<HTMLElement>this.gridMode.nativeElement).style.color = "#5bdb15"; //green
+      (<HTMLElement>this.gridMode.nativeElement).style.color = "#616161";
     }
+  }
+
+  public downloadGenerations(): void {
+    this._matchService.saveGenerationsAsImgs();
   }
 }

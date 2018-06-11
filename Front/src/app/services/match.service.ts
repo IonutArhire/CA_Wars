@@ -195,19 +195,15 @@ export class MatchService {
     this._generations = generations;
     this._cells = this._generations[this._currGameStateIdx];
     this.drawGrid();
-
-    if (assignedNum == 3) {
-      this.saveGenerationsAsImgs();
-    }
   }
 
   public saveGenerationsAsImgs() {
-    for (let index = 2; index < this._generations.length; index++) {
-      this._cells = this._generations[index];
+    for (let idx = 0; idx < this._generations.length; idx++) {
+      this._cells = this._generations[idx];
       this.drawGrid();
 
       this._canvas.toBlob(function(blob) {
-        saveAs(blob, index + ".png");
+        saveAs(blob, idx + ".png");
       });
     }
   }

@@ -1,19 +1,28 @@
 <div class="toolbar" #toolbar>
 
-  <div class="toolbar-left" *ngIf="_hasResources">
+  <div class="box" *ngIf="_hasResources">
     <a>
       <i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" [routerLink]="['/menu/main']" style="cursor:pointer;"></i>
     </a>
+
     <a>
       <i id="grid-btn"
-         class="fas fa-hashtag my-toolbar-btn"
-         #gridMode
-         (click)="flipGridMode()" 
-         style="cursor:pointer;"></i>
+        class="fas fa-hashtag my-toolbar-btn"
+        #gridMode
+        (click)="flipGridMode()" 
+        style="cursor:pointer;"></i>
+    </a>
+
+    <a>
+      <i id="download-btn"
+        class="fas fa-download my-toolbar-btn my-media-btn"
+        (click)="downloadGenerations()" 
+        style="cursor:pointer;"
+        [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}"></i>
     </a>
   </div>
 
-  <div class="toolbar-middle" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
+  <div class="box" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
     <i class="fas fa-play my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i>
     <i class="fas fa-pause my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i>
     <i class="fas fa-forward my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i>
@@ -22,7 +31,7 @@
     <i class="fas fa-step-backward my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i>
   </div>
 
-  <div class="toolbar-right" *ngIf="_hasResources">
+  <div class="box" *ngIf="_hasResources">
     <a>
       <i id="eraser-btn"
          class="fas fa-eraser my-toolbar-btn" 
