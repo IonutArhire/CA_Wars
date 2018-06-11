@@ -12,6 +12,8 @@ import { IPlayerResource } from '../../resources/player-resources';
 import { IDimensionsResources } from '../../resources/dimensions-resources';
 import { IGameResources } from '../../resources/game-resources';
 
+
+
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -24,23 +26,23 @@ export class GameComponent {
   @ViewChild('playGrid') playGrid: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
   @ViewChild('eraser') eraser: ElementRef;
+  @ViewChild('gridMode') gridMode: ElementRef;
 
-  private _hasResources: boolean;
   private _resourcesStatus: BehaviorSubject<boolean>;
-
+  
   private _dimensions: IDimensionsResources;
-
+  
   private _playerResources: Array<IPlayerResource>;
   private _assignedNum: number;
-
+  
   private _gameKey: number;
-
-  private _isPlaying: boolean;
-  private _hasGameArrived: boolean;
-  private _hasSent: boolean;
-
+  
   private _map: number[][];
 
+  public _hasResources: boolean;
+  public _isPlaying: boolean;
+  public _hasGameArrived: boolean;
+  public _hasSent: boolean;
 
   constructor(private _matchService: MatchService, private _route: ActivatedRoute) {
     this._hasResources = false;
@@ -113,7 +115,7 @@ export class GameComponent {
   public game(data): void {
     this._playerResources[data.winner].wins += 1;
     this._matchService.updatePlayerResources(this._playerResources);
-    this._matchService.runSimulation(data.generations);
+    this._matchService.runSimulation(data.generations, this._assignedNum);
     this._hasGameArrived = true;
   }
 
@@ -178,11 +180,24 @@ export class GameComponent {
 
     if (eraserMode) {
       this._matchService.deactivateEraserMode();
-      (<HTMLElement>this.eraser.nativeElement).style.color = "#616161";
+      (<HTMLElement>this.eraser.nativeElement).style.color = "#616161"; //grey
     }
     else {
       this._matchService.activateEraserMode();
-      (<HTMLElement>this.eraser.nativeElement).style.color = "#f28910";
+      (<HTMLElement>this.eraser.nativeElement).style.color = "#f28910"; //orange
+    }
+  }
+
+  public flipGridMode(): void {
+    let gridMode = this._matchService.getGridMode();
+
+    if (gridMode) {
+      this._matchService.deactivateGridMode();
+      (<HTMLElement>this.gridMode.nativeElement).style.color = "#616161"; //grey
+    }
+    else {
+      this._matchService.activateGridMode();
+      (<HTMLElement>this.gridMode.nativeElement).style.color = "#5bdb15"; //green
     }
   }
 }

@@ -14,7 +14,6 @@ import { saveAs } from 'file-saver';
 
 @Injectable()
 export class MatchService {
-
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
   
@@ -36,7 +35,8 @@ export class MatchService {
 
   private _map: number[][];
 
-  private _eraserMode;
+  private _eraserMode: boolean;
+  private _gridMode: boolean;
 
   constructor() {
     this._marginBottom = 216;
@@ -44,6 +44,7 @@ export class MatchService {
     this._center = [0, 0];
     this._currGameStateIdx = 0;
     this._eraserMode = false;
+    this._gridMode = true;
   }
 
 
@@ -96,7 +97,7 @@ export class MatchService {
     if (cellValue == -1) {
       this._ctx.fillStyle = "white";
     }
-    else if(cellValue == -2) {
+    else if (cellValue == -2) {
       this._ctx.fillStyle = "#bcbcbc";
     }
     else {
@@ -104,7 +105,10 @@ export class MatchService {
     }
 
     this._ctx.fillRect(x, y, this._cellSize, this._cellSize);
-    this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
+
+    if (this._gridMode) {
+      this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
+    }
   }
 
   public updateCell(i: number, j: number, assignedNum: number): void {
@@ -187,16 +191,18 @@ export class MatchService {
     this.drawGrid();
   }
 
-  public runSimulation(generations: Array<number[][]>): void {
+  public runSimulation(generations: Array<number[][]>, assignedNum: number): void {
     this._generations = generations;
     this._cells = this._generations[this._currGameStateIdx];
     this.drawGrid();
 
-    this.saveGenerationsAsImgs();
+    if (assignedNum == 3) {
+      this.saveGenerationsAsImgs();
+    }
   }
 
   public saveGenerationsAsImgs() {
-    for (let index = 0; index < this._generations.length; index++) {
+    for (let index = 2; index < this._generations.length; index++) {
       this._cells = this._generations[index];
       this.drawGrid();
 
@@ -372,6 +378,10 @@ export class MatchService {
       })
   }
 
+  /*
+  * Modes
+  */ 
+
   public activateEraserMode(): void {
     this._eraserMode = true;
   }
@@ -382,5 +392,21 @@ export class MatchService {
 
   public deactivateEraserMode(): void {
     this._eraserMode = false;
+  }
+
+  public activateGridMode(): void {
+    this._gridMode = true;
+    this.clearCanvas();
+    this.drawGrid();
+  }
+
+  public getGridMode(): boolean {
+    return this._gridMode;
+  }
+
+  public deactivateGridMode(): void {
+    this._gridMode = false;
+    this.clearCanvas();
+    this.drawGrid();
   }
 }

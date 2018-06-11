@@ -17,6 +17,9 @@
 .my-toolbar-btn {
     font-size: 30px;
 
+    margin-left: 5px;
+    margin-right: 5px;
+
     color: #616161;
 }
 
@@ -35,6 +38,14 @@
 
 #eraser-btn:hover {
     color: #f28910;
+}
+
+#grid-btn {
+    color: #5bdb15;
+}
+
+#grid-btn:hover {
+    color: #5bdb15;
 }
 
 .game-btn {

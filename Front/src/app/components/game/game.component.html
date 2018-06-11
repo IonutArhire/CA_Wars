@@ -4,6 +4,13 @@
     <a>
       <i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" [routerLink]="['/menu/main']" style="cursor:pointer;"></i>
     </a>
+    <a>
+      <i id="grid-btn"
+         class="fas fa-hashtag my-toolbar-btn"
+         #gridMode
+         (click)="flipGridMode()" 
+         style="cursor:pointer;"></i>
+    </a>
   </div>
 
   <div class="toolbar-middle" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
