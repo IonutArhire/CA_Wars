@@ -98,17 +98,14 @@ export class MatchService {
       this._ctx.fillStyle = "white";
     }
     else if (cellValue == -2) {
-      this._ctx.fillStyle = "#bcbcbc";
+      this._ctx.fillStyle = "#bcbcbc"; //grey
     }
     else {
       this._ctx.fillStyle = this._playerResources[cellValue].color;
     }
 
     this._ctx.fillRect(x, y, this._cellSize, this._cellSize);
-
-    if (this._gridMode) {
-      this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
-    }
+    this._ctx.strokeRect(x, y, this._cellSize, this._cellSize);
   }
 
   public updateCell(i: number, j: number, assignedNum: number): void {
@@ -191,7 +188,7 @@ export class MatchService {
     this.drawGrid();
   }
 
-  public runSimulation(generations: Array<number[][]>, assignedNum: number): void {
+  public initSimulation(generations: Array<number[][]>): void {
     this._generations = generations;
     this._cells = this._generations[this._currGameStateIdx];
     this.drawGrid();
@@ -392,6 +389,7 @@ export class MatchService {
 
   public activateGridMode(): void {
     this._gridMode = true;
+    this._ctx.strokeStyle = "black";
     this.clearCanvas();
     this.drawGrid();
   }
@@ -402,6 +400,7 @@ export class MatchService {
 
   public deactivateGridMode(): void {
     this._gridMode = false;
+    this._ctx.strokeStyle = "white";
     this.clearCanvas();
     this.drawGrid();
   }

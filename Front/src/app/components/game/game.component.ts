@@ -115,7 +115,7 @@ export class GameComponent {
   public game(data): void {
     this._playerResources[data.winner].wins += 1;
     this._matchService.updatePlayerResources(this._playerResources);
-    this._matchService.runSimulation(data.generations, this._assignedNum);
+    this._matchService.initSimulation(data.generations);
     this._hasGameArrived = true;
   }
 
