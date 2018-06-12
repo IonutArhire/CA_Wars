@@ -15,3 +15,5 @@ C:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.cs
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.RazorAssemblyInfo.cache
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.RazorAssemblyInfo.cs
 C:\DIESEL\Others\Facultate\Final Project\Back\Api\obj\Debug\netcoreapp2.1\Api.RazorTargetAssemblyInfo.cache
+C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\Persistence.dll
+C:\DIESEL\Others\Facultate\Final Project\Back\Api\bin\Debug\netcoreapp2.1\Persistence.pdb

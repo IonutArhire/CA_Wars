@@ -16,12 +16,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Persistence;
 using Services.AlgorithmService;
 using Services.GameResourcesService;
 using Services.MapGenerationService;
 using Services.MatchesManagerService;
 using Services.MatrixService;
 using Services.PlayerResourcesService;
+using Microsoft.EntityFrameworkCore;
+using Persistence.Repositories;
 
 namespace Api {
     public class Startup {
@@ -55,6 +58,12 @@ namespace Api {
             services.AddSingleton<IMatrixService, MatrixService>();
             services.AddSingleton<IMapGenerationService, MapGenerationService>();
             services.AddSingleton<IMatchesManagerService, MatchesManagerService>();
+
+            services.AddTransient<IDatabaseContext, DatabaseContext>();
+            services.AddTransient<ILifeLikeRepo, LifeLikeRepo>();
+
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<DatabaseContext>(opts => opts.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

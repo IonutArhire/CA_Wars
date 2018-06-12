@@ -1,0 +1,11 @@
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.deps.json
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.runtimeconfig.json
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.runtimeconfig.dev.json
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.dll
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\bin\Debug\netcoreapp2.1\Persistence.pdb
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.csprojAssemblyReference.cache
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.csproj.CoreCompileInputs.cache
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.AssemblyInfoInputs.cache
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.AssemblyInfo.cs
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.dll
+C:\DIESEL\Others\Facultate\Final Project\Back\Persistence\obj\Debug\netcoreapp2.1\Persistence.pdb

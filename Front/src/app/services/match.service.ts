@@ -39,7 +39,7 @@ export class MatchService {
   private _gridMode: boolean;
 
   constructor() {
-    this._marginBottom = 0;
+    this._marginBottom = 216;
     this._cellSize = 30;
     this._center = [0, 0];
     this._currGameStateIdx = 0;
@@ -61,7 +61,7 @@ export class MatchService {
 
     this._canvas = canvas;
     this._dimensions = dimensions;
-    this._marginTop = 0;
+    this._marginTop = toolbar.offsetHeight;
     this._playerResources = playerResources;
     this._map = map;
     this._cells = map;
