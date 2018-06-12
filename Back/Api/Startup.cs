@@ -25,6 +25,7 @@ using Services.MatrixService;
 using Services.PlayerResourcesService;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Repositories;
+using Services.RuleSetService;
 
 namespace Api {
     public class Startup {
@@ -52,13 +53,14 @@ namespace Api {
 
             services.AddAutoMapper();
 
-            services.AddSingleton<IGameResourcesService, GameResourcesService>();
-            services.AddSingleton<IPlayerResourcesService, PlayerResourcesService>();
-            services.AddSingleton<IAlgorithmService, AlgorithmService>();
-            services.AddSingleton<IMatrixService, MatrixService>();
-            services.AddSingleton<IMapGenerationService, MapGenerationService>();
             services.AddSingleton<IMatchesManagerService, MatchesManagerService>();
 
+            services.AddTransient<IRuleSetService, RuleSetService>();
+            services.AddTransient<IPlayerResourcesService, PlayerResourcesService>();
+            services.AddTransient<IMapGenerationService, MapGenerationService>();
+            services.AddTransient<IMatrixService, MatrixService>();
+            services.AddTransient<IGameResourcesService, GameResourcesService>();
+            services.AddTransient<IAlgorithmService, AlgorithmService>();
             services.AddTransient<IDatabaseContext, DatabaseContext>();
             services.AddTransient<ILifeLikeRepo, LifeLikeRepo>();
 

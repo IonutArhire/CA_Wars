@@ -13,6 +13,8 @@ namespace Services.AlgorithmService {
 
         private int _nrPlayers = 2;
 
+        private LifeLikeModel _ruleSet;
+
         private IMatrixService _matrixService;
 
         public AlgorithmService(IMatrixService matrixService) {
@@ -77,19 +79,17 @@ namespace Services.AlgorithmService {
             return owners;
         }
 
-        private float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions, int nrPlayers) {
+        private float[,] Initialize(List<float[,]> configs, DimensionsModel dimensions, int nrPlayers, LifeLikeModel ruleSet) {
             _grid = CombineInitialConfigs(configs, dimensions);
             _dimensions = dimensions;
 
             this._nrPlayers = nrPlayers;
+            this._ruleSet = ruleSet;
 
             return _grid;
         }
 
         private float[,] RunNextGen() {
-            var GOF = new Dictionary<bool, List<float>> () { { false, new List<float> () { { 3 } } }, { true, new List<float> () { { 2 }, { 3 } } }
-                };
-
             var resultGrid = this._matrixService.CopyMatrix(_grid);
 
             for (var i = 0; i < _dimensions.Height; i++) {
@@ -98,9 +98,16 @@ namespace Services.AlgorithmService {
                     var candidatePlayers = new List<float>();
                     for (int playerIdx = 0; playerIdx < _nrPlayers; playerIdx++) {
                         var isAlive = _grid[i,j] == playerIdx ? true : false;
-                        
-                        if (GOF[isAlive].FindLast(x => x == neighbors[playerIdx]) != 0) {
-                            candidatePlayers.Add(playerIdx);
+
+                        if (isAlive) {
+                            if (this._ruleSet.ForSurvival.Exists(x => x == neighbors[playerIdx])) {
+                                candidatePlayers.Add(playerIdx);
+                            }
+                        }
+                        else {
+                            if (this._ruleSet.ForBirth.Exists(x => x == neighbors[playerIdx])) {
+                                candidatePlayers.Add(playerIdx);
+                            }
                         }
                     }
 
@@ -158,7 +165,7 @@ namespace Services.AlgorithmService {
             var counter = 0;
                 
             List<float[,]> generations = new List<float[,]>();
-            generations.Add(this.Initialize(game.InitialConfigs, game.Dimensions, game.Players.Count));
+            generations.Add(this.Initialize(game.InitialConfigs, game.Dimensions, game.Players.Count, game.RuleSet));
             while (!this.isGridEmpty() && counter != game.MaxGenerations) {
                 generations.Add(this.RunNextGen());
                 counter++;

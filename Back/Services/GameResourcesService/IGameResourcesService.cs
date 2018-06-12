@@ -4,6 +4,6 @@ namespace Services.GameResourcesService
 {
     public interface IGameResourcesService
     {
-        GameModel GetGameResources(DimensionsModel dimensions, int nrPlayers, int maxGenerations);
+        GameModel GetGameResources(DimensionsModel dimensions, int nrPlayers, int maxGenerations, string ruleset);
     }
 }

@@ -404,7 +404,8 @@
       },
       "Services/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Hosting.Abstractions": "2.1.0"
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.1.0",
+          "Persistence": "1.0.0"
         },
         "runtime": {
           "Services.dll": {}

@@ -1,1 +1,1 @@
-How to avoid "PlayerResources.PlayerResources.getPlayerResources"?
+How to make RuleSetService singleton?

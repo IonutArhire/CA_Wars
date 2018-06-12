@@ -42,11 +42,13 @@ namespace Api.Hubs {
         }
 
         private void TestingInitializations() {
-            var test_gameModel1 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 10);
-            var test_gameModel2 = _gameResourcesService.GetGameResources(new DimensionsModel(60, 90), 4, 150);
+            var test_gameModel1 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100, "GOF");
+            var test_gameModel2 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100, "Coagulations");
+            var test_gameModel3 = _gameResourcesService.GetGameResources(new DimensionsModel(60, 90), 4, 150, "Coagulations");
 
             this._matchesManagerService.Create("1", test_gameModel1);
             this._matchesManagerService.Create("2", test_gameModel2);
+            this._matchesManagerService.Create("3", test_gameModel3);
         }
 
         public override async Task OnConnectedAsync() {
