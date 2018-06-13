@@ -13,7 +13,7 @@
 }
 
 .my-form-title {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 #create-match-menu {
@@ -25,7 +25,7 @@
 }
 
 .my-form-elem { 
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
 .my-inline-label { 
@@ -34,4 +34,25 @@
 
 #create-btn {
     margin-top: 25px;
+}
+
+.invalid-input {
+    border-color: red !important;
+}
+
+.invalid-input:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.1) !important;
+    box-shadow: 0 0 0 0.2rem  rgba(255, 0, 0, 0.1) !important;
+}
+
+.form-control:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(5, 200, 5, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(28, 211, 4, 0.25);
+
+    border-color: #00b409;
+}
+
+.error-text {
+    margin-bottom: 0px;
+    color: red;
 }
