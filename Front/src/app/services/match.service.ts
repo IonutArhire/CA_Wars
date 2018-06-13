@@ -8,7 +8,7 @@ import 'rxjs/add/operator/pairwise';
 
 import { IPlayerResource } from '../resources/player-resources';
 import { IDimensionsResources } from '../resources/dimensions-resources';
-import { Point } from '../entities/point-entity';
+import { Point } from '../entities/point-model';
 
 import { saveAs } from 'file-saver';
 

@@ -12,6 +12,8 @@ import { IPlayerResource } from '../../resources/player-resources';
 import { IDimensionsResources } from '../../resources/dimensions-resources';
 import { IGameResources } from '../../resources/game-resources';
 
+import { Guid } from 'guid-typescript';
+
 
 
 @Component({
@@ -35,7 +37,7 @@ export class GameComponent {
   private _playerResources: Array<IPlayerResource>;
   private _assignedNum: number;
   
-  private _gameKey: number;
+  private _gameKey: Guid;
   
   private _map: number[][];
 
@@ -49,7 +51,7 @@ export class GameComponent {
     this._resourcesStatus = new BehaviorSubject<boolean>(false);
     
     this._assignedNum = -1;
-    this._gameKey = -1;
+    this._gameKey = Guid.createEmpty();
 
     this._isPlaying = false;
     this._hasGameArrived = false;
@@ -57,7 +59,8 @@ export class GameComponent {
   }
 
   ngOnInit() {
-    this._gameKey = parseInt(this._route.snapshot.paramMap.get('game-key'));
+    this._gameKey = Guid.parse(this._route.snapshot.paramMap.get('game-key'));
+    
 
     this._hubConnection = new HubConnectionBuilder()
                               .withUrl('http://localhost:5000/match')
@@ -92,7 +95,7 @@ export class GameComponent {
     console.log(data);
     console.log('connected');
 
-    this._hubConnection.invoke('SendResources', this._gameKey).catch(this.resourcesError);
+    this._hubConnection.invoke('SendResources', this._gameKey.toString()).catch(this.resourcesError);
   }
 
   public resourcesError(err): void {

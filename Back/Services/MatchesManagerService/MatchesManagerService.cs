@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using Services.Models;
 
@@ -5,7 +6,7 @@ namespace Services.MatchesManagerService
 {
     public class MatchesManagerService: IMatchesManagerService
     {
-        private ConcurrentDictionary<string, GameModel> _matches;
+        private ConcurrentDictionary<Guid, GameModel> _matches;
 
         private ConcurrentDictionary<string, GameModel> _connections;
 
@@ -22,15 +23,15 @@ namespace Services.MatchesManagerService
         }
         
         public MatchesManagerService() {
-            this._matches = new ConcurrentDictionary<string, GameModel>(System.StringComparer.OrdinalIgnoreCase);
+            this._matches = new ConcurrentDictionary<Guid, GameModel>();
             this._connections = new ConcurrentDictionary<string, GameModel>(System.StringComparer.OrdinalIgnoreCase);
         }
 
-        public void Create(string gameKey, GameModel gameModel) {
+        public void Create(Guid gameKey, GameModel gameModel) {
             this._matches.TryAdd(gameKey, gameModel);
         }
 
-        public void RegisterPlayer(string connectionId, int assignedNumber, string gameKey) {
+        public void RegisterPlayer(string connectionId, int assignedNumber, Guid gameKey) {
             var game = this._matches[gameKey];
             this._connections.TryAdd(connectionId, game);
 
@@ -44,7 +45,7 @@ namespace Services.MatchesManagerService
             game.Players.RemoveAt(playerId);
         }
 
-        public GameModel GetGameModel(string gameKey) {
+        public GameModel GetGameModel(Guid gameKey) {
             return this._matches[gameKey];
         }
     }

@@ -1,15 +1,16 @@
+using System;
 using Services.Models;
 
 namespace Services.MatchesManagerService
 {
     public interface IMatchesManagerService
     {
-        void Create(string gameKey, GameModel gameModel);
+        void Create(Guid gameKey, GameModel gameModel);
 
-        void RegisterPlayer(string connectionId, int assignedNumber, string gameKey);
+        void RegisterPlayer(string connectionId, int assignedNumber, Guid gameKey);
 
         void UnRegisterPlayer(string connectionId);
 
-        GameModel GetGameModel(string gameKey);
+        GameModel GetGameModel(Guid gameKey);
     }
 }

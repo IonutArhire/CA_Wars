@@ -1,64 +1,66 @@
 <div class="toolbar" #toolbar>
 
-  <div class="box" *ngIf="_hasResources">
-    <a>
-      <i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" [routerLink]="['/menu/main']" style="cursor:pointer;"></i>
-    </a>
+	<div class="box" *ngIf="_hasResources">
+		<a>
+			<i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" [routerLink]="['/menu/main']" style="cursor:pointer;"></i>
+		</a>
 
-    <a>
-      <i id="grid-btn"
-        class="fas fa-hashtag my-toolbar-btn"
-        #gridMode
-        (click)="flipGridMode()" 
-        style="cursor:pointer;"></i>
-    </a>
 
-    <a>
-      <i id="download-btn"
-        class="fas fa-download my-toolbar-btn my-media-btn"
-        (click)="downloadGenerations()" 
-        style="cursor:pointer;"
-        [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}"></i>
-    </a>
-  </div>
+	</div>
 
-  <div class="box" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
-    <i class="fas fa-play my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i>
-    <i class="fas fa-pause my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i>
-    <i class="fas fa-forward my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i>
-    <i class="fas fa-backward my-toolbar-btn my-media-btn" (click)="skipSimulationBack()" style="cursor:pointer;"></i>
-    <i class="fas fa-step-forward my-toolbar-btn my-media-btn" (click)="stepSimulationForward()" style="cursor:pointer;"></i>
-    <i class="fas fa-step-backward my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i>
-  </div>
+	<div class="box" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
+		<i class="fas fa-play my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i>
+		<i class="fas fa-pause my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i>
+		<i class="fas fa-forward my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i>
+		<i class="fas fa-backward my-toolbar-btn my-media-btn" (click)="skipSimulationBack()" style="cursor:pointer;"></i>
+		<i class="fas fa-step-forward my-toolbar-btn my-media-btn" (click)="stepSimulationForward()" style="cursor:pointer;"></i>
+		<i class="fas fa-step-backward my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i>
+	</div>
 
-  <div class="box" *ngIf="_hasResources">
-    <a>
-      <i id="eraser-btn"
-         class="fas fa-eraser my-toolbar-btn" 
-         #eraser
-         (click)="flipEraserMode()" 
-         style="cursor:pointer;"></i>
-    </a>
-  </div>
-  
+	<div class="box" *ngIf="_hasResources">
+		<a>
+			<i id="download-btn"
+				class="fas fa-download my-toolbar-btn my-media-btn"
+				(click)="downloadGenerations()"
+				style="cursor:pointer;"
+				[ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}"></i>
+		</a>
+
+		<a>
+			<i id="grid-btn"
+				class="fas fa-hashtag my-toolbar-btn"
+				#gridMode
+				(click)="flipGridMode()"
+				style="cursor:pointer;"></i>
+		</a>
+
+		<a>
+			<i id="eraser-btn"
+				 class="fas fa-eraser my-toolbar-btn"
+				 #eraser
+				 (click)="flipEraserMode()"
+				 style="cursor:pointer;"></i>
+		</a>
+	</div>
+
 </div>
 
 
 <canvas id='play-grid' #playGrid (window:resize)="onResize($event)"></canvas>
 
-<button id='send-to-server-btn' 
-        class="btn btn-outline-dark game-btn" 
-        (click)="sendConfig()" 
-        *ngIf="_hasResources && !_hasGameArrived" 
-        [disabled]="_hasSent">Send to Server</button>
+<button id='send-to-server-btn'
+				class="btn btn-outline-dark game-btn"
+				(click)="sendConfig()"
+				*ngIf="_hasResources && !_hasGameArrived"
+				[disabled]="_hasSent">Send to Server</button>
 
-<button id='reset-match-btn' 
-        class="btn btn-outline-dark game-btn" 
-        (click)="resetMatch()" 
-        *ngIf="_hasResources && _hasGameArrived">Reset Match</button>
+<button id='reset-match-btn'
+				class="btn btn-outline-dark game-btn"
+				(click)="resetMatch()"
+				*ngIf="_hasResources && _hasGameArrived">Reset Match</button>
 
 <div id='score-board' *ngIf="_hasResources">
-  <span class='score' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
-    {{ player.wins }}
-  </span>
+	<span class='score' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
+		{{ player.wins }}
+	</span>
 </div>

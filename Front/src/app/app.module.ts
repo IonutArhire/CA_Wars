@@ -8,6 +8,8 @@ import { GameComponent } from './components/game/game.component';
 import { MatchCreateComponent } from './components/match-create/match-create.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { HttpClientModule } from '@angular/common/http';
+import { MatchCreateService } from './services/match-create.service';
 
 @NgModule({
   declarations: [
@@ -19,9 +21,10 @@ import { MenuComponent } from './components/menu/menu.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [MatchService],
+  providers: [MatchService, MatchCreateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

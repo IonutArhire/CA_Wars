@@ -42,13 +42,17 @@ namespace Api.Hubs {
         }
 
         private void TestingInitializations() {
-            var test_gameModel1 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100, "GOF");
-            var test_gameModel2 = _gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100, "Coagulations");
-            var test_gameModel3 = _gameResourcesService.GetGameResources(new DimensionsModel(60, 90), 4, 150, "Coagulations");
+            var test_gameModel1 = this._gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100, "GOF");
+            var test_gameModel2 = this._gameResourcesService.GetGameResources(new DimensionsModel(15, 30), 2, 100, "Coagulations");
+            var test_gameModel3 = this._gameResourcesService.GetGameResources(new DimensionsModel(60, 90), 4, 150, "Coagulations");
 
-            this._matchesManagerService.Create("1", test_gameModel1);
-            this._matchesManagerService.Create("2", test_gameModel2);
-            this._matchesManagerService.Create("3", test_gameModel3);
+            var id1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+            var id2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
+            var id3 = Guid.Parse("00000000-0000-0000-0000-000000000003");
+
+            this._matchesManagerService.Create(id1, test_gameModel1);
+            this._matchesManagerService.Create(id2, test_gameModel2);
+            this._matchesManagerService.Create(id3, test_gameModel3);
         }
 
         public override async Task OnConnectedAsync() {
@@ -67,7 +71,8 @@ namespace Api.Hubs {
             }
         }
 
-        public async Task SendResources(string gameKey) {
+        public async Task SendResources(string gameKeyUnparsed) {
+            var gameKey = Guid.Parse(gameKeyUnparsed);
             var game = this._matchesManagerService.GetGameModel(gameKey);
             var gameModelDto = this._mapper.Map<GameModelDto>(game);
 
@@ -77,18 +82,18 @@ namespace Api.Hubs {
             gameModelDto.Map = personalizedMap;
 
             await Clients.Caller.SendAsync("Resources", gameModelDto);
-            await Groups.AddToGroupAsync(Context.ConnectionId, gameKey);
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameKey.ToString());
             this._matchesManagerService.RegisterPlayer(Context.ConnectionId, assignedNumber, gameKey);
         }
 
-        public async Task SendConfig(string gameKey, float[,] playerConfig) {
+        public async Task SendConfig(Guid gameKey, float[,] playerConfig) {
             var game = this._matchesManagerService.GetGameModel(gameKey);
             game.InitialConfigs.Add(playerConfig);
 
             if (game.InitialConfigs.Count == game.Players.Count) {
                 var result = this._algorithmService.RunGame(game);
 
-                await Clients.Group(gameKey).SendAsync("Game", result);
+                await Clients.Group(gameKey.ToString()).SendAsync("Game", result);
                 game.InitialConfigs.Clear();
             }
         }
