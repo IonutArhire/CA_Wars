@@ -1,0 +1,308 @@
+---
+title: "Cellular Automata Wars"
+author: "Arhire Ionut"
+date: "15 mai 2018"
+output:
+  pdf_document: 
+    number_sections: true
+fontsize: 12pt
+---
+
+\newpage
+\tableofcontents
+\newpage
+
+# Introduction
+
+#### Main Idea
+
+This application is targeted towards users that want to learn more about cellular automata (CA) or that already have an interest in this domain, 
+offering them the opportunity to discover 
+new types of cellular automata and new rules while also having fun and interacting with friends.
+
+#### Motivation
+
+My main inspiration for this project was my interest in cellular automata. I wanted to do something innovative with it,
+something that would appeal to anyone, from CA enthusiast to people without a technical knowledge background.
+
+As such, a browser-based multiplayer game was the ideal solution. Furthermore, it was a new technological challenge for me as I never
+used websockets-based frameworks until now and never did a multiplayer game before, so I took it as my chance to try it, learn something new,
+and have fun with it.
+
+#### What is new here?
+
+Most CA simulators have an 'old' look to them accompanied by an even 'older' looking page design, and none of them can be experienced between multiple people.
+My app is meant to do exactly the opposite while offering a fun experience to the user.
+
+#### Methodology
+
+Server-Client architecture using websockets for live match events and REST api for request-response type of tasks (like match creation).
+
+#### Summary of Solution
+
+The matches will be created by a single user.
+This user can share the link to the match with anyone, and after enough clients entered that match, the first game can start.
+The idea of each game is to win by having the most live cells on the board by the end of the last generation.
+
+# Chapter I - App Flow
+
+The app will welcome the user through a main menu after which the user can opt for:
+
+* creating a new multiplayer match.
+* learn how the game works and what each option does.
+* find about the author through an 'About' section.
+
+When creating a new multiplayer match, the user will be able to customize the following settings:
+
+* Number of players.
+* CA rule set which will determine the evolution of each game of the match.
+* Maximum number of generations resulted from the CA evolution.
+* Number of rows of the play field.
+* Number of columns of the play field.
+
+After match creation, the user will receive an url from the server, which he will use to share the match with his/her friends.
+Then, the match will begin. A match is a succession of games, each game ending in a win or a draw between more players.
+
+
+# Chapter II - CA theory in CA Wars
+
+In this chapter, we will look into the basic theory of CA and how it relates to the flow of a game.
+
+## 2.1 Basic CA
+
+A cellular automaton consists of a regular grid of cells, each in one of a finite number of states, such as 'on' and 'off'. 
+The grid can be in any finite number of dimensions. 
+For each cell, a set of cells called its neighborhood is defined relative to the specified cell. 
+An initial state (time t = 0) is selected by assigning a state for each cell of the grid.
+A new generation is created (advancing t by 1), according to some fixed rule that determines the new state of each cell in terms of the current state of the cell and the states of the cells in its neighborhood. 
+Typically, the rule for updating the state of cells is the same for each cell and does not change over time, and is applied to the whole grid simultaneously.
+
+## 2.2 CA in the game
+
+For CA Wars, only 2-dimensional CA are used, so the generations will evolve on a 2-dimensional grid.
+
+Cellular automata are often simulated on a finite grid rather than an infinite one. 
+In two dimensions, the universe would be a rectangle instead of an infinite plane. 
+The obvious problem with finite grids is how to handle the cells on the edges.
+
+CA Wars uses finite grids. 
+Finite grids were chosen to make the games more competitive by shifting the focus from 'expanding' to 'attacking' and 'defending'.
+Another great reason is performance (easier to compute on a finite grid).
+
+In CA Wars, 'edge' cells are handled with a 'toroidal' arrangement: 
+when one goes off the top, one comes in at the corresponding position on the bottom, and when one goes off the left, one comes in on the right.
+
+
+This can be visualized as taping the left and right edges of the rectangle to form a tube, 
+then taping the top and bottom edges of the tube to form a torus (doughnut shape).
+
+![A torus](images/torus.png){width=100px}
+
+The reason for using this 'toroidal' arrangement is ease of programming (using modular arithmetic functions).
+
+The rules used in CA Wars are called 'Life-like' rules.
+
+To understand what 'Life-like' rules refer to, we will have to analyze the most renown CA rule:
+
+### 2.2.1 Game of Life
+
+The universe of the Game of Life is a 2-dimensional grid of square cells, 
+each of which is in one of two possible states, 'alive' or 'dead', (or populated and unpopulated, respectively). 
+Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent.
+This is called the 'Moore neighbourhood'.
+
+![Moore neighbourhood](images/moore.png){width=100px}
+
+At each step in time, the following transitions occur:
+
+1. Any live cell with fewer than two live neighbors dies, as if caused by under population.
+2. Any live cell with two or three live neighbors lives on to the next generation.
+3. Any live cell with more than three live neighbors dies, as if by overpopulation.
+4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+
+The first generation is created by applying the above rules simultaneously to every cell in the seed; 
+births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. 
+Each generation is a pure function of the preceding one. 
+The rules continue to be applied repeatedly to create further generations.
+
+### 2.2.2 Life-like CA
+
+A CA is 'Life-like' (in the sense of being similar to Conway's Game of Life) if it meets the following criteria:
+
+* The array of cells of the automaton has two dimensions.
+* Each cell of the automaton has two states, 'alive' and 'dead'.
+* The neighborhood of each cell is the Moore neighborhood.
+* In each time step of the automaton, the new state of a cell can be expressed as a 
+function of the number of adjacent cells that are in the alive state and of the cell's own state; 
+that is, the rule is outer totalistic (sometimes called semitotalistic).
+
+This class of cellular automata is named for the Game of Life, the most famous rule, which meets all of these criteria. 
+Many different terms are used to describe this class. 
+It is common to refer to it as the "Life family" or to simply use phrases like "similar to Life".
+
+There are three standard notations for describing these rules.
+In the notation we will be using, Game of Life can be expressed like this: 'S23/B3'.
+S stands for 'survival' and 'B' stands for 'birth'.
+'S23/B3' would thus be read as "The cell will survive if it has exactly 2 or 3 live neghbours/ The cell will become alive if it has exactly 3 live neghbours".
+
+There are 2^18^ = 262,144 possible Life-like rules, only a small fraction of which have been studied in detail.
+
+### 2.2.3 Mirek's Cellebration (MCell)
+
+Mirek's Cellebration (MCell) is a 32-bit Windows program whose main purpose is exploring existing and creating new rules and patterns of 1-D and 2-D Cellular Automata.
+
+CA Wars uses all the MCell built-in Life-like rules:
+
+Name          | Rule(S/B)     | Character    
+------------- | ------------- | -------------
+2x2	          | 125/36        |	Chaotic	     
+34 Life	      | 34/34         |	Exploding
+Amoeba	      | 1358/357	    | Chaotic
+Assimilation	| 4567/345	    | Stable
+Coagulations	| 235678/378	  | Exploding
+Conway's Life	| 23/3	        | Chaotic
+Coral	        | 45678/3	      | Exploding
+Day & Night	  | 34678/3678	  | Stable
+Diamoeba	    | 5678/35678	  | Chaotic
+Flakes	      | 012345678/3	  | Expanding
+Gnarl	        | 1/1      	    | Exploding
+HighLife	    | 23/36	        | Chaotic
+Long life    	| 5/345	        | Stable
+Maze	        | 12345/3	      | Exploding
+Mazectric	    | 1234/3	      | Exploding
+Move	        | 245/368	      | Stable
+Pseudo life	  | 238/357	      | Chaotic
+Replicator	  | 1357/1357	    | Exploding
+Seeds (2)	    | /2	          | Exploding
+Serviettes	  | /234	        | Exploding
+Stains	      | 235678/3678	  | Stable
+WalledCities	| 2345/45678	  | Stable
+
+# Chapter III - Game Flow
+
+* Step 1: Map Generation
+
+A simple 2-dimensional orthogonal grid of minimum size 4x4 and maximum size 50x50, that is partitioned such as each player would get the same amount of territory.
+
+![Example of generated map](images/randmap.png){width=100px}
+
+The strategy for map generation is randomly selecting, for each cell, which player can 'own' it. Given the uniform distribution of number of 'viable' cells per player, 
+we can be sure of the fact that each player will get approximately the same amount of 'territory'.
+
+Another plus of using this method is the fact that there are very low chances for a player to get a large clump of 'territory' thus meaning that the player is
+constrained to using patterns that don't require a lot of cells, meaning he can more easily predict a game and employ a certain strategy. 
+
+* Step 2: Initial Configurations
+
+Each player will activate cells as to create the most favorable initial configuration for himself.
+
+* Step 3: Automata Evolution
+
+We will now analyze a simplified case of automata evolution that can happen during a game:
+
+We will start from the following initial configuration:
+
+![Initial Configuration](images/init.png){width=100px}
+
+Here, player I has the orange cells and player II the blue ones.
+
+The CA we will be using is Game of Life (GOF).
+
+GOF consists of the following transitions:  
+
+1. Any live cell with fewer than two live neighbors dies, as if caused by under population.
+2. Any live cell with two or three live neighbors lives on to the next generation.
+3. Any live cell with more than three live neighbors dies, as if by overpopulation.
+4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+
+We can see in the picture that player I has a “Glider”, a pattern of GOF under the category: “spaceship” (for the way it “moves”). 
+Player II has a “Boat”, also called a “still life”.
+
+The initial configuration evolves as follows:
+
+![First Evolution Stages](images/first-evolution-stages.png){width=100px}
+
+\newpage
+
+The last panel shows how a cell can overwrite an opponent cell.
+
+At each iteration of the evolution, the transitions for a player are calculated as if the opponent’s cells are all dead.
+The only problem here would be the case when a cell wants to be activated with orange and blue at the same time. In this case the cell will remain dead.
+
+Getting back to the evolution, the next state is:
+
+![Fifth Generation](images/fifth-generation.png){width=100px}
+
+To analyze how we arrived at this state we will use this:
+
+![Evolution Analysis](images/evolution-analysis.png){width=300px}
+
+
+Cell 1: died because of transition 1  
+Cell 2: was born because of transition 4; neighbors: {1,5,6}  
+Cell 3: died because of transition 1  
+Cell 4: lived because of transition 2  
+Cell 5: died because of transition 3  
+Cell 6: was reborn as a blue cell because of transition 4; neighbors: {3,4,12}  
+Cell 7: stayed dead  
+Cell 8: lived because of transition 2  
+Cell 9: lived because of transition 2  
+Cell 10: lived because of transition 2  
+Cell 11: was born because of transition 4; neighbors: {5,6,10}  
+Cell 12: died because of transition 1  
+
+\newpage
+
+The next state is:
+
+![Last Generation](images/last-generation.png){width=100px}
+
+After this state follows simultaneous death for both players’ cells.
+
+# Conclusion
+
+The main goal of this thesis was to put cellular automata in a completely new, fresh, perspective that would appeal to anyone.
+However, I didn't want it to only seem like a fun idea, but also be a fun idea and experience, so I knew there was a long way to go in terms of
+front-end work, which was quite scary for me, given that I wasn't confident of my front-end engineering and design skills.
+
+I also wanted to learn a lot and explore, so I chose to use the latest updates for each major technology in the project, even though I knew I wouldn't find
+the most extensive documentation given their recent launches.
+
+At the beginning, it was pretty hard researching and getting used to signalR. I also had to open some issues on the aspnet/signalR github repository to
+better understand what this and the older version of singalR  have in common and what is different.
+
+I also had to get used to the front-end canvas and its mouse input event handling 
+and had to do a lot of brainstorming to figure out the design on the go, 
+because I wanted it to be my own invention, with as little outside help as possible.
+
+However, I think the hardest thing was to make hard architectural choices.
+I made some architectural decisions that turned out to be not as succesful as I had hoped and then had to redo the whole thing.
+But all those bad decision were great lessons for me and I discovered how much more important was 'planning ahead' than I originally thought.
+
+I also experimented with when to refactor my code and found out it's better to do it early most of the times.
+
+Visual Studio Code offered me the flexibility I needed for both back-end and front-end and its lightness probably saved my calm a few times.
+
+#### Ideas for the future
+
+In the future, the game could accommodate multiple classes of CAs, not only life-like CAs.
+However, the greatest addition would be a singleplayer mode in which you can test out new ideas by playing with a single color or more and see how they interact.
+
+#### Personal Opinion
+
+The result of my work until now is an application meeting the basic objectives I was set out to achieve. I also learned a lot from working on this project,
+both technical knowledge and organizational wisdom.
+
+When I say 'organizational wisdom' I'm referring to:
+
+* reading as much as you can about the used frameworks before deciding on the architecture. 
+* refactoring early (even when you are the only person working on the project).
+* realizing the importance of OOP principles.
+* discussing your ideas with someone else.
+
+I am also more confident now in my ability to produce good looking and dynamic UI.
+
+All in all, it was a thrilling experience that only made me more passionate and less scared about real-life, big projects.
+
+
+
