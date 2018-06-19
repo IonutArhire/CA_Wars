@@ -26,6 +26,7 @@ using Services.PlayerResourcesService;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Repositories;
 using Services.RuleSetService;
+using FluentValidation.AspNetCore;
 
 namespace Api {
     public class Startup {
@@ -36,8 +37,11 @@ namespace Api {
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices (IServiceCollection services) {
-            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
+        public void ConfigureServices(IServiceCollection services) {
+            services.AddMvc ()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+
             services.AddCors(options => {
                 options.AddPolicy("AllowAny", x => {
                     x.AllowAnyHeader()

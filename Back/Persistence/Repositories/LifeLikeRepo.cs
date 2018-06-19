@@ -9,11 +9,11 @@ namespace Persistence.Repositories
 
         public LifeLikeRepo(IDatabaseContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
         public LifeLike GetByName(string name) {
-            return _context.LifeLikes.First(x => x.Name == name);
+            return this._context.LifeLikes.First(x => x.Name == name);
         }
     }
 }

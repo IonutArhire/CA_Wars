@@ -49,13 +49,13 @@
           <label class="h5 grey-text font-weight-light">Number of rows</label>
           <input [(ngModel)]="_rows"
                   name="Rows"
-                  (ngModelChange)="onChangeNumericInput($event, 'Rows', 1, 50)"
+                  (ngModelChange)="onChangeNumericInput($event, 'Rows', 2, 50)"
                   type="text" 
                   [ngClass]="{
                     'form-control' : true,
                     'invalid-input': _rowsError > 0
                   }"
-                  placeholder="1-50">
+                  placeholder="2-50">
           <label class="grey-text font-weight-light error-text" *ngIf="_rowsError > 0">{{ _errors[_rowsError] }}</label>   
         </div>
 
@@ -63,13 +63,13 @@
           <label class="h5 grey-text font-weight-light">Number of columns</label>
           <input [(ngModel)]="_cols"
                   name="Cols"
-                  (ngModelChange)="onChangeNumericInput($event, 'Cols', 1, 50)"
+                  (ngModelChange)="onChangeNumericInput($event, 'Cols', 2, 50)"
                   type="text" 
                   [ngClass]="{
                     'form-control' : true,
                     'invalid-input': _colsError > 0
                   }"
-                  placeholder="1-50">
+                  placeholder="2-50">
           <label class="grey-text font-weight-light error-text" *ngIf="_colsError > 0">{{ _errors[_colsError] }}</label>        
         </div>
 
