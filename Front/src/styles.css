@@ -51,3 +51,7 @@ i {
 .my-modal-content {
     border-radius: 25px;
 }
+
+.my-form-title {
+    margin-bottom: 1rem;
+}

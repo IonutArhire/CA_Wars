@@ -43,6 +43,10 @@ export class GameComponent {
   
   private _map: number[][];
 
+  private _isGameKeyValid: boolean;
+
+  private _errorMessage: string;
+
   public _hasResources: boolean;
   public _isPlaying: boolean;
   public _hasGameArrived: boolean;
@@ -53,16 +57,23 @@ export class GameComponent {
     this._resourcesStatus = new BehaviorSubject<boolean>(false);
     
     this._assignedNum = -1;
-    this._gameKey = Guid.createEmpty();
 
     this._isPlaying = false;
     this._hasGameArrived = false;
     this._hasSent = false;
+
+    this._isGameKeyValid = true;
   }
 
   ngOnInit() {
-    this._gameKey = Guid.parse(this._route.snapshot.paramMap.get('game-key'));
-    
+    let unparsedGameKey = this._route.snapshot.paramMap.get('game-key');
+    if (Guid.isGuid(unparsedGameKey)) {
+      this._gameKey = Guid.parse(this._route.snapshot.paramMap.get('game-key'));
+    }
+    else {
+      this._errorMessage = `\"${unparsedGameKey}\" is not a valid game key!`;
+      this._isGameKeyValid = false;
+    }
 
     this._hubConnection = new HubConnectionBuilder()
                               .withUrl('http://localhost:5000/match')
@@ -97,13 +108,13 @@ export class GameComponent {
     console.log(data);
     console.log('connected');
 
-    this._hubConnection.invoke('SendResources', this._gameKey.toString()).catch(this.resourcesError);
+    this._hubConnection.invoke('SendResources', this._gameKey.toString())
+      .catch((err) => {
+        this._errorMessage = err.message.match("HubException: (.*)")[1];
+        this._isGameKeyValid = false;
+      });
   }
-
-  public resourcesError(err): void {
-    console.log(err);
-  }
-
+  
   public resources(resources: IGameResources): void {
     this._playerResources = resources.players;
     this._assignedNum = resources.assignedNumber;

@@ -12,5 +12,7 @@ namespace Services.MatchesManagerService
         void UnRegisterPlayer(string connectionId);
 
         GameModel GetGameModel(Guid gameKey);
+
+        bool GameModelExists(Guid gameKey);
     }
 }

@@ -71,23 +71,34 @@ namespace Api.Hubs {
             }
         }
 
-        public async Task SendResources(string gameKeyUnparsed) {
-            var gameKey = Guid.Parse(gameKeyUnparsed);
-            var game = this._matchesManagerService.GetGameModel(gameKey);
-            var gameModelDto = this._mapper.Map<GameModelDto>(game);
+        public async Task SendResources(string unparsedGameKey) {
+            var gameKey = Guid.Parse(unparsedGameKey);
+                
+            if (this._matchesManagerService.GameModelExists(gameKey)) {
+                var game = this._matchesManagerService.GetGameModel(gameKey);
 
-            var assignedNumber = this._playerResourcesService.AssignNumber(game);
-            gameModelDto.AssignedNumber = assignedNumber;
-            var personalizedMap = this._playerResourcesService.GetPersonalizedMap(game.Map, assignedNumber);
-            gameModelDto.Map = personalizedMap;
+                if (game.PlayerNumbers.Count == 0) {
+                    throw new HubException($"The match with the key \"{unparsedGameKey}\" is already full!");
+                }
 
-            await Clients.Caller.SendAsync("Resources", gameModelDto);
-            await Groups.AddToGroupAsync(Context.ConnectionId, gameKey.ToString());
-            this._matchesManagerService.RegisterPlayer(Context.ConnectionId, assignedNumber, gameKey);
+                var gameModelDto = this._mapper.Map<GameModelDto>(game);
+
+                var assignedNumber = this._playerResourcesService.AssignNumber(game);
+                gameModelDto.AssignedNumber = assignedNumber;
+                var personalizedMap = this._playerResourcesService.GetPersonalizedMap(game.Map, assignedNumber);
+                gameModelDto.Map = personalizedMap;
+
+                await Clients.Caller.SendAsync("Resources", gameModelDto);
+                await Groups.AddToGroupAsync(Context.ConnectionId, gameKey.ToString());
+                this._matchesManagerService.RegisterPlayer(Context.ConnectionId, assignedNumber, gameKey);
+            }
+            else {
+                throw new HubException($"The match with the key \"{unparsedGameKey}\" is non-existent!");
+            }
         }
 
-        public async Task SendConfig(string gameKeyUnparsed, float[,] playerConfig) {
-            var gameKey = Guid.Parse(gameKeyUnparsed);
+        public async Task SendConfig(string unparsedGameKey, float[,] playerConfig) {
+            var gameKey = Guid.Parse(unparsedGameKey);
             var game = this._matchesManagerService.GetGameModel(gameKey);
             game.InitialConfigs.Add(playerConfig);
 

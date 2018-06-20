@@ -12,6 +12,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatchCreateService } from './services/match-create.service';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
     MatchCreateComponent,
     MainMenuComponent,
     MenuComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,

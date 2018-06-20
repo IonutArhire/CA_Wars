@@ -48,5 +48,9 @@ namespace Services.MatchesManagerService
         public GameModel GetGameModel(Guid gameKey) {
             return this._matches[gameKey];
         }
+
+        public bool GameModelExists(Guid gameKey) {
+            return this._matches.ContainsKey(gameKey);
+        }
     }
 }
