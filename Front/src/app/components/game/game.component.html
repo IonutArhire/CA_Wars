@@ -2,7 +2,7 @@
 
 	<div class="box" *ngIf="_hasResources">
 		<a>
-			<i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" [routerLink]="['/menu/main']" style="cursor:pointer;"></i>
+			<i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" (click)="exit()" style="cursor:pointer;"></i>
 		</a>
 
 
@@ -63,4 +63,37 @@
 	<span class='score' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
 		{{ player.wins }}
 	</span>
+</div>
+
+
+
+
+
+<div mdbModal #side="mdb-modal" class="modal fade right" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-side modal-top-right" role="document">
+		<div class="modal-content my-modal-content">
+			
+			<div class="modal-header my-modal-header">
+				<p class="h3 text-center py-4">Are you sure you want to exit the match?</p>
+			</div>
+
+			<div class="modal-body">
+				<p class="h5 py-3">
+					Any progress you made will be lost!
+				</p>
+			</div>
+	
+			<div class="modal-footer my-modal-footer">
+				<button type="button" 
+						class="btn btn-outline-dark my-modal-btn"
+						style="cursor:pointer;" 
+						data-dismiss="modal" 
+						(click)="side.hide()">
+						Cancel
+				</button>
+				<button type="button" class="btn btn-outline-dark my-modal-btn" [routerLink]="['/menu/main']">Exit</button>
+			</div>
+	
+		</div>
+	</div>
 </div>

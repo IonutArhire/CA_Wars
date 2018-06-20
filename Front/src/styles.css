@@ -35,3 +35,19 @@ i {
 
     border-radius: 25px;
 }
+
+.my-modal-footer {
+    justify-content: center !important;
+}
+
+.my-modal-header {
+    justify-content: center !important;
+}
+
+.my-modal-btn {
+    width: 7rem;
+}
+
+.my-modal-content {
+    border-radius: 25px;
+}

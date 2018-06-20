@@ -30,6 +30,8 @@ export class GameComponent {
   @ViewChild('eraser') eraser: ElementRef;
   @ViewChild('gridMode') gridMode: ElementRef;
 
+  @ViewChild("side") side: any;
+
   private _resourcesStatus: BehaviorSubject<boolean>;
   
   private _dimensions: IDimensionsResources;
@@ -206,5 +208,9 @@ export class GameComponent {
 
   public downloadGenerations(): void {
     this._matchService.saveGenerationsAsImgs();
+  }
+
+  public exit(): void {
+    this.side.show();
   }
 }
