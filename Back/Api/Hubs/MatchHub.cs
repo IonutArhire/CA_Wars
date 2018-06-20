@@ -86,7 +86,8 @@ namespace Api.Hubs {
             this._matchesManagerService.RegisterPlayer(Context.ConnectionId, assignedNumber, gameKey);
         }
 
-        public async Task SendConfig(Guid gameKey, float[,] playerConfig) {
+        public async Task SendConfig(string gameKeyUnparsed, float[,] playerConfig) {
+            var gameKey = Guid.Parse(gameKeyUnparsed);
             var game = this._matchesManagerService.GetGameModel(gameKey);
             game.InitialConfigs.Add(playerConfig);
 

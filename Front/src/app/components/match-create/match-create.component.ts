@@ -1,7 +1,8 @@
-import { Component, ViewChildren, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild  } from '@angular/core';
 import { MatchCreateService } from '../../services/match-create.service';
 import { MatchCreate } from '../../entities/match-create-model';
 import { isNumeric } from 'rxjs/util/isNumeric';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-match-create',
@@ -10,7 +11,7 @@ import { isNumeric } from 'rxjs/util/isNumeric';
 })
 export class MatchCreateComponent {
 
-  //@ViewChild('maxIters') maxIters: ElementRef;
+  @ViewChild("side") side: any;
 
   private _selectedNrPlayers: number;
   private _selectedRuleSet: string;
@@ -28,7 +29,14 @@ export class MatchCreateComponent {
 
   private _errors: { [errorCode: number] : string; };
 
-  constructor(private _matchCreateService: MatchCreateService) {
+  private _urlRoot = "http://localhost:4200/match/";
+
+  private _matchId: string;
+  private _matchUrl: string;
+
+  constructor(private _matchCreateService: MatchCreateService,
+              private _router: Router) {
+
     this._selectedNrPlayers = 2;
     this._selectedRuleSet = "GOF";
 
@@ -96,13 +104,19 @@ export class MatchCreateComponent {
     }
   }
 
-  private createMatch(): void {
-    this._matchCreateService.createMatch(new MatchCreate(this._selectedNrPlayers, 
-      this._selectedRuleSet, 
-      this._maxIters, 
-      this._rows, 
-      this._cols))
-      .subscribe(result => console.log(result));
+  private createMatch(content): void {
+    let matchCreateObj = new MatchCreate(this._selectedNrPlayers, this._selectedRuleSet, this._maxIters, this._rows, this._cols);
+    this._matchCreateService.createMatch(matchCreateObj)
+      .subscribe((result) => {
+        this._matchId = result["id"];
+        this._matchUrl = `${this._urlRoot}${this._matchId}`;
+
+        this.side.show();
+      });
+  }
+
+  private goToMatch(): void {
+    this._router.navigateByUrl('match/' + this._matchId);
   }
 
 }

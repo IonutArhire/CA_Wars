@@ -13,16 +13,15 @@ export class MatchCreateService {
 	private rulesets: Array<string>;
 
 	constructor(private http: HttpClient) {
-		this.rulesets = ["GOF", 
-										"Coagulations"]; 
+		this.rulesets = ["GOF", "Coagulations"]; 
 	}
 
 	public getRulesets() {
 		return this.rulesets;
 	}
 
-	public createMatch (matchCreateModel: MatchCreate): Observable<string> {
-		return this.http.post<string>(this.matchCreateUrl, matchCreateModel);
+	public createMatch (matchCreateModel: MatchCreate): Observable<object> {
+		return this.http.post<object>(this.matchCreateUrl, matchCreateModel);
 	}
 
 }

@@ -1,3 +1,36 @@
+<div mdbModal #side="mdb-modal" class="modal fade right" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-side modal-top-right" role="document">
+      <div class="modal-content my-modal-content">
+          
+          <div class="modal-header my-modal-header">
+              <p class="h3 text-center py-4">Match Created Successfully!</p>
+          </div>
+
+          <div class="modal-body">
+              <div class="my-modal-url-display">
+                <input type="text" class="form-control my-url-display" [value]="_matchUrl">
+              </div>
+
+              <p class="h5 py-3">
+                Share this link with your friends and start having fun!
+              </p>
+          </div>
+
+          <div class="modal-footer my-modal-footer">
+              <button type="button" 
+                      class="btn btn-outline-dark my-modal-btn"
+                      style="cursor:pointer;" 
+                      data-dismiss="modal" 
+                      (click)="side.hide()">
+                      Close
+              </button>
+              <button type="button" class="btn btn-outline-dark my-modal-btn" (click)="goToMatch()">Go to Match</button>
+          </div>
+
+      </div>
+  </div>
+</div>
+
 <div id="create-match-menu" class="card col-9 col-sm-9 col-md-5 col-lg-4 p-3 my-form-container">
 
   <div class="card-body">
@@ -79,7 +112,7 @@
               type="button" 
               class="btn btn-outline-dark"
               [disabled]="!_isReadyToCreate"
-              (click)="createMatch()">
+              (click)="createMatch(content)">
               Create
       </button>
     </form>
@@ -87,3 +120,4 @@
   </div>
 
 </div>
+

@@ -11,6 +11,7 @@ import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatchCreateService } from './services/match-create.service';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
 @NgModule({
   declarations: [
@@ -18,13 +19,14 @@ import { MatchCreateService } from './services/match-create.service';
     GameComponent,
     MatchCreateComponent,
     MainMenuComponent,
-    MenuComponent
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MDBBootstrapModule.forRoot()
   ],
   providers: [MatchService, MatchCreateService],
   bootstrap: [AppComponent]

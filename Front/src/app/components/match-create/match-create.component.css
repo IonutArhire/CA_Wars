@@ -57,3 +57,28 @@
     margin-bottom: 0px;
     color: red;
 }
+
+.my-modal-footer {
+    justify-content: center !important;
+}
+
+.my-modal-header {
+    justify-content: center !important;
+}
+
+.my-modal-url-display {
+    display: flex;
+    justify-content: center;
+}
+
+.my-url-display {
+    max-width: 75%;
+}
+
+.my-modal-btn {
+    width: 7rem;
+}
+
+.my-modal-content {
+    border-radius: 25px;
+}
