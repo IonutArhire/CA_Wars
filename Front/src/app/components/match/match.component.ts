@@ -130,7 +130,9 @@ export class MatchComponent {
   }
 
   public game(data): void {
-    this._playerResources[data.winner].wins += 1;
+    if (data.winner != -1) {
+      this._playerResources[data.winner].wins += 1;
+    }
     this._matchService.updatePlayerResources(this._playerResources);
     this._matchService.initSimulation(data.generations);
     this._hasGameArrived = true;

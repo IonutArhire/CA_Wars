@@ -137,6 +137,23 @@ namespace Services.AlgorithmService {
             return true;
         }
 
+        private bool IsDraw(List<float> owners, float max) {
+            var count = 0;
+
+            for (int i = 0; i < owners.Count; i++)
+            {
+                if (owners[i] == max) {
+                    count++;
+
+                    if (count > 1) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         private int getWinner() {
             var owners = createPlayerArray();
 
@@ -152,11 +169,12 @@ namespace Services.AlgorithmService {
             }
 
             var maxValue = owners.Max();
-            var maxIndex = owners.IndexOf(maxValue);
 
-            if (maxValue == 0) {
+            if (IsDraw(owners, maxValue)) {
                 return -1;
-            } else {
+            }
+            else {
+                var maxIndex = owners.IndexOf(maxValue);
                 return maxIndex;
             }
         }
