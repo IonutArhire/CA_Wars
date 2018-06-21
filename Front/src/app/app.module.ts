@@ -14,6 +14,7 @@ import { MatchCreateService } from './services/match-create.service';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { ErrorComponent } from './components/error/error.component';
 import { AboutComponent } from './components/about/about.component';
+import { HelpComponent } from './components/help/help.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { AboutComponent } from './components/about/about.component';
     MenuComponent,
     ErrorComponent,
     AboutComponent,
+    HelpComponent,
   ],
   imports: [
     BrowserModule,

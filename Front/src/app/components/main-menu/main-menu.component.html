@@ -19,13 +19,19 @@
             </div>
 
             <div class="my-centered-row">
-                <button type="button" class="btn btn-outline-dark mainmenu-btn">Help</button>
+                <button type="button" 
+                        class="btn btn-outline-dark mainmenu-btn" 
+                        [routerLink]="['/menu/help']">
+                        Help
+                </button>
             </div>
 
             <div class="my-centered-row">
                 <button type="button" 
                         class="btn btn-outline-dark mainmenu-btn"
-                        [routerLink]="['/menu/about']">About</button>
+                        [routerLink]="['/menu/about']">
+                        About
+                </button>
             </div>
 
         </form>
