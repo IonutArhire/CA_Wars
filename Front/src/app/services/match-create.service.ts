@@ -13,7 +13,28 @@ export class MatchCreateService {
 	private rulesets: Array<string>;
 
 	constructor(private http: HttpClient) {
-		this.rulesets = ["GOF", "Coagulations"]; 
+		this.rulesets = [
+		"WalledCities",
+		"PseudoLife",
+		"Assimilation",
+		"34 Life",
+		"Diamoeba",
+		"HighLife",
+		"Replicator",
+		"2x2",
+		"Maze",
+		"Day & Night",
+		"Seeds (2)",
+		"Coral",
+		"Coagulations",
+		"Stains",
+		"Gnarl",
+		"GOF",
+		"Serviettes",
+		"LongLife",
+		"Move",
+		"Mazectric",
+		"Flakes"]; 
 	}
 
 	public getRulesets() {
