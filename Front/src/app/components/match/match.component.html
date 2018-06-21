@@ -48,6 +48,15 @@
 	
 	
 	<canvas id='play-grid' #playGrid (window:resize)="onResize($event)" [hidden]="!_hasResources"></canvas>
+
+	<div id="who-sent-display">
+		<div class="who-sent-dots" 
+			*ngFor="let playerWhoSent of _playersWhoSent;" 
+			[ngStyle]="{'background-color': _playerResources[playerWhoSent].color,
+						'box-shadow': '0 0 10px 2px' + _playerResources[playerWhoSent].color}">
+		</div>
+	</div>
+	
 	
 	<button id='send-to-server-btn'
 			class="btn btn-outline-dark game-btn"

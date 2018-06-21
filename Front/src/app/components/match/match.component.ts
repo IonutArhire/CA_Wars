@@ -47,6 +47,8 @@ export class MatchComponent {
 
   private _errorMessage: string;
 
+  private _playersWhoSent: Array<number>;
+
   public _hasResources: boolean;
   public _isPlaying: boolean;
   public _hasGameArrived: boolean;
@@ -63,6 +65,8 @@ export class MatchComponent {
     this._hasSent = false;
 
     this._isMatchKeyValid = true;
+
+    this._playersWhoSent = new Array<number>();
   }
 
   ngOnInit() {
@@ -87,6 +91,8 @@ export class MatchComponent {
     this._hubConnection.on('Disconnected', (data) => {this.disconnected(data)});
 
     this._hubConnection.on('Game', (data) => {this.game(data)});
+
+    this._hubConnection.on('PlayerSent', (data) => {this.playerSent(data)});
 
     this._hubConnection.on('Resources', (data) => {this.resources(data)});
 
@@ -130,6 +136,7 @@ export class MatchComponent {
   }
 
   public game(data): void {
+    this._playersWhoSent = new Array<number>();
     if (data.winner != -1) {
       this._playerResources[data.winner].wins += 1;
     }
@@ -139,8 +146,12 @@ export class MatchComponent {
   }
 
   public sendConfig(): void {
-    this._hubConnection.invoke('SendConfig', this._matchKey.toString(), this._matchService.getCells());
+    this._hubConnection.invoke('SendConfig', this._matchKey.toString(), this._matchService.getCells(), this._assignedNum);
     this._hasSent = true;
+  }
+
+  public playerSent(assignedNumber): void {
+    this._playersWhoSent.push(assignedNumber);
   }
 
   public ngAfterViewInit(): void {

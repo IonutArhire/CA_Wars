@@ -95,10 +95,12 @@ namespace Api.Hubs {
             }
         }
 
-        public async Task SendConfig(string unparsedMatchKey, float[,] playerConfig) {
+        public async Task SendConfig(string unparsedMatchKey, float[,] playerConfig, int assignedNumber) {
             var matchKey = Guid.Parse(unparsedMatchKey);
             var match = this._matchesManagerService.GetMatchModel(matchKey);
             match.InitialConfigs.Add(playerConfig);
+
+            await Clients.Group(matchKey.ToString()).SendAsync("PlayerSent", assignedNumber);
 
             if (match.InitialConfigs.Count == match.Players.Count) {
                 var result = this._algorithmService.RunGame(match);
