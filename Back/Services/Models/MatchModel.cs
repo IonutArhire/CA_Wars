@@ -4,10 +4,11 @@ namespace Services.Models
 {
     public class MatchModel
     {
-        public MatchModel(DimensionsModel dimensions, int maxGenerations, List<PlayerModel> players, List<int> playerNumbers, float[,] map, LifeLikeModel ruleSet) 
+        public MatchModel(DimensionsModel dimensions, int maxGenerations, int nrPlayers, List<PlayerModel> players, List<int> playerNumbers, float[,] map, LifeLikeModel ruleSet) 
         {
             this.Dimensions = dimensions;
             this.MaxGenerations = maxGenerations;
+            this.NrPlayers = nrPlayers;
             this.Players = players;
             this.PlayerNumbers = playerNumbers;
             this.Map = map;
@@ -19,6 +20,8 @@ namespace Services.Models
         public DimensionsModel Dimensions { get; private set; }
 
         public int MaxGenerations { get; private set; }
+
+        public int NrPlayers { get; private set; }
 
         public List<PlayerModel> Players { get; private set; }
         

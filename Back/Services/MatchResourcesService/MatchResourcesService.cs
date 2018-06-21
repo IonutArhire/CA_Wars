@@ -29,7 +29,7 @@ namespace Services.MatchResourcesService
             var playerNumbers = this._playerResourcesService.InitPlayerNumbers(nrPlayers);
             var gameMap = this._mapGenerationService.RandomGen(dimensions, nrPlayers);
             var ruleSet = this._ruleSetService.GetByName(ruleset);
-            var result = new MatchModel(dimensions, maxGenerations, playerResources, playerNumbers, gameMap, ruleSet);
+            var result = new MatchModel(dimensions, maxGenerations, nrPlayers, playerResources, playerNumbers, gameMap, ruleSet);
 
             return result;
         }

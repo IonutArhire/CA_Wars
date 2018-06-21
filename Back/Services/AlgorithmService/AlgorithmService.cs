@@ -11,7 +11,7 @@ namespace Services.AlgorithmService {
 
         private DimensionsModel _dimensions;
 
-        private int _nrPlayers = 2;
+        private int _nrPlayers;
 
         private LifeLikeModel _ruleSet;
 
@@ -165,7 +165,7 @@ namespace Services.AlgorithmService {
             var counter = 0;
                 
             List<float[,]> generations = new List<float[,]>();
-            generations.Add(this.Initialize(match.InitialConfigs, match.Dimensions, match.Players.Count, match.RuleSet));
+            generations.Add(this.Initialize(match.InitialConfigs, match.Dimensions, match.NrPlayers, match.RuleSet));
             while (!this.isGridEmpty() && counter != match.MaxGenerations) {
                 generations.Add(this.RunNextGen());
                 counter++;
