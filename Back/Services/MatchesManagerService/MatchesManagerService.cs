@@ -21,6 +21,35 @@ namespace Services.MatchesManagerService
             }
             return result;
         }
+
+        private Guid GetMatchKey(MatchModel match) {
+            foreach (var elem in this._matches)
+            {
+                if (elem.Value == match) {
+                    return elem.Key;
+                }
+            }
+
+            return Guid.Empty;
+        }
+
+        private void RemoveMatchConnections(MatchModel match) {
+            foreach (var cnx in this._connections)
+            {
+                if (cnx.Value == match) {
+                    MatchModel redundant;
+                    this._connections.TryRemove(cnx.Key, out redundant);
+                }
+            }
+        }
+
+        private void RemoveMatch(MatchModel match) {
+            RemoveMatchConnections(match);
+
+            var matchKey = GetMatchKey(match);
+            MatchModel redundant;
+            this._matches.TryRemove(matchKey, out redundant);
+        }
         
         public MatchesManagerService() {
             this._matches = new ConcurrentDictionary<Guid, MatchModel>();
@@ -43,6 +72,13 @@ namespace Services.MatchesManagerService
 
             var playerId = this.FindPlayerId(connectionId, match);
             match.Players.RemoveAt(playerId);
+
+            MatchModel redundant;
+            this._connections.TryRemove(connectionId, out redundant);
+
+            if (match.Players.Count == 0) {
+                RemoveMatch(match);
+            }
         }
 
         public MatchModel GetMatchModel(Guid matchKey) {
