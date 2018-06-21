@@ -54,8 +54,22 @@ i {
     color: #ced4da;
 }
 
+.my-menu-back-btn:hover {
+    color: black;
+}
+
 .my-menu-title {
     margin-bottom: 1rem;
+}
+
+.my-menu-content {
+    text-align: initial;
+
+    user-select: text;
+    -webkit-user-select: text; /* webkit (safari, chrome) browsers */
+    -moz-user-select: text; /* mozilla browsers */
+    -khtml-user-select: text; /* webkit (konqueror) browsers */
+    -ms-user-select: text; /* IE10+ */
 }
 
 

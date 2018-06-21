@@ -10,7 +10,7 @@
                 <button type="button" class="btn btn-outline-dark mainmenu-btn">Single Player</button>
             </div>
 
-            <div class="row my-centered-row">
+            <div class="my-centered-row">
                 <button type="button" 
                         class="btn btn-outline-dark mainmenu-btn" 
                         [routerLink]="['/menu/multiplayer/create']">
@@ -18,12 +18,14 @@
                 </button>
             </div>
 
-            <div class="row my-centered-row">
+            <div class="my-centered-row">
                 <button type="button" class="btn btn-outline-dark mainmenu-btn">Help</button>
             </div>
 
-            <div class="row my-centered-row h-10">
-                <button type="button" class="btn btn-outline-dark mainmenu-btn">About</button>
+            <div class="my-centered-row">
+                <button type="button" 
+                        class="btn btn-outline-dark mainmenu-btn"
+                        [routerLink]="['/menu/about']">About</button>
             </div>
 
         </form>
