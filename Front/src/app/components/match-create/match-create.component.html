@@ -7,8 +7,8 @@
           </div>
 
           <div class="modal-body">
-              <div class="my-modal-url-display">
-                <input type="text" class="form-control my-url-display" [value]="_matchUrl">
+              <div id="my-modal-url-display">
+                <input type="text" id="my-url-display" class="form-control" [value]="_matchUrl">
               </div>
 
               <p class="h5 py-3">
@@ -31,13 +31,13 @@
   </div>
 </div>
 
-<div id="create-match-menu" class="card col-9 col-sm-9 col-md-5 col-lg-4 p-3 my-form-container">
+<div id="create-match-menu" class="card col-9 col-sm-9 col-md-5 col-lg-4 p-3 my-menu-container">
 
   <div class="card-body">
 
     <form>
       <a>
-        <i id="back-btn" class="fas fa-chevron-left" style="cursor:pointer;" [routerLink]="['/menu/main']"></i>
+        <i class="fas fa-chevron-left my-menu-back-btn" style="cursor:pointer;" [routerLink]="['/menu/main']"></i>
       </a>
       
       <p class="h2 text-center py-4 my-form-title">Create Match</p>
@@ -72,10 +72,10 @@
                   type="text" 
                   [ngClass]="{
                     'form-control' : true,
-                    'invalid-input': _maxItersError > 0
+                    'my-invalid-form-input': _maxItersError > 0
                   }"
                   placeholder="1-10000">
-          <label class="grey-text font-weight-light error-text" *ngIf="_maxItersError > 0">{{ _errors[_maxItersError] }}</label>
+          <label class="grey-text font-weight-light my-form-error-text" *ngIf="_maxItersError > 0">{{ _errors[_maxItersError] }}</label>
         </div>
 
         <div class="my-form-elem">
@@ -86,10 +86,10 @@
                   type="text" 
                   [ngClass]="{
                     'form-control' : true,
-                    'invalid-input': _rowsError > 0
+                    'my-invalid-form-input': _rowsError > 0
                   }"
                   placeholder="2-50">
-          <label class="grey-text font-weight-light error-text" *ngIf="_rowsError > 0">{{ _errors[_rowsError] }}</label>   
+          <label class="grey-text font-weight-light my-form-error-text" *ngIf="_rowsError > 0">{{ _errors[_rowsError] }}</label>   
         </div>
 
         <div class="my-form-elem">
@@ -100,10 +100,10 @@
                   type="text" 
                   [ngClass]="{
                     'form-control' : true,
-                    'invalid-input': _colsError > 0
+                    'my-invalid-form-input': _colsError > 0
                   }"
                   placeholder="2-50">
-          <label class="grey-text font-weight-light error-text" *ngIf="_colsError > 0">{{ _errors[_colsError] }}</label>        
+          <label class="grey-text font-weight-light my-form-error-text" *ngIf="_colsError > 0">{{ _errors[_colsError] }}</label>        
         </div>
 
       </div>

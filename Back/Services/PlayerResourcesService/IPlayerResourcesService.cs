@@ -9,7 +9,7 @@ namespace Services.PlayerResourcesService
 
         List<int> InitPlayerNumbers(int nrPlayers);
 
-        int AssignNumber(GameModel game);
+        int AssignNumber(MatchModel match);
 
         List<PlayerModel> GetPlayerResources(int nrPlayers);
 

@@ -5,14 +5,14 @@ namespace Services.MatchesManagerService
 {
     public interface IMatchesManagerService
     {
-        void Create(Guid gameKey, GameModel gameModel);
+        void Create(Guid matchKey, MatchModel gameModel);
 
-        void RegisterPlayer(string connectionId, int assignedNumber, Guid gameKey);
+        void RegisterPlayer(string connectionId, int assignedNumber, Guid matchKey);
 
         void UnRegisterPlayer(string connectionId);
 
-        GameModel GetGameModel(Guid gameKey);
+        MatchModel GetMatchModel(Guid matchKey);
 
-        bool GameModelExists(Guid gameKey);
+        bool GameModelExists(Guid matchKey);
     }
 }

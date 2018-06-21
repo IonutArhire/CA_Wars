@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Api.Dtos;
 using Api.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Persistence.Repositories;
-using Services.GameResourcesService;
+using Services.MatchResourcesService;
 using Services.MatchesManagerService;
 using Services.Models;
 
@@ -19,11 +20,11 @@ namespace Api.Controllers
 
         private IMatchesManagerService _matchesManagerService;
 
-        private IGameResourcesService _gameResourcesService;
+        private IMatchResourcesService _gameResourcesService;
 
         public MatchController(ILifeLikeRepo lifeLikeRepo,
                                 IMatchesManagerService matchesManagerService,
-                                IGameResourcesService gameResourcesService) {
+                                IMatchResourcesService gameResourcesService) {
 
             this._lifeLikeRepo = lifeLikeRepo;
             this._matchesManagerService = matchesManagerService;
@@ -33,20 +34,14 @@ namespace Api.Controllers
         [HttpPost("create")]
         public IActionResult Post([FromBody] MatchCreateResource input)
         {
-            var newGameModel = this._gameResourcesService.GetGameResources(
+            var newGameModel = this._gameResourcesService.GetMatchResources(
                 new DimensionsModel(input.Rows, input.Cols), input.NrPlayers, input.MaxIters, input.RuleSet
             );
 
             var id = Guid.NewGuid();
             this._matchesManagerService.Create(id, newGameModel);
 
-            return Created("", new { id=id });
-        }
-
-        [HttpGet]
-        public IActionResult Get() {
-            var result = this._lifeLikeRepo.GetByName("GOF");
-            return Ok();
+            return Created("", new MatchCreateResponseDto(id));
         }
     }
 }

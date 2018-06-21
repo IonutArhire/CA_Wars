@@ -1,7 +1,7 @@
 import { IPlayerResource } from "./player-resources";
 import { IDimensionsResources } from "./dimensions-resources";
 
-export interface IGameResources {
+export interface IMatchResources {
     dimensions: IDimensionsResources;
     players: Array<IPlayerResource>
     assignedNumber: number;

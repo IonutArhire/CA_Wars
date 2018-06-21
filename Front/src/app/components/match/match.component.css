@@ -1,0 +1,29 @@
+.my-media-btn:hover {
+    color: #2f3e46;
+}
+
+.game-btn {
+    margin-top: 20px;
+}
+
+.score {
+    font-size: 80px;
+}
+
+#play-grid {
+    background-color: white;
+    box-shadow: 0px 1px 17px rgba(0.0, 0.0, 0.0, 0.1), 
+                0px 0px 0px rgba(0.0, 0.0, 0.0, 0.1);
+}
+
+#exit-btn:hover {
+    color: #f41f1f;
+}
+
+#eraser-btn:hover {
+    color: #f28910;
+}
+
+#grid-btn:hover {
+    color: #dadada5b;
+}

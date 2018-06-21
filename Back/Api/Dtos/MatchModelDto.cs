@@ -3,7 +3,7 @@ using Services.Models;
 
 namespace Api.Dtos
 {
-    public class GameModelDto
+    public class MatchModelDto
     {
         public DimensionsModel Dimensions { get; set; }
 

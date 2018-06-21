@@ -2,7 +2,7 @@ namespace Services.Models
 {
     public class PlayerModel
     {
-        public PlayerModel(string color, int wins) 
+        public PlayerModel(string color, int wins = 0) 
         {
             this.Color = color;
             this.Wins = wins;

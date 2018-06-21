@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { MatchService } from './services/match.service';
 import { AppRoutingModule } from './app-routing.module';
-import { GameComponent } from './components/game/game.component';
+import { MatchComponent } from './components/match/match.component';
 import { MatchCreateComponent } from './components/match-create/match-create.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -17,7 +17,7 @@ import { ErrorComponent } from './components/error/error.component';
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent,
+    MatchComponent,
     MatchCreateComponent,
     MainMenuComponent,
     MenuComponent,

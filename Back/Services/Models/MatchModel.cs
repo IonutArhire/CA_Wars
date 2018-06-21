@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace Services.Models
 {
-    public class GameModel
+    public class MatchModel
     {
-        public GameModel(DimensionsModel dimensions, int maxGenerations, List<PlayerModel> players, List<int> playerNumbers, float[,] map, LifeLikeModel ruleSet) 
+        public MatchModel(DimensionsModel dimensions, int maxGenerations, List<PlayerModel> players, List<int> playerNumbers, float[,] map, LifeLikeModel ruleSet) 
         {
             this.Dimensions = dimensions;
             this.MaxGenerations = maxGenerations;

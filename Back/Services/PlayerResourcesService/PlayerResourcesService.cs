@@ -47,8 +47,8 @@ namespace Services.PlayerResourcesService
             return result;
         }
 
-        public int AssignNumber(GameModel game) {
-            var playerNumbers = game.PlayerNumbers;
+        public int AssignNumber(MatchModel match) {
+            var playerNumbers = match.PlayerNumbers;
 
             var randomizer = new Random();
             var idx = randomizer.Next(playerNumbers.Count);
@@ -59,7 +59,7 @@ namespace Services.PlayerResourcesService
             {
                 if (playerNumbers.Count == 0)
                 {
-                    game.PlayerNumbers = InitPlayerNumbers(game.Players.Count);
+                    match.PlayerNumbers = InitPlayerNumbers(match.Players.Count);
                 }
             }
             
@@ -74,7 +74,7 @@ namespace Services.PlayerResourcesService
             {
                 var color = GetNewColor(colors);
 
-                var playerResources = new PlayerModel(color, 0);
+                var playerResources = new PlayerModel(color);
 
                 results.Add(playerResources);
             }

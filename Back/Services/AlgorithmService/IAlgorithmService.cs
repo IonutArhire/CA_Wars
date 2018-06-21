@@ -5,6 +5,6 @@ namespace Services.AlgorithmService
 {
     public interface IAlgorithmService
     {
-        GameResultModel RunGame(GameModel game);
+        GameResultModel RunGame(MatchModel match);
     }
 }

@@ -10,18 +10,18 @@ import { MatchService } from '../../services/match.service';
 
 import { IPlayerResource } from '../../resources/player-resources';
 import { IDimensionsResources } from '../../resources/dimensions-resources';
-import { IGameResources } from '../../resources/game-resources';
+import { IMatchResources } from '../../resources/match-resources';
 
 import { Guid } from 'guid-typescript';
 
 
 
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  selector: 'app-match',
+  templateUrl: './match.component.html',
+  styleUrls: ['./match.component.css']
 })
-export class GameComponent {
+export class MatchComponent {
 
   private _hubConnection: HubConnection
 
@@ -39,11 +39,11 @@ export class GameComponent {
   private _playerResources: Array<IPlayerResource>;
   private _assignedNum: number;
   
-  private _gameKey: Guid;
+  private _matchKey: Guid;
   
   private _map: number[][];
 
-  private _isGameKeyValid: boolean;
+  private _isMatchKeyValid: boolean;
 
   private _errorMessage: string;
 
@@ -62,17 +62,18 @@ export class GameComponent {
     this._hasGameArrived = false;
     this._hasSent = false;
 
-    this._isGameKeyValid = true;
+    this._isMatchKeyValid = true;
   }
 
   ngOnInit() {
-    let unparsedGameKey = this._route.snapshot.paramMap.get('game-key');
-    if (Guid.isGuid(unparsedGameKey)) {
-      this._gameKey = Guid.parse(this._route.snapshot.paramMap.get('game-key'));
+    let unparsedMatchKey = this._route.snapshot.paramMap.get('match-key');
+
+    if (Guid.isGuid(unparsedMatchKey)) {
+      this._matchKey = Guid.parse(unparsedMatchKey);
     }
     else {
-      this._errorMessage = `\"${unparsedGameKey}\" is not a valid game key!`;
-      this._isGameKeyValid = false;
+      this._errorMessage = `\"${unparsedMatchKey}\" is not a valid match key!`;
+      this._isMatchKeyValid = false;
     }
 
     this._hubConnection = new HubConnectionBuilder()
@@ -108,14 +109,14 @@ export class GameComponent {
     console.log(data);
     console.log('connected');
 
-    this._hubConnection.invoke('SendResources', this._gameKey.toString())
+    this._hubConnection.invoke('SendResources', this._matchKey.toString())
       .catch((err) => {
         this._errorMessage = err.message.match("HubException: (.*)")[1];
-        this._isGameKeyValid = false;
+        this._isMatchKeyValid = false;
       });
   }
   
-  public resources(resources: IGameResources): void {
+  public resources(resources: IMatchResources): void {
     this._playerResources = resources.players;
     this._assignedNum = resources.assignedNumber;
     this._dimensions = resources.dimensions;
@@ -136,7 +137,7 @@ export class GameComponent {
   }
 
   public sendConfig(): void {
-    this._hubConnection.invoke('SendConfig', this._gameKey, this._matchService.getCells());
+    this._hubConnection.invoke('SendConfig', this._matchKey.toString(), this._matchService.getCells());
     this._hasSent = true;
   }
 

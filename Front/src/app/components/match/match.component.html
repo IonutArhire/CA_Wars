@@ -1,7 +1,7 @@
-<div *ngIf="_isGameKeyValid">
+<div *ngIf="_isMatchKeyValid">
 	<div class="toolbar" #toolbar>
 
-		<div class="box" *ngIf="_hasResources">
+		<div class="toolbar-box" *ngIf="_hasResources">
 			<a>
 				<i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" (click)="exit()" style="cursor:pointer;"></i>
 			</a>
@@ -9,7 +9,7 @@
 	
 		</div>
 	
-		<div class="box" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
+		<div class="toolbar-box" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
 			<i class="fas fa-play my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i>
 			<i class="fas fa-pause my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i>
 			<i class="fas fa-forward my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i>
@@ -18,7 +18,7 @@
 			<i class="fas fa-step-backward my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i>
 		</div>
 	
-		<div class="box" *ngIf="_hasResources">
+		<div class="toolbar-box" *ngIf="_hasResources">
 			<a>
 				<i id="download-btn"
 					class="fas fa-download my-toolbar-btn my-media-btn"
@@ -50,15 +50,19 @@
 	<canvas id='play-grid' #playGrid (window:resize)="onResize($event)" [hidden]="!_hasResources"></canvas>
 	
 	<button id='send-to-server-btn'
-					class="btn btn-outline-dark game-btn"
-					(click)="sendConfig()"
-					*ngIf="_hasResources && !_hasGameArrived"
-					[disabled]="_hasSent">Send to Server</button>
+			class="btn btn-outline-dark game-btn"
+			(click)="sendConfig()"
+			*ngIf="_hasResources && !_hasGameArrived"
+			[disabled]="_hasSent">
+			Send to Server
+	</button>
 	
 	<button id='reset-match-btn'
-					class="btn btn-outline-dark game-btn"
-					(click)="resetMatch()"
-					*ngIf="_hasResources && _hasGameArrived">Reset Match</button>
+			class="btn btn-outline-dark game-btn"
+			(click)="resetMatch()"
+			*ngIf="_hasResources && _hasGameArrived">
+			Reset Match
+	</button>
 	
 	<div id='score-board' *ngIf="_hasResources">
 		<span class='score' *ngFor="let player of _playerResources;" [ngStyle]="{'color': player.color }">
@@ -100,10 +104,10 @@
 	</div>
 </div>
 
-<div *ngIf="!_isGameKeyValid">
-	<video autoplay loop id="myVideo">
+<div *ngIf="!_isMatchKeyValid">
+	<video autoplay loop id="my-video">
 		<source src="assets/background.mp4" type="video/mp4">
 	</video>
 
-	<app-error [message]="_errorMessage"></app-error>
+	<app-error [errorMessage]="_errorMessage"></app-error>
 </div>

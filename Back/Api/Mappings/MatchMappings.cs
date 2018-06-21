@@ -8,7 +8,7 @@ namespace Api.Mappings
     {
         public MatchMappings() {
             CreateMap<PlayerModel, PlayerModelDto>();
-            CreateMap<GameModel, GameModelDto>();
+            CreateMap<MatchModel, MatchModelDto>();
         }
     }
 }

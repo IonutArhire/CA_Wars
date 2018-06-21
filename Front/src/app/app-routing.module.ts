@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { GameComponent } from './components/game/game.component';
+import { MatchComponent } from './components/match/match.component';
 import { MatchCreateComponent } from './components/match-create/match-create.component';
 import { MainMenuComponent } from './components/main-menu/main-menu.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -15,7 +15,7 @@ const routes: Routes = [
       { path: 'multiplayer/create', component: MatchCreateComponent }
     ]
   },
-  { path: 'match/:game-key', component: GameComponent }
+  { path: 'match/:match-key', component: MatchComponent }
 ];
 
 @NgModule({

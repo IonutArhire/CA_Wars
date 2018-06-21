@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Persistence;
 using Services.AlgorithmService;
-using Services.GameResourcesService;
+using Services.MatchResourcesService;
 using Services.MapGenerationService;
 using Services.MatchesManagerService;
 using Services.MatrixService;
@@ -63,7 +63,7 @@ namespace Api {
             services.AddTransient<IPlayerResourcesService, PlayerResourcesService>();
             services.AddTransient<IMapGenerationService, MapGenerationService>();
             services.AddTransient<IMatrixService, MatrixService>();
-            services.AddTransient<IGameResourcesService, GameResourcesService>();
+            services.AddTransient<IMatchResourcesService, MatchResourcesService>();
             services.AddTransient<IAlgorithmService, AlgorithmService>();
             services.AddTransient<IDatabaseContext, DatabaseContext>();
             services.AddTransient<ILifeLikeRepo, LifeLikeRepo>();

@@ -5,9 +5,9 @@ using Services.MapGenerationService;
 using Services.PlayerResourcesService;
 using Services.RuleSetService;
 
-namespace Services.GameResourcesService
+namespace Services.MatchResourcesService
 {
-    public class GameResourcesService: IGameResourcesService
+    public class MatchResourcesService: IMatchResourcesService
     {
         private IMapGenerationService _mapGenerationService;
 
@@ -15,7 +15,7 @@ namespace Services.GameResourcesService
 
         private IRuleSetService _ruleSetService;
 
-        public GameResourcesService(IMapGenerationService mapGenerationService,
+        public MatchResourcesService(IMapGenerationService mapGenerationService,
                                     IPlayerResourcesService playerResourcesService,
                                     IRuleSetService ruleSetService) {
             
@@ -24,12 +24,12 @@ namespace Services.GameResourcesService
             this._ruleSetService = ruleSetService;
         }
 
-        public GameModel GetGameResources(DimensionsModel dimensions, int nrPlayers, int maxGenerations, string ruleset) {
+        public MatchModel GetMatchResources(DimensionsModel dimensions, int nrPlayers, int maxGenerations, string ruleset) {
             var playerResources = this._playerResourcesService.GetPlayerResources(nrPlayers);
             var playerNumbers = this._playerResourcesService.InitPlayerNumbers(nrPlayers);
             var gameMap = this._mapGenerationService.RandomGen(dimensions, nrPlayers);
             var ruleSet = this._ruleSetService.GetByName(ruleset);
-            var result = new GameModel(dimensions, maxGenerations, playerResources, playerNumbers, gameMap, ruleSet);
+            var result = new MatchModel(dimensions, maxGenerations, playerResources, playerNumbers, gameMap, ruleSet);
 
             return result;
         }

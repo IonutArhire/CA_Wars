@@ -161,12 +161,12 @@ namespace Services.AlgorithmService {
             }
         }
 
-        public GameResultModel RunGame(GameModel game) {
+        public GameResultModel RunGame(MatchModel match) {
             var counter = 0;
                 
             List<float[,]> generations = new List<float[,]>();
-            generations.Add(this.Initialize(game.InitialConfigs, game.Dimensions, game.Players.Count, game.RuleSet));
-            while (!this.isGridEmpty() && counter != game.MaxGenerations) {
+            generations.Add(this.Initialize(match.InitialConfigs, match.Dimensions, match.Players.Count, match.RuleSet));
+            while (!this.isGridEmpty() && counter != match.MaxGenerations) {
                 generations.Add(this.RunNextGen());
                 counter++;
             }

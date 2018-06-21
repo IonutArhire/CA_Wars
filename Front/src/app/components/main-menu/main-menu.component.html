@@ -1,24 +1,28 @@
-<div id="main-menu" class="card col-9 col-sm-6 col-md-3 col-lg-3 col-xl-2 p-3 my-form-container">
+<div id="main-menu" class="card col-9 col-sm-6 col-md-3 col-lg-3 col-xl-2 p-3 my-menu-container">
 
     <div class="card-body">
   
         <form>
 
-            <p class="h2 text-center py-4 my-form-title">Main Menu</p>
+            <p class="h2 text-center py-4 my-menu-title">Main Menu</p>
             
-            <div class="row-centered">
+            <div class="my-centered-row">
                 <button type="button" class="btn btn-outline-dark mainmenu-btn">Single Player</button>
             </div>
 
-            <div class="row row-centered">
-                <button [routerLink]="['/menu/multiplayer/create']" type="button" class="btn btn-outline-dark mainmenu-btn">Multi Player</button>
+            <div class="row my-centered-row">
+                <button type="button" 
+                        class="btn btn-outline-dark mainmenu-btn" 
+                        [routerLink]="['/menu/multiplayer/create']">
+                        Multi Player
+                </button>
             </div>
 
-            <div class="row row-centered">
+            <div class="row my-centered-row">
                 <button type="button" class="btn btn-outline-dark mainmenu-btn">Help</button>
             </div>
 
-            <div class="row row-centered h-10">
+            <div class="row my-centered-row h-10">
                 <button type="button" class="btn btn-outline-dark mainmenu-btn">About</button>
             </div>
 

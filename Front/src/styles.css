@@ -2,6 +2,10 @@
 
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
+
+
+/* General */
+
 html {
     min-height: 100%;
     margin: 0;
@@ -24,7 +28,11 @@ i {
     outline: none;
 }
 
-.my-form-container {
+
+
+/* Menus */
+
+.my-menu-container {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -35,6 +43,24 @@ i {
 
     border-radius: 25px;
 }
+
+.my-menu-back-btn {
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    outline: none;
+
+    font-size: 25px;
+    color: #ced4da;
+}
+
+.my-menu-title {
+    margin-bottom: 1rem;
+}
+
+
+
+/* Modals */
 
 .my-modal-footer {
     justify-content: center !important;
@@ -52,6 +78,84 @@ i {
     border-radius: 25px;
 }
 
+
+
+/* Forms */
+
 .my-form-title {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.my-form-content {
+    text-align: initial;
+}
+
+.my-form-elem { 
+    margin-bottom: 40px;
+}
+
+.my-form-error-text {
+    position: absolute;
+    margin-bottom: 0px;
+    color: red;
+}
+
+.my-invalid-form-input {
+    border-color: red !important;
+}
+
+.my-invalid-form-input:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25) !important;
+    box-shadow: 0 0 0 0.2rem  rgba(255, 0, 0, 0.25) !important;
+}
+
+
+
+/* Backgrounds */
+
+#my-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+}
+
+
+
+/* Toolbars */
+
+.toolbar {
+    height: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    display: flex;
+}
+
+.toolbar-box {
+    flex: 1;
+    display: flex;
+}
+
+.toolbar-box:first-child { 
+    justify-content: flex-start;
+}
+
+.toolbar-box:nth-child(2) {
+    justify-content: center;
+}
+
+.toolbar-box:last-child { 
+    justify-content: flex-end;
+}
+
+.my-toolbar-btn {
+    font-size: 30px;
+
+    margin-left: 5px;
+    margin-right: 5px;
+
+    color: #616161;
 }
