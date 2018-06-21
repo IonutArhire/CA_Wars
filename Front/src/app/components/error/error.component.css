@@ -1,3 +1,7 @@
+#error-menu {
+    min-width: 230px;
+}
+
 #error-msg {
     margin-bottom: 25px;
 }
