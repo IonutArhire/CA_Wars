@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { IconXCircle, IconHash, IconDroplet, IconPlay, IconFastForward, IconRewind, IconSkipBack, IconSkipForward, IconPause, IconSave, IconChevronLeft } from 'angular-feather';
+import { IconXCircle, IconHash, IconDroplet, IconPlay, IconFastForward, IconRewind, IconSkipBack, IconSkipForward, IconPause, IconSave, IconChevronLeft, IconAlertCircle, IconThumbsUp, IconShield } from 'angular-feather';
 
 const icons = [
   IconXCircle,
@@ -12,7 +12,10 @@ const icons = [
   IconSkipForward,
   IconPause,
   IconSave,
-  IconChevronLeft
+  IconChevronLeft,
+  IconAlertCircle,
+  IconThumbsUp,
+  IconShield
 ];
 
 @NgModule({

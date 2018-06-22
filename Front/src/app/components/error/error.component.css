@@ -2,6 +2,14 @@
     min-width: 230px;
 }
 
+#my-error-sign {
+    color: red;
+}
+
+#my-error-title {
+    color: red;
+}
+
 #error-msg {
     margin-bottom: 25px;
 }

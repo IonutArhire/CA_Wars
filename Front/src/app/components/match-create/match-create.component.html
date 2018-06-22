@@ -1,9 +1,11 @@
 <div mdbModal #side="mdb-modal" class="modal fade right" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-side modal-top-right" role="document">
       <div class="modal-content my-modal-content">
+
+          <i-thumbs-up id="my-success-sign" class="my-sign"></i-thumbs-up>
           
           <div class="modal-header my-modal-header">
-              <p class="h3 text-center py-4">Match Created Successfully!</p>
+              <p class="h3 text-center py-4 my-modal-header-content">Match Created Successfully!</p>
           </div>
 
           <div class="modal-body">
@@ -11,7 +13,7 @@
                 <input type="text" id="my-url-display" class="form-control" [value]="_matchUrl">
               </div>
 
-              <p class="h5 py-3">
+              <p class="h5 py-3 my-modal-header-content">
                 Share this link with your friends and start having fun!
               </p>
           </div>
