@@ -37,7 +37,7 @@
 
     <form>
       <a>
-        <i class="fas fa-chevron-left my-menu-back-btn" style="cursor:pointer;" [routerLink]="['/menu/main']"></i>
+        <i-chevron-left class="my-menu-back-btn" style="cursor:pointer;" [routerLink]="['/menu/main']"></i-chevron-left>
       </a>
       
       <p class="h2 text-center py-4 my-form-title">Create Match</p>
@@ -71,7 +71,7 @@
                   (ngModelChange)="onChangeNumericInput($event, 'MaxIters', 1, 10000)"
                   type="text" 
                   [ngClass]="{
-                    'form-control' : true,
+                    'form-control': true,
                     'my-invalid-form-input': _maxItersError > 0
                   }"
                   placeholder="1-10000">

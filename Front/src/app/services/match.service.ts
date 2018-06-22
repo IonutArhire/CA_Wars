@@ -36,7 +36,6 @@ export class MatchService {
   private _map: number[][];
 
   private _eraserMode: boolean;
-  private _gridMode: boolean;
 
   constructor() {
     this._marginBottom = 216;
@@ -44,7 +43,6 @@ export class MatchService {
     this._center = [0, 0];
     this._currGameStateIdx = 0;
     this._eraserMode = false;
-    this._gridMode = true;
   }
 
 
@@ -379,27 +377,17 @@ export class MatchService {
     this._eraserMode = true;
   }
 
-  public getEraserMode(): boolean {
-    return this._eraserMode;
-  }
-
   public deactivateEraserMode(): void {
     this._eraserMode = false;
   }
 
   public activateGridMode(): void {
-    this._gridMode = true;
     this._ctx.strokeStyle = "black";
     this.clearCanvas();
     this.drawGrid();
   }
 
-  public getGridMode(): boolean {
-    return this._gridMode;
-  }
-
   public deactivateGridMode(): void {
-    this._gridMode = false;
     this._ctx.strokeStyle = "white";
     this.clearCanvas();
     this.drawGrid();

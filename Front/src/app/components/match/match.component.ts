@@ -27,8 +27,6 @@ export class MatchComponent {
 
   @ViewChild('playGrid') playGrid: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
-  @ViewChild('eraser') eraser: ElementRef;
-  @ViewChild('gridMode') gridMode: ElementRef;
 
   @ViewChild("side") side: any;
 
@@ -42,6 +40,9 @@ export class MatchComponent {
   private _matchKey: Guid;
   
   private _map: number[][];
+
+  private _eraserMode: boolean;
+  private _gridMode: boolean;
 
   private _isMatchKeyValid: boolean;
 
@@ -63,6 +64,9 @@ export class MatchComponent {
     this._isPlaying = false;
     this._hasGameArrived = false;
     this._hasSent = false;
+
+    this._eraserMode = false;
+    this._gridMode = true;
 
     this._isMatchKeyValid = true;
 
@@ -206,29 +210,25 @@ export class MatchComponent {
   }
 
   public flipEraserMode(): void {
-    let eraserMode = this._matchService.getEraserMode();
-
-    if (eraserMode) {
+    if (this._eraserMode) {
       this._matchService.deactivateEraserMode();
-      (<HTMLElement>this.eraser.nativeElement).style.color = "#616161"; //grey
     }
     else {
       this._matchService.activateEraserMode();
-      (<HTMLElement>this.eraser.nativeElement).style.color = "#f28910"; //orange
     }
+
+    this._eraserMode = !this._eraserMode;
   }
 
   public flipGridMode(): void {
-    let gridMode = this._matchService.getGridMode();
-
-    if (gridMode) {
+    if (this._gridMode) {
       this._matchService.deactivateGridMode();
-      (<HTMLElement>this.gridMode.nativeElement).style.color = "#dadada5b";
     }
     else {
       this._matchService.activateGridMode();
-      (<HTMLElement>this.gridMode.nativeElement).style.color = "#616161";
     }
+
+    this._gridMode = !this._gridMode;
   }
 
   public downloadGenerations(): void {

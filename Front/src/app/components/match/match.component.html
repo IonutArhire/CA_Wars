@@ -3,44 +3,48 @@
 
 		<div class="toolbar-box" *ngIf="_hasResources">
 			<a>
-				<i id="exit-btn" class="fas fa-times-circle my-toolbar-btn" (click)="exit()" style="cursor:pointer;"></i>
+				<i-x-circle id="exit-btn" class="my-toolbar-btn" (click)="exit()" style="cursor:pointer;"></i-x-circle>
 			</a>
 	
 	
 		</div>
 	
 		<div class="toolbar-box" [ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}">
-			<i class="fas fa-play my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i>
-			<i class="fas fa-pause my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i>
-			<i class="fas fa-forward my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i>
-			<i class="fas fa-backward my-toolbar-btn my-media-btn" (click)="skipSimulationBack()" style="cursor:pointer;"></i>
-			<i class="fas fa-step-forward my-toolbar-btn my-media-btn" (click)="stepSimulationForward()" style="cursor:pointer;"></i>
-			<i class="fas fa-step-backward my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i>
+			<i-play class="my-toolbar-btn my-media-btn" (click)="startSimulation()" style="cursor:pointer;" *ngIf="!_isPlaying"></i-play>
+			<i-pause class="my-toolbar-btn my-media-btn" (click)="stopSimulation()" style="cursor:pointer;" *ngIf="_isPlaying"></i-pause>
+			<i-fast-forward class="my-toolbar-btn my-media-btn" (click)="skipSimulationForward()" style="cursor:pointer;"></i-fast-forward>
+			<i-rewind class="my-toolbar-btn my-media-btn" (click)="skipSimulationBack()" style="cursor:pointer;"></i-rewind>
+			<i-skip-forward class="my-toolbar-btn my-media-btn" (click)="stepSimulationForward()" style="cursor:pointer;"></i-skip-forward>
+			<i-skip-back class="my-toolbar-btn my-media-btn" (click)="stepSimulationBack()" style="cursor:pointer;"></i-skip-back>
 		</div>
 	
 		<div class="toolbar-box" *ngIf="_hasResources">
 			<a>
-				<i id="download-btn"
-					class="fas fa-download my-toolbar-btn my-media-btn"
-					(click)="downloadGenerations()"
-					style="cursor:pointer;"
-					[ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}"></i>
+				<i-save id="download-btn"
+						class="my-toolbar-btn my-media-btn"
+						(click)="downloadGenerations()"
+						style="cursor:pointer;"
+						[ngStyle]="{'visibility': _hasGameArrived ? 'initial' : 'hidden'}"></i-save>
 			</a>
 	
 			<a>
-				<i id="grid-btn"
-					class="fas fa-hashtag my-toolbar-btn"
-					#gridMode
-					(click)="flipGridMode()"
-					style="cursor:pointer;"></i>
+				<i-hash id="grid-btn"
+						[ngClass]="{
+							'my-toolbar-btn': true,
+							'my-grid-not-active': !_gridMode
+						}"
+						(click)="flipGridMode()"
+						style="cursor:pointer;"></i-hash>
 			</a>
 	
 			<a>
-				<i id="eraser-btn"
-						class="fas fa-eraser my-toolbar-btn"
-						#eraser
-						(click)="flipEraserMode()"
-						style="cursor:pointer;"></i>
+				<i-droplet id="eraser-btn"
+							[ngClass]="{
+								'my-toolbar-btn': true,
+								'my-eraser-active': _eraserMode
+							}"
+							(click)="flipEraserMode()"
+							style="cursor:pointer;"></i-droplet>
 			</a>
 		</div>
 	

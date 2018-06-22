@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { IconsModule } from './modules/icons/icons.module';
 
 import { AppComponent } from './app.component';
 import { MatchService } from './services/match.service';
@@ -32,6 +33,7 @@ import { HelpComponent } from './components/help/help.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    IconsModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [MatchService, MatchCreateService],
