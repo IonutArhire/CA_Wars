@@ -104,7 +104,7 @@ export class MatchComponent {
     this._hubConnection
       .start()
       .then(() => {})
-      .catch(err => console.log(err));
+      .catch();
   }
 
   public getResourcesStatus(): Observable<boolean> {
@@ -117,9 +117,6 @@ export class MatchComponent {
   }
 
   public connected(data): void {
-    console.log(data);
-    console.log('connected');
-
     this._hubConnection.invoke('SendResources', this._matchKey.toString())
       .catch((err) => {
         this._errorMessage = err.message.match("HubException: (.*)")[1];
@@ -136,8 +133,6 @@ export class MatchComponent {
   }
 
   public disconnected(data): void {
-    console.log(data);
-    console.log('disconnected');
   }
 
   public game(data): void {
