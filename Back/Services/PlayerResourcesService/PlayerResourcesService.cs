@@ -89,10 +89,10 @@ namespace Services.PlayerResourcesService
                 for (int j = 0; j < pmap.GetLength(1); j++)
                 {
                     if(pmap[i,j] == assignedNumber) {
-                        pmap[i,j] = -2;
+                        pmap[i,j] = -1;
                     }
                     else {
-                        pmap[i,j] = -1;
+                        pmap[i,j] = -2;
                     }
                 }
             }

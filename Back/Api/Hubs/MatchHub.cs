@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 namespace Api.Hubs {
     public class MatchHub : Hub 
     {
-        private IMatchResourcesService _gameResourcesService;
+        private IMatchResourcesService _matchResourcesService;
 
         private IPlayerResourcesService _playerResourcesService;
 
@@ -26,14 +26,14 @@ namespace Api.Hubs {
 
         private IHostingEnvironment _env;
 
-        public MatchHub(IMatchResourcesService gameResourcesService,
+        public MatchHub(IMatchResourcesService matchResourcesService,
                         IPlayerResourcesService playerResourcesService,
                         IAlgorithmService algorithmService,
                         IMatchesManagerService matchesManagerService,
                         IMapper mapper,
                         IHostingEnvironment env) {
 
-            this._gameResourcesService = gameResourcesService;
+            this._matchResourcesService = matchResourcesService;
             this._playerResourcesService = playerResourcesService;
             this._algorithmService = algorithmService;
             this._matchesManagerService = matchesManagerService;
@@ -42,9 +42,9 @@ namespace Api.Hubs {
         }
 
         private void TestingInitializations() {
-            var test_gameModel1 = this._gameResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "GOF");
-            var test_gameModel2 = this._gameResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "Coagulations");
-            var test_gameModel3 = this._gameResourcesService.GetMatchResources(new DimensionsModel(60, 90), 4, 150, "Coagulations");
+            var test_gameModel1 = this._matchResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "GOF");
+            var test_gameModel2 = this._matchResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "Coagulations");
+            var test_gameModel3 = this._matchResourcesService.GetMatchResources(new DimensionsModel(60, 90), 4, 150, "Coagulations");
 
             var id1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
             var id2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
