@@ -14,7 +14,7 @@ namespace Services.Models
             this.Map = map;
             this.RuleSet = ruleSet;
 
-            this.InitialConfigs = new List<float[,]>();
+            this.InitialConfigs = new List<InitialConfigModel>();
         }
 
         public DimensionsModel Dimensions { get; private set; }
@@ -25,7 +25,7 @@ namespace Services.Models
 
         public List<PlayerModel> Players { get; private set; }
         
-        public List<float[,]> InitialConfigs { get; private set; }
+        public List<InitialConfigModel> InitialConfigs { get; private set; }
 
         public List<int> PlayerNumbers { get; set; }
 

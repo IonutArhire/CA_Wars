@@ -179,11 +179,23 @@ namespace Services.AlgorithmService {
             }
         }
 
+        private List<float[,]> GetInitialConfigs(List<InitialConfigModel> configs) {
+            var result = new List<float[,]>();
+
+            foreach (var config in configs)
+            {
+                result.Add(config.InitialConfig);
+            }
+
+            return result;
+        }
+
         public GameResultModel RunGame(MatchModel match) {
             var counter = 0;
+            var initialConfigs = GetInitialConfigs(match.InitialConfigs);
                 
             List<float[,]> generations = new List<float[,]>();
-            generations.Add(this.Initialize(match.InitialConfigs, match.Dimensions, match.NrPlayers, match.RuleSet));
+            generations.Add(this.Initialize(initialConfigs, match.Dimensions, match.NrPlayers, match.RuleSet));
             while (!this.isGridEmpty() && counter != match.MaxGenerations) {
                 generations.Add(this.RunNextGen());
                 counter++;

@@ -10,18 +10,6 @@ namespace Services.MatchesManagerService
 
         private ConcurrentDictionary<string, MatchModel> _connections;
 
-        private int FindPlayerId(string connectionId, MatchModel match) {
-            int result = -1;
-            for (int i = 0; i < match.Players.Count; i++)
-            {
-                if (match.Players[i].ConnectionId == connectionId) {
-                    result = i;
-                    break;
-                }
-            }
-            return result;
-        }
-
         private Guid GetMatchKey(MatchModel match) {
             foreach (var elem in this._matches)
             {
@@ -50,14 +38,29 @@ namespace Services.MatchesManagerService
             MatchModel redundant;
             this._matches.TryRemove(matchKey, out redundant);
         }
+
+        private void RemoveConnection(string connectionId) {
+            MatchModel redundant;
+            this._connections.TryRemove(connectionId, out redundant);
+        }
+
+        private void RemoveInitialConfig(MatchModel match, int playerId) {
+            for (int i = 0; i < match.InitialConfigs.Count; i++)
+            {
+                if (match.InitialConfigs[i].PlayerId == playerId) 
+                {
+                    match.InitialConfigs.RemoveAt(i);
+                }
+            }
+        }
         
         public MatchesManagerService() {
             this._matches = new ConcurrentDictionary<Guid, MatchModel>();
             this._connections = new ConcurrentDictionary<string, MatchModel>(System.StringComparer.OrdinalIgnoreCase);
         }
 
-        public void Create(Guid matchKey, MatchModel gameModel) {
-            this._matches.TryAdd(matchKey, gameModel);
+        public void Create(Guid matchKey, MatchModel matchModel) {
+            this._matches.TryAdd(matchKey, matchModel);
         }
 
         public void RegisterPlayer(string connectionId, int assignedNumber, Guid matchKey) {
@@ -71,14 +74,26 @@ namespace Services.MatchesManagerService
             var match = this._connections[connectionId];
 
             var playerId = this.FindPlayerId(connectionId, match);
-            match.Players.RemoveAt(playerId);
 
-            MatchModel redundant;
-            this._connections.TryRemove(connectionId, out redundant);
+            this.RemoveInitialConfig(match, playerId);
+            match.Players.RemoveAt(playerId);
+            this.RemoveConnection(connectionId);
 
             if (match.Players.Count == 0) {
-                RemoveMatch(match);
+                this.RemoveMatch(match);
             }
+        }
+
+        public int FindPlayerId(string connectionId, MatchModel match) {
+            int result = -1;
+            for (int i = 0; i < match.Players.Count; i++)
+            {
+                if (match.Players[i].ConnectionId == connectionId) {
+                    result = i;
+                    break;
+                }
+            }
+            return result;
         }
 
         public MatchModel GetMatchModel(Guid matchKey) {

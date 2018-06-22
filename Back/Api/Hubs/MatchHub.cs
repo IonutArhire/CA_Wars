@@ -98,7 +98,8 @@ namespace Api.Hubs {
         public async Task SendConfig(string unparsedMatchKey, float[,] playerConfig, int assignedNumber) {
             var matchKey = Guid.Parse(unparsedMatchKey);
             var match = this._matchesManagerService.GetMatchModel(matchKey);
-            match.InitialConfigs.Add(playerConfig);
+            var playerId = this._matchesManagerService.FindPlayerId(Context.ConnectionId, match);
+            match.InitialConfigs.Add(new InitialConfigModel(playerConfig, playerId));
 
             await Clients.Group(matchKey.ToString()).SendAsync("PlayerSent", assignedNumber);
 
