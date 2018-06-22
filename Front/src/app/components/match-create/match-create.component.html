@@ -9,8 +9,11 @@
           </div>
 
           <div class="modal-body">
-              <div id="my-modal-url-display">
-                <input type="text" id="my-url-display" class="form-control" [value]="_matchUrl">
+              <div id="my-modal-url-display" class="input-group md-form form-sm form-4 pl-0">
+                <input type="text" id="my-url-display" class="form-control" #matchUrl [value]="_matchUrl" readonly>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-dark" [ngxClipboard]="matchUrl">Copy</button>
+                </div>
               </div>
 
               <p class="h5 py-3 my-modal-header-content">

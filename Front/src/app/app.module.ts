@@ -16,6 +16,7 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { ErrorComponent } from './components/error/error.component';
 import { AboutComponent } from './components/about/about.component';
 import { HelpComponent } from './components/help/help.component';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { HelpComponent } from './components/help/help.component';
     HttpClientModule,
     FormsModule,
     IconsModule,
+    ClipboardModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [MatchService, MatchCreateService],
