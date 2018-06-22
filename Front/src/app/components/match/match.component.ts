@@ -82,6 +82,7 @@ export class MatchComponent {
     else {
       this._errorMessage = `\"${unparsedMatchKey}\" is not a valid match key!`;
       this._isMatchKeyValid = false;
+      return;
     }
 
     this._hubConnection = new HubConnectionBuilder()
