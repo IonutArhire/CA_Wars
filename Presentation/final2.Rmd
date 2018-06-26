@@ -16,23 +16,23 @@ fontsize: 12pt
 
 #### Main Idea
 
-This application is targeted towards users that want to learn more about cellular automata (CA) or that already have an interest in this domain, 
+This application is targeted towards users that want to learn more about cellular automata (CA)
+or that already have an interest in this domain, 
 offering them the opportunity to discover 
 new types of cellular automata and new rules while also having fun and interacting with friends.
 
 #### Motivation
 
-My main inspiration for this project was my interest in cellular automata. I wanted to do something innovative with it,
+My main inspiration for this project was my interest in cellular automata. 
+I wanted to do something innovative with it,
 something that would appeal to anyone, from CA enthusiast to people without a technical knowledge background.
 
-As such, a browser-based multiplayer game was the ideal solution. Furthermore, it was a new technological challenge for me as I never
-used websockets-based frameworks until now and never did a multiplayer game before, so I took it as my chance to try it, learn something new,
+As such, a browser-based multiplayer game was the ideal solution.
+Furthermore, it was a new technological challenge for me as I never
+used websockets-based frameworks until now and never did a multiplayer game before, 
+so I took it as my chance to try it, learn something new,
 and have fun with it.
 
-#### What is new here?
-
-Most CA simulators have an 'old' look to them accompanied by an even 'older' looking page design, and none of them can be experienced between multiple people.
-My app is meant to do exactly the opposite while offering a fun experience to the user.
 
 #### Methodology
 
@@ -41,8 +41,42 @@ Server-Client architecture using websockets for live match events and REST api f
 #### Summary of Solution
 
 The matches will be created by a single user.
-This user can share the link to the match with anyone, and after enough clients entered that match, the first game can start.
+This user can share the link to the match with anyone, and after enough users entered the match, the first game can start.
 The idea of each game is to win by having the most live cells on the board by the end of the last generation.
+
+# Contributions
+
+Most CA simulators have an 'old' look to them accompanied by an even 'older' looking page design,
+and none of them can be experienced between multiple people.
+My app does exactly the opposite while offering a fun experience to the user.
+
+My contributions are:
+
+* reframing of an old concept, that of cellular automata.
+* pleasant and modern front-end design.
+* modern user interface mechanics (transparent menus, background animation, overlayed modals).
+* an architecture that can be easily expanded upon, both on front-end and on back-end.
+* designing the app with performance in mind (e.g.: the matches are in RAM memory for faster memory access).
+* intuitive and easily extendable persistence (using relational database instead of a NoSql one for more flexibility in the future).
+* intuitive and 'to-the-point' game design.
+* supporting a community of enthusiasts.
+
+I decided that this documentation would be best separated in 5 chapters:
+
+* App Flow - this chapter summarises the functionalities found in the menus and general mechanic behind starting to play.
+
+* CA theory in CA Wars - this chapter briefly explains the theory behind cellular automata, the rules used in CA Wars and most of all, the 
+particularities of the app in the context of CA theory.
+
+* Game Flow - this chapter thoroughly explains the flow of a single game using relevant examples. Reading this chapter will probably 
+make the best job in painting the big picture of the app.
+
+* User Iterface - this chapter throughly explains the bonus functionalities the user can access during playing that make the game more 
+customizable, easy to play, and fun.
+
+* Architecture - this chapter summarises the front-end and back-end achitectures, also explaining why certain strategies were chosen instead of
+others.
+
 
 # Chapter I - App Flow
 
@@ -296,6 +330,101 @@ The 'Who-Sent' Dots: Each dot means that the player of that color already sent i
 The order of the dots, from left to right corresponds to the real order in which the players sent their respective initial configurations. 
 So in the example above, the 'blue' player sent first, followed by the 'orange' and then the 'green' player.
 
+#### The game view is also dynamic in the sense that you can move the camera around by dragging with right click over the canvas surface or zooming in and out using the mouse scroll.
+
+# Chapter VI - Architecture
+
+### Server-side Architecture
+
+![The Server Architecture](images/uml/server-arch.png){width=800px}
+
+This is the dependency graph of the server architecture with details about the MatchesManagerService class
+that acts like a container class for the state of the server.
+
+Going from top to bottom, we have the two classes that control the traffic of the server, the MatchHub class
+that concerns itself with real-time communication and the MatchController class that concerns itself with
+request-response type of communication.
+
+The MatchController class was mainly implemented so that the MatchHub wouldn't get overworked and we would have
+explicit separation of types of communication for easier extendability and maintainability.
+
+The MatchesManagerService class has two concurrent dictionaries that hold the state of the server, namely:  
+* _matches dictionary, that stores the correspondence between a match's matchKey and the match object from RAM memory;
+* _connections, that stores the correspondence between a connection id of a user and a match object from RAM memory.
+
+The _connections dictionary's purpose is to more easily get the match a player is in case the player disconnects from the match.
+
+The MatchesManagerService class also has three very important methods:
+
+* Create: Stores a match in _matches dictionary.
+* RegisterPlayer: Stores the connection in _connections dictionary and adds the player model to the match model.
+* UnRegisterPlayer: Is called when a player disconnects from the match. The method makes sure the information about the player is erased 
+so that the match can continue normally.
+
+In the lower half of the diagram we can see all the other services used on the back-end.  
+
+* MatchResourcesService: Creates match models for storing them in the MatchesManagerService
+
+* PlayerResourcesService: Creates player models that will be stored in a match model. This service is also 
+responsible with producing personalized maps for each player (for more details, see the "Code Examples" section).
+
+* AlgorithmService: Runs the CA evolution based on the ruleset found in the match model and returns all
+a list of generations and the winner (or let's you know a draw happened if that is the case).
+
+* MapGenerationService: Returns the match map. The match map is stored in memory as a grid with each element 
+being the assigned number of a player. So if the first cell of the grid has the value '1' that means that 
+only player '1' has control over that cell.
+
+* MatrixService: A wrapper for basic matrix operations that should be globally available.
+
+* RuleSetService: A wrapper for the repository that is used to parse the rules stored in the database 
+(for more details, see the "Code Examples" section).
+
+### Client-side Architecture
+
+![The Client Architecture](images/uml/client-arch.png){width=800px}
+
+This is the dependency graph of the client architecture with details about the service classes.
+
+In the upper half of the diagram we have the components and in the lower half we got the services.  
+
+#### Parent Components:
+
+* MatchComponent: this component establishes the connection with the MatchHub on the back-end and manages the communication between
+the hub and the component. This component delegates its computing tasks to the MatchService.
+
+* MenuComponent: this component establishes a template for all the menus of the app and is the parent for all its child components, meaning that
+a child component can't be rendered without first rendering the MenuComponent. 
+For a menu like the 'help' menu the url will be 'menu/help' and for 'about' menu the url will be 'menu/about'. In other words, menu is a parent
+to those components also from a routing perspective.
+
+#### Other Components:
+
+* ErrorComponent: this component is instantiated by the MatchComponent whenever there was an error in connecting to the match.
+
+Possible errors are:  
+
+* The match key isn't a valid Guid.
+* The match is full (the match already started).
+* The match is non-existent.
+
+#### The remaining components are self-explanatory, in that they correspond to their respective views. For example, the MatchCreateComponent is the match creation menu.
+
+#### Services:
+
+* MatchService: as stated above, MatchService is used by the MatchComponent to delegate its computing tasks. 
+The service also maintains the state of the grid in the _cells 2d array.  
+
+#### MatchService methods:
+
+* drawGrid: is used to render the grid. The color of the grid border can be modified through the activation of the "Hash" button (for more details, see the "User Interface" section).
+* startSimulation: is used to set a recurring task (recurs at every 60 ms) that renders a new generation of the finished game at every firing.
+* 
+
+
+
+
+
 # Conclusion
 
 The main goal of this thesis was to put cellular automata in a completely new, fresh, perspective that would appeal to anyone.
@@ -341,6 +470,64 @@ I am also more confident now in my ability to produce good looking and dynamic U
 
 All in all, it was a thrilling experience that only made me more passionate and less scared about real-life, big projects.
 
+# Technologies
+
+#### C#
+
+C# is a very versatile programming language, that can be used for game development, web development, and many more.  
+It's easier to use than lower-level language like C++ and more flexible than higher-level languages like Python.  
+It's also a very popular programming language, ranking 4th in the 2018 Stack Overflow Developer Survey in the "Most Popular Technologies"
+after Javascript, Java and Python.
+
+#### .NET Core
+
+.NET Core is a server-side framework that is open-source, cross-platform, lightweight and easy to use.
+It can be said it is the "new kid on the block" compared to its predecesor, .NET Framework, and is very appealing
+for newcomer programmers given its lightness and well documented features.
+It is also the 4th most popular framework in the 2018 Stack Overflow Developer Survey.
+
+#### SignalR
+
+ASP.NET Core SignalR is a library that simplifies adding real-time web functionality to apps. 
+Real-time web functionality enables server-side code to push content to clients instantly.
+
+SignalR provides an API for creating server-to-client remote procedure calls (RPC). 
+The RPCs call JavaScript functions on clients from server-side .NET Core code.
+
+Naturally, the client-side version of signalR was used in conjuction with the .NET one so that functions
+could be registered and thus made visible to the server-side hub 
+(A hub is a high-level pipeline that allows your client and server to call methods on each other). 
+The client-side version can also make
+RPCs to server-side functions, thus making the communication between client-side and server-side very
+simple and intuitive.
+
+#### Angular 6
+
+Angular is a framework that makes it easy to build client-side apps.  
+Angular combines declarative templates, dependency injection, end to end tooling, and integrated best practices to solve development challenges.  
+
+Angular was the chosen client-side framework because of its following advantages: is trustwhorty, familiar, and has a strong ecosystem.  
+Angular is trustworthy because The Angular team is committed to evolving Angular in a careful and planned manner,
+with a publicly announced release schedule that allows developers to understand and plan for future changes to the framework.
+They roll out new versions pretty frequently so it's pretty obvious the framework is here to stay and evolve.  
+
+Angular is familiar for a developer with C#/.NET background. Both C# and typescript rely on type specification which makes working with them
+safer and clearer.
+
+Angular also has a strong ecosystem. There are thousands of libraries and code samples across the web for Angular
+and given it has the giant tech company Google as its parent, we know for sure it has enough resources to grow.
+
+#### Automapper
+
+AutoMapper is an object-object mapper.  
+Object-object mapping works by transforming an input object of one type into an output object of a different type. 
+What makes AutoMapper interesting is that it provides some interesting conventions to take the dirty work out of figuring out how to map type A to type B. 
+As long as type B follows AutoMapper’s established convention, almost zero configuration is needed to map two types.
+
+#### Material Design Bootstrap
+
+MD Bootstrap is a very popular desing framework meant to make front-end design easy and intuitive.
+
 # Bibliography
 
 1. https://docs.microsoft.com/en-us/aspnet/core/signalr/?view=aspnetcore-2.1
@@ -354,4 +541,6 @@ All in all, it was a thrilling experience that only made me more passionate and 
 9. https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 10. https://en.wikipedia.org/wiki/Life-like_cellular_automaton
 11. http://www.mirekw.com/ca/whatis_mcell.html
+12. https://medium.com/angular-japan-user-group/why-developers-and-companies-choose-angular-4c9ba6098e1c
+13. https://insights.stackoverflow.com/survey/2018/
 

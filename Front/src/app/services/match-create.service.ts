@@ -37,7 +37,7 @@ export class MatchCreateService {
 		"Flakes"]; 
 	}
 
-	public getRulesets() {
+	public getRulesets(): Array<string> {
 		return this.rulesets;
 	}
 

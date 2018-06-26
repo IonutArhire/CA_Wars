@@ -16,17 +16,13 @@ namespace Api.Controllers
     [ApiController]
     public class MatchController : ControllerBase
     {
-        private ILifeLikeRepo _lifeLikeRepo;
-
         private IMatchesManagerService _matchesManagerService;
 
         private IMatchResourcesService _gameResourcesService;
 
-        public MatchController(ILifeLikeRepo lifeLikeRepo,
-                                IMatchesManagerService matchesManagerService,
+        public MatchController(IMatchesManagerService matchesManagerService,
                                 IMatchResourcesService gameResourcesService) {
 
-            this._lifeLikeRepo = lifeLikeRepo;
             this._matchesManagerService = matchesManagerService;
             this._gameResourcesService = gameResourcesService;
         }
