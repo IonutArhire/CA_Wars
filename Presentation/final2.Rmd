@@ -334,7 +334,7 @@ So in the example above, the 'blue' player sent first, followed by the 'orange' 
 
 # Chapter VI - Architecture
 
-### Server-side Architecture
+## Server-side Architecture
 
 ![The Server Architecture](images/uml/server-arch.png){width=800px}
 
@@ -380,7 +380,7 @@ only player '1' has control over that cell.
 * RuleSetService: A wrapper for the repository that is used to parse the rules stored in the database 
 (for more details, see the "Code Examples" section).
 
-### Client-side Architecture
+## Client-side Architecture
 
 ![The Client Architecture](images/uml/client-arch.png){width=800px}
 
@@ -388,7 +388,7 @@ This is the dependency graph of the client architecture with details about the s
 
 In the upper half of the diagram we have the components and in the lower half we got the services.  
 
-#### Parent Components:
+### Parent Components:
 
 * MatchComponent: this component establishes the connection with the MatchHub on the back-end and manages the communication between
 the hub and the component. This component delegates its computing tasks to the MatchService.
@@ -398,7 +398,7 @@ a child component can't be rendered without first rendering the MenuComponent.
 For a menu like the 'help' menu the url will be 'menu/help' and for 'about' menu the url will be 'menu/about'. In other words, menu is a parent
 to those components also from a routing perspective.
 
-#### Other Components:
+### Other Components:
 
 * ErrorComponent: this component is instantiated by the MatchComponent whenever there was an error in connecting to the match.
 
@@ -410,19 +410,25 @@ Possible errors are:
 
 #### The remaining components are self-explanatory, in that they correspond to their respective views. For example, the MatchCreateComponent is the match creation menu.
 
-#### Services:
+### Services:
 
 * MatchService: as stated above, MatchService is used by the MatchComponent to delegate its computing tasks. 
 The service also maintains the state of the grid in the _cells 2d array.  
 
-#### MatchService methods:
+MatchService functions:
 
 * drawGrid: is used to render the grid. The color of the grid border can be modified through the activation of the "Hash" button (for more details, see the "User Interface" section).
 * startSimulation: is used to set a recurring task (recurs at every 60 ms) that renders a new generation of the finished game at every firing.
-* 
+* renderSimulationStep: is used to set the _cells to the current generation and then call drawGrid to render everything on the game view.
 
+* MatchCreateService: this service is where the MatchCreateComponent gets its rulesets from. MatchCreateService also has the responsability 
+of sending the match create model to the back-end for actual creation.
 
+MatchCreateService functions: 
 
+* getRuleSets: this function returns the _rulesets array.
+* createMatch: this function makes a http post request with the match create model to the corresponding endpoint in MatchController of the server. 
+It also returns an observable that can be used to easily track and manage the response of the server.
 
 
 # Conclusion
