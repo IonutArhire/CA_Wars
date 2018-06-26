@@ -217,19 +217,19 @@ export class MatchService {
   }
 
   public skipSimulationBack(): void {
-    clearInterval(this._simulationInterval);
+    this.stopSimulation();
     this._currGameStateIdx = 0;
     this.renderSimulationStep();
   }
 
   public skipSimulationForward(): void {
-    clearInterval(this._simulationInterval);
+    this.stopSimulation();
     this._currGameStateIdx = this._generations.length - 1;
     this.renderSimulationStep();
   }
 
   public stepSimulationBack(): void {
-    clearInterval(this._simulationInterval);
+    this.stopSimulation();
     if(this._currGameStateIdx > 0) {
       this._currGameStateIdx -= 1;
       this.renderSimulationStep();
@@ -237,7 +237,7 @@ export class MatchService {
   }
 
   public stepSimulationForward(): void {
-    clearInterval(this._simulationInterval);
+    this.stopSimulation();
     if (this._currGameStateIdx < this._generations.length - 1) {
       this._currGameStateIdx += 1;
       this.renderSimulationStep();
@@ -245,7 +245,7 @@ export class MatchService {
   }
 
   public resetMatch(): void {
-    clearInterval(this._simulationInterval);
+    this.stopSimulation();
     this._currGameStateIdx = 0;
     this._cells = this._map;
     this.clearCanvas();

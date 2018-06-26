@@ -454,7 +454,8 @@ public async Task SendConfig(string unparsedMatchKey, float[,] playerConfig, int
 
 MatchHub SendConfig method:  
 
-This method is invoked remotely by the client-side, which also is responsible with providing all the parameters.
+This method is invoked remotely by the client-side, which also is responsible with providing all the parameters. The client-app
+sends the initial configuration through this method.
 
 #### The Parameters:
 
@@ -499,6 +500,318 @@ public float[,] GetPersonalizedMap(float[,] map, int assignedNumber) {
     return pmap;
 }
 ```
+
+PlayerResourcesService GetPersonalizedMap method:
+
+This method is invoked when preparing player resources to be part of the match model dto.
+
+#### The Parameters:
+
+1. map: a 2d uniform array of float elements that represents the map for the whole match.
+
+(for more details about the match map, see the "Chapter VI - Architecture > Server-side Architecture > MapGenerationService" section).
+
+2. assignedNumber: the number assigned to the player.
+
+#### What it does: 
+
+Assigns '-1' to the cells he is allowed to control and '-2' to cells that make up the enemy territory.
+The result is going to be sent to the client-app which will correctly display enemy territory as greyed out
+squares that the player can't control.
+
+```{r}
+public LifeLikeModel GetByName(string name) {
+    var repoResult = this._lifeLikeRepo.GetByName(name);
+        
+    var forSurvival = this.ParseNeighbours(repoResult.ForSurvival);
+    var forBirth = this.ParseNeighbours(repoResult.ForBirth);
+
+    var newLifeLikeModel = new LifeLikeModel(repoResult.Name, forSurvival, forBirth, repoResult.Character);
+
+    return newLifeLikeModel;
+}
+```
+
+RuleSetService GetByName method:
+
+This method is used to get the life like rule model from the database during match creation.
+
+#### The Parameters:
+
+1. name: the name of the ruleset.
+
+#### What it does:
+
+It uses the repository for life like rules to get the life like entity out of the database. Next, the 
+'ForSurvival' and 'ForBirth' strings are parsed so they can be converted into List<byte> for convenience and clarity.
+
+For example, let's take the "2x2" life like rule. Its S/B is "125/36" which means the 'ForSurvival' string will be
+stored as "125" and 'ForBirth' will be "36". These strings will be converted as stated above, using the following method.
+
+```{r}
+private List<byte> ParseNeighbours(string neighbours) {
+    var result = new List<byte>();
+
+    foreach (char c in neighbours) {
+        result.Add((byte)Char.GetNumericValue(c));
+    }
+
+    return result;
+}
+```
+
+RuleSetService ParseNeighbours method:
+
+This method is used to parse the 'ForSurvival' and 'ForBirth' strings for any life like rule.
+
+#### The Parameters: 
+
+1. neighbours: the string to be parsed.
+
+#### What is does:
+
+Creates a new list of bytes, takes each character of the string and converts it to byte type and then appends it to the list.
+The method returns the resulting list that is further used by the algorithm service in computing the next generation.
+
+```{r}
+public async Task SendResources(string unparsedMatchKey) {
+    var matchKey = Guid.Parse(unparsedMatchKey);
+        
+    if (this._matchesManagerService.GameModelExists(matchKey)) {
+        var match = this._matchesManagerService.GetMatchModel(matchKey);
+
+        if (match.PlayerNumbers.Count == 0) {
+            throw new HubException($"The match with the key \"{unparsedMatchKey}\" is already full!");
+        }
+
+        var matchModelDto = this._mapper.Map<MatchModelDto>(match);
+
+        matchModelDto.AssignedNumber = this._playerResourcesService.AssignNumber(match);
+        matchModelDto.Map = this._playerResourcesService.GetPersonalizedMap(match.Map, matchModelDto.AssignedNumber);
+
+        await Clients.Caller.SendAsync("Resources", matchModelDto);
+        await Groups.AddToGroupAsync(Context.ConnectionId, matchKey.ToString());
+        this._matchesManagerService.RegisterPlayer(Context.ConnectionId, matchModelDto.AssignedNumber, matchKey);
+    }
+    else {
+        throw new HubException($"The match with the key \"{unparsedMatchKey}\" is non-existent!");
+    }
+}
+```
+
+MatchHub SendResources method:
+
+This method is invoked remotely by the client-side, which also is responsible with providing all the parameters. The client-app
+uses this method to connect to a match and receive the required resources to start the game view.
+
+#### The Parameters:
+
+1. unparsedMatchKey: guid converted to string that represents the match key.
+
+#### What it does:
+
+Checks if the match with the corresponding match key exists. If it doesn't exist, the method throws an error that will be
+further used on the client-side to display the corresponding message to the user. 
+
+If the match has all the player numbers assigned then the match is full and so the method throws an error and the same situation as above
+repeats itself.
+
+If the match is existent and is not full, the match model is mapped unto a match model dto that carries only the info that
+is of interest to the client-app, a player number is assigned randomly from those still available, a personalized map is 
+created and the method finally sends the resources to the client-app, adds the connection id of the user (Context.ConnectionId) 
+to the singalR group assigned for the match and registers the player with the match.
+
+```{r}
+public int AssignNumber(MatchModel match) {
+    var playerNumbers = match.PlayerNumbers;
+
+    var randomizer = new Random();
+    var idx = randomizer.Next(playerNumbers.Count);
+    var result = playerNumbers[idx];
+    playerNumbers.RemoveAt(idx);
+
+    if (this._env.IsDevelopment()) 
+    {
+        if (playerNumbers.Count == 0)
+        {
+            match.PlayerNumbers = InitPlayerNumbers(match.Players.Count);
+        }
+    }
+    
+
+    return result;
+}
+```
+
+PlayerResourcesService AssignedNumber method:
+
+This method is used to assign a number to a player so that the player cells can be easily identified in the grid.
+
+#### The Parameters:
+
+1. MatchModel: the model for the match the player takes part in.
+
+#### What it does:
+
+Gets all the still available player numbers of the match and randomly selects one for the user and then removes the 
+extracted number from the player numbers list. The selected number is returned.
+
+If we run the app in development mode and all the player numbers have been assigned for the match received as parameter,
+then we reinitialize the player numbers so that new players can join the match even if all the previous players disconnected from it.
+This is because it's easier to debug when a match can't die off.
+
+```{r}
+public void RegisterPlayer(string connectionId, int assignedNumber, Guid matchKey) {
+    var match = this._matches[matchKey];
+    this._connections.TryAdd(connectionId, match);
+
+    match.Players[assignedNumber].ConnectionId = connectionId;
+}
+```
+
+MatchesManagerService RegisterPlayer method:
+
+This method is used to register a player when he request an existent match that didn't already start.
+
+#### The Parameters:
+
+1. connectionId: the connection id of the user (accesible through Context.ConnectionId).
+2. assignedNumber: the number assigned to the player.
+3. matchKey: the key of the match (the unique identifier for the match).
+
+#### What is does:
+
+Registers the player with the match and keeps track of its connection to the match so it's easier to unregister him/her, 
+as you will see in the following method.
+
+```{r}
+public void UnRegisterPlayer(string connectionId) {
+    var match = this._connections[connectionId];
+
+    var playerId = this.FindPlayerId(connectionId, match);
+
+    this.RemoveInitialConfig(match, playerId);
+    match.Players.RemoveAt(playerId);
+    this.RemoveConnection(connectionId);
+
+    if (match.Players.Count == 0) {
+        this.RemoveMatch(match);
+    }
+}
+```
+
+MatchesManagerService UnRegisterPlayer method:
+
+This method is used to unregister a player when he diconnects from the match.
+
+This method doesn't get fired when running the server in development mode so that the match doesn't get removed
+when all players disconnect. This is because it's easier to debug when the match stays indefinitely available.
+
+#### The Parameters:
+
+1. connectionId: the connection id of the user (accesible through Context.ConnectionId).
+
+#### What it does:
+
+It selects the match that corresponds to the player's connection id.
+If the player already sent his/her initial configuration, that initial configuration gets removed.
+It removes the player from the match and it removes the link between the player connection id and the match (this.RemoveConnection(connectionId)).
+If all the players disconnected, the method removes the match from memory so that performance won't be affected by 
+inactive matches that stay stagnant in memory.
+
+### Front-End Samples
+
+```{r}
+public ngAfterViewInit(): void {
+  this.getResourcesStatus().subscribe((_gotResources) => {
+    if (_gotResources) {
+      this._matchService.init(this.playGrid.nativeElement, this.toolbar.nativeElement, this._dimensions, this._playerResources, this._map);
+      this._matchService.drawGrid();
+      this._matchService.captureEvents(this._assignedNum);
+    }
+  });
+}
+```
+
+MatchComponent ngAfterViewInit function:
+
+This function fires when the view gets rendered and is used to initialize match service and the game view.
+
+#### What it does:
+
+The initialization code mentioned above runs only if the client already received the necessary resources.
+getResourcesStatus() returns an observable that the function subscribes to using a lambda function that
+has the boolean parameter '_gotResources'. If '_gotResources' is set to true, match service gets initialized,
+the grid gets rendered and the event handlers for the game view (used for camera movement on right click
+drag and scroll) are registered.
+
+```{r}
+public startSimulation(): void {
+  this._simulationInterval = setInterval(() => {
+  if (this._currGameStateIdx < this._generations.length - 1) {
+    this._currGameStateIdx += 1;
+      this.renderSimulationStep();
+    }
+  }, 60);
+}
+```
+
+MatchService startSimulation function:
+
+This function is called when the user clicks on the 'play' button, after the generations for that respective game
+arrived from the server.  
+
+#### What it does:
+
+This function is used to set a recurring task (recurs at every 60 ms) that renders a new 
+generation of the finished game at every firing.  
+
+setInterval is called, provided with a lambda function that concerns itself with rendering each generation in the
+appropiate order and a value that represents the time interval between two firings measured in milliseconds.
+
+The resulting task is stored in a class variable '_simulationInterval' so that it can be deleted once media buttons
+like 'pause' or 'rewind' are hit, and by doing this, stopping the recurring task. This behaviour can be better understood 
+by analyzing the following functions:
+
+```{r}
+public stopSimulation(): void {
+  clearInterval(this._simulationInterval);
+}
+
+public skipSimulationBack(): void {
+  this.stopSimulation();
+  this._currGameStateIdx = 0;
+  this.renderSimulationStep();
+}
+```
+
+The first function is used to clear the recurring task, while the second function is used when hitting the 'rewind' button.  
+
+After hitting the 'rewind' button, skipSimulationBack gets fired and the recurring task gets cleared, followed by setting 
+the '_currGameStateIdx' (which represents the current generation index) to 0 (the absolute beginning) and thus rendering the first 
+generation.
+
+```{r}
+public saveGenerationsAsImgs() {
+  for (let idx = 0; idx < this._generations.length; idx++) {
+    this._cells = this._generations[idx];
+    this.drawGrid();
+
+    this._canvas.toBlob(function(blob) {
+      saveAs(blob, idx + ".png");
+    });
+  }
+}
+```
+
+MatchService saveGenerationsAsImgs function:
+
+This function is called when the user hits the 'save' button.
+
+#### What it does:
+
+It goes through each generation and at each step, it renders the grid and saves the canvas contents in .png format
+in the default download folder of the user's browser.
 
 
 
@@ -549,7 +862,7 @@ All in all, it was a thrilling experience that only made me more passionate and 
 
 # Technologies
 
-#### C#
+#### C\#
 
 C# is a very versatile programming language, that can be used for game development, web development, and many more.  
 It's easier to use than lower-level language like C++ and more flexible than higher-level languages like Python.  
