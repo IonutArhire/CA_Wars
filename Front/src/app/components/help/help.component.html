@@ -1,20 +1,507 @@
 <div id="help-menu" class="card my-menu-container">
 
-  <div class="card-body">
-
+  <aside id="help-menu-aside">
     <a>
-      <i-chevron-left class="my-menu-back-btn" style="cursor:pointer;" [routerLink]="['/menu/main']"></i-chevron-left>
+      <i-chevron-left id="help-menu-back-btn" class="my-menu-back-btn" style="cursor:pointer;" [routerLink]="['/menu/main']"></i-chevron-left>
     </a>
+  </aside>
 
-    <p class="h1 text-center py-5">Help</p>
+  <div id="help-menu-content-container" class="card-body">
 
-    <div id="help-menu-content" class="my-menu-content">
-      <p class="h3">Welcome to CA_Wars!</p>
+    <p id="help-menu-title" class="h1 text-center py-5">Help</p>
+
+    <div class="my-menu-content">
+      <p class="h1">Welcome to CA_Wars!</p>
 
       <br>
 
-      <p class="h5">CA_Wars (or "Cellular Automata Wars") is a game about cellular automata in which you will test your strategy senses against other people.</p>
+      <p class="h5">
+        CA_Wars (or "Cellular Automata Wars") is a game about cellular automata in which you will test your strategy senses against other people.
+      </p>
+
+      <br>
+
+      <p class="h1">
+        <a name="toc">Table of Contents</a>
+      </p>
+
+      <br>
+
+      <p class="h3">
+        <a href="menu/help#chapter1">1. What are Cellular Automata (CA)?</a>
+      </p>
+
+      <p class="h3">
+        <a href="menu/help#chapter2">2. CA in CA_Wars.</a>
+      </p>
+
+      <p class="h3">
+        <a href="menu/help#chapter3">3. CA Rules in CA_Wars</a>
+      </p>
+
+      <p class="h3">
+        <a href="menu/help#chapter4">4. Built-in Rules</a>
+      </p>
+
+      <p class="h3">
+        <a href="menu/help#chapter5">5. How to Play</a>
+      </p>
+
+      <p class="h3">
+        <a href="menu/help#chapter6">6. User Interface Explained</a>
+      </p>
+
+      <p class="h3">
+        <a href="menu/help#chapter7">7. FAQ</a>
+      </p>
+
+      <br>
+
+      <p class="h1">
+        <a name="chapter1">What are Cellular Automata (CA)?</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <p class="h5">
+          A cellular automaton (CA) consists of a regular grid of cells, each cell being in one of a finite number of states, such as 'on' and 'off'. <br> 
+          The grid can be in any finite number of dimensions. <br> 
+          For each cell, a set of cells called its neighborhood is defined relative to the specified cell. <br> 
+          An initial state (time t = 0) is selected by assigning a state for each cell of the grid. <br>
+          A new generation is created (advancing t by 1), according to some fixed rule that determines the new state of each cell in terms of the current state of the cell and the states of the cells in its neighborhood. <br> 
+          Typically, the rule for updating the state of cells is the same for each cell and does not change over time, and is applied to the whole grid simultaneously. <br>
+      </p>
+
+      <br>
+
+      <p class="h1">
+        <a name="chapter2">CA in CA_Wars</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <p class="h5">
+          For CA Wars, only 2-dimensional CA are used, so the generations will evolve on a 2-dimensional grid. <br>
+          <br>
+          Cellular automata are often simulated on a finite grid rather than an infinite one. <br> 
+          In two dimensions, the universe would be a rectangle instead of an infinite plane. <br> 
+          The obvious problem with finite grids is how to handle the cells on the edges. <br>
+          <br>
+          CA Wars uses finite grids. <br> 
+          Finite grids were chosen to make the games more competitive by shifting the focus from 'expanding' to 'attacking' and 'defending'. <br>
+          Another great reason is performance (easier to compute on a finite grid). <br>
+          <br>
+          In CA Wars, 'edge' cells are handled with a 'toroidal' arrangement:<br>
+          when one goes off the top, one comes in at the corresponding position on the bottom, and when one goes off the left, one comes in on the right. <br>
+          <br>
+          
+          This can be visualized as taping the left and right edges of the rectangle to form a tube, <br>
+          then taping the top and bottom edges of the tube to form a torus (doughnut shape). <br>
+          <br>
+      </p>
+
+      <div class="image-container">
+        <img src="assets/images/torus.png" style="width: 200px;">
+      </div>
+      <br>
+
+      <p class="h1">
+        <a name="chapter3">CA Rules in CA_Wars</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <p class="h5">
+          The rules used in CA Wars are called 'Life-like' rules. <br>
+
+          To understand what 'Life-like' rules refer to, we will have to analyze the most renown CA rule: 'Game of Life' <br>
+          <br>
+
+          The universe of the Game of Life is a 2-dimensional grid of square cells, <br>
+          each of which is in one of two possible states, 'alive' or 'dead', (or populated and unpopulated, respectively).<br> 
+          Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent.<br>
+          This is called the 'Moore neighbourhood'.<br>
+          <br>
+      </p>
+
+      <div class="image-container">
+        <img src="assets/images/moore.png" style="width: 200px">
+      </div>
+      <br>
+
+      <p class="h5">
+          At each step in time, the following transitions occur: <br>
+          <br>
+
+          1. Any live cell with fewer than two live neighbors dies, as if caused by under population. <br>
+          2. Any live cell with two or three live neighbors lives on to the next generation. <br>
+          3. Any live cell with more than three live neighbors dies, as if by overpopulation. <br>
+          4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction. <br>
+          <br>
+
+          The first generation is created by applying the above rules simultaneously to every cell in the seed; 
+          births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. <br> 
+          Each generation is a pure function of the preceding one. <br> 
+          The rules continue to be applied repeatedly to create further generations. <br>
+          <br>
+
+          A CA is 'Life-like' (in the sense of being similar to Conway's Game of Life) if it meets the following criteria:<br>
+          <br>
+
+          * The array of cells of the automaton has two dimensions. <br>
+          * Each cell of the automaton has two states, 'alive' and 'dead'. <br>
+          * The neighborhood of each cell is the Moore neighborhood. <br>
+          * In each time step of the automaton, the new state of a cell can be expressed as a 
+          function of the number of adjacent cells that are in the alive state and of the cell's own state; 
+          that is, the rule is outer totalistic (sometimes called semitotalistic). <br>
+          <br>
+
+          This class of cellular automata is named for the Game of Life, the most famous rule, which meets all of these criteria. <br> 
+          Many different terms are used to describe this class. <br> 
+          It is common to refer to it as the "Life family" or to simply use phrases like "similar to Life". <br>
+          <br>
+
+          There are three standard notations for describing these rules. <br>
+          In the notation we will be using, Game of Life can be expressed like this: 'S23/B3'. <br>
+          S stands for 'survival' and 'B' stands for 'birth'. <br>
+          'S23/B3' would thus be read as "The cell will survive if it has exactly 2 or 3 live neghbours/ The cell will become alive if it has exactly 3 live neghbours". <br>
+          <br>
+
+          There are 2^18^ = 262,144 possible Life-like rules, only a small fraction of which have been studied in detail. <br>
+          <br>
+
+          Mirek's Cellebration (MCell) is a 32-bit Windows program whose main purpose is exploring existing and creating new rules and patterns of 1-D and 2-D Cellular Automata.<br>
+          <br>
+
+          CA Wars uses all the MCell built-in Life-like rules:<br>
+          <br>
+      </p>
+
+      <p class="h1">
+        <a name="chapter4">Built-in Rules</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <div class="image-container">
+        <table id="life-likes-table">
+          <thead>
+          <tr class="header">
+          <th>Name</th>
+          <th>Rule(S/B)</th>
+          <th>Character</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="odd">
+          <td>2x2</td>
+          <td>125/36</td>
+          <td>Chaotic</td>
+          </tr>
+          <tr class="even">
+          <td>34 Life</td>
+          <td>34/34</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="odd">
+          <td>Amoeba</td>
+          <td>1358/357</td>
+          <td>Chaotic</td>
+          </tr>
+          <tr class="even">
+          <td>Assimilation</td>
+          <td>4567/345</td>
+          <td>Stable</td>
+          </tr>
+          <tr class="odd">
+          <td>Coagulations</td>
+          <td>235678/378</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="even">
+          <td>Conway’s Life</td>
+          <td>23/3</td>
+          <td>Chaotic</td>
+          </tr>
+          <tr class="odd">
+          <td>Coral</td>
+          <td>45678/3</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="even">
+          <td>Day &amp; Night</td>
+          <td>34678/3678</td>
+          <td>Stable</td>
+          </tr>
+          <tr class="odd">
+          <td>Diamoeba</td>
+          <td>5678/35678</td>
+          <td>Chaotic</td>
+          </tr>
+          <tr class="even">
+          <td>Flakes</td>
+          <td>012345678/3</td>
+          <td>Expanding</td>
+          </tr>
+          <tr class="odd">
+          <td>Gnarl</td>
+          <td>1/1</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="even">
+          <td>HighLife</td>
+          <td>23/36</td>
+          <td>Chaotic</td>
+          </tr>
+          <tr class="odd">
+          <td>Long life</td>
+          <td>5/345</td>
+          <td>Stable</td>
+          </tr>
+          <tr class="even">
+          <td>Maze</td>
+          <td>12345/3</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="odd">
+          <td>Mazectric</td>
+          <td>1234/3</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="even">
+          <td>Move</td>
+          <td>245/368</td>
+          <td>Stable</td>
+          </tr>
+          <tr class="odd">
+          <td>Pseudo life</td>
+          <td>238/357</td>
+          <td>Chaotic</td>
+          </tr>
+          <tr class="even">
+          <td>Replicator</td>
+          <td>1357/1357</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="odd">
+          <td>Seeds (2)</td>
+          <td>/2</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="even">
+          <td>Serviettes</td>
+          <td>/234</td>
+          <td>Exploding</td>
+          </tr>
+          <tr class="odd">
+          <td>Stains</td>
+          <td>235678/3678</td>
+          <td>Stable</td>
+          </tr>
+          <tr class="even">
+          <td>WalledCities</td>
+          <td>2345/45678</td>
+          <td>Stable</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <br>
+
+      <p class="h1">
+        <a name="chapter5">How to Play</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <p class="h5">
+        The first thing you see when starting a new match is 
+        a simple 2-dimensional orthogonal grid of minimum size 4x4 and maximum size 50x50, 
+        that is partitioned such as each player would get the same amount of territory.
+      </p>
+
+      <div class="image-container">
+        <img src="assets/images/randmap.png" style="width: 200px">
+      </div>
+      <br>
+
+      <p class="h5">
+        You can't place 'alive' cells in the grey squares. Those squares are 'enemy territory'. You can only place 'alive' cells in the white squares.<br>
+        <br>
+
+        The goal of the game is to place 'alive' cells so that your initial configuration would evolve to occupy the most cells by the end of the game.<br>
+        <br>
+      </p>
+
+      <p class="h4">
+        But when does the game end?<br>
+        <br>
+      </p>
+
+      <p class="h5">
+        The game ends either when there are no more 'alive' cells on the grid or when the number of maximum iterations has been reached.<br>
+        <br>
+
+        The number of maximum iterations is specified when a new match is created. 
+        This number signifies the maximum number of generations the evolution can go on for.<br>
+        <br>
+
+        A special case would be the case of a draw. Two or more players draw if and only if they have the same number of 'alive' cells at the end of
+        the evolution and that number is also the maximum number of 'alive' cells.<br>
+        <br>
+
+        In the case of a draw, no player gets awarded a point and the score remains unchanged.<br>
+      </p>
+      <br>
+
+      <p class="h1">
+        <a name="chapter6">User Interface Explained</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <div class="image-container">
+        <i-droplet class="ui-btn" style="color: #f28910;"></i-droplet>
+      </div>
+      <br>
+
+      <p class="h5">
+        The Droplet: When activated, you can erase your 'alive' cells by clicking or dragging on them.
+      </p>
+      <br>
+
+      <div class="image-container">
+        <i-hash class="ui-btn" style="color: black;"></i-hash>
+      </div>
+      <br>
+
+      <p class="h5">
+        The Hash: When activated, the black border of the grid will become white thus giving the play view a different look.
+      </p>
+      <br>
+
+      <div class="image-container">
+        <i-x-circle class="ui-btn" style="color: #f41f1f;"></i-x-circle>
+      </div>
+      <br>
+
+      <p class="h5">
+        The Exit: When clicked, it opens a confirmation dialogue before exiting.
+      </p>
+      <br>
+      <br>
+
+      <p class="h4">
+        The following buttons appear only after the game has finished and right before resetting the game.
+      </p>
+      <br>
+
+
+
+      <div class="image-container">
+        <i-play class="ui-btn"></i-play>
+        <i-pause class="ui-btn"></i-pause>
+        <i-fast-forward class="ui-btn"></i-fast-forward>
+        <i-rewind class="ui-btn"></i-rewind>
+        <i-skip-forward class="ui-btn"></i-skip-forward>
+        <i-skip-back class="ui-btn"></i-skip-back>
+      </div>
+      <br>
+
+      <p class="h5">
+        The Media Buttons: They work exactly like video player buttons but instead of frame they go through CA generations.
+      </p>
+      <br>
+
+      <div class="image-container">
+        <i-save class="ui-btn" style="color: black;"></i-save>
+      </div>
+      <br>
+
+      <p class="h5">
+        The Save: When clicked, it automatically downloads each CA generation as png in the default download folder of your browser.
+      </p>
+      <br>
+
+      <div class="image-container">
+        <div class="who-sent-dots" style="background-color: #099fef; box-shadow: 0 0 10px 2px #099fef"></div>
+        <div class="who-sent-dots" style="background-color: #f28910; box-shadow: 0 0 10px 2px #f28910"></div>
+        <div class="who-sent-dots" style="background-color: #5bdb15; box-shadow: 0 0 10px 2px #5bdb15"></div>
+      </div>
+      <br>
+
+      <p class="h5">
+        The 'Who-Sent' Dots: Each dot means that the player of that color already sent its initial configuration. 
+        The order of the dots, from left to right
+        corresponds to the real order in which the players sent their respective initial configurations.
+        So in the example above, the 'blue' player sent first, followed by the 'orange' and then the 'green' player.
+      </p>
+      <br>
       
+
+
+
+      <p class="h1">
+        <a name="chapter7">FAQ</a>
+        <a href="menu/help#toc">
+          <i-navigation-2 style="color: #099fef"></i-navigation-2>
+        </a>
+      </p>
+      <br>
+
+      <div>
+        <label class="h4 grey-text font-weight-light label-question">Question</label>
+        <p class="h4">
+          Can I use multiple browser tabs to play in the same match?
+        </p>
+        <br>
+
+        <label class="h4 grey-text font-weight-light label-answer">Answer</label>
+        <p class="h4">
+          Of course you can.
+        </p>
+        <br>
+
+        <label class="h4 grey-text font-weight-light label-question">Question</label>
+        <p class="h4">
+          When I try using multiple browser tags to play a match, the browser reloads the tabs I'm not focused on. Is it a bug?
+        </p>
+        <br>
+
+        <label class="h4 grey-text font-weight-light label-answer">Answer</label>
+        <p class="h4">
+          It is not a bug. If you're using Chrome, just input "chrome://flags/#automatic-tab-discarding" in your Chrome search bar and select "Disable" to disable automatic tab discarding.
+        </p>
+        <br>
+
+        <label class="h4 grey-text font-weight-light label-question">Question</label>
+        <p class="h4">
+          The background video doesn't play. Is it a bug?
+        </p>
+        <br>
+
+        <label class="h4 grey-text font-weight-light label-answer">Answer</label>
+        <p class="h4">
+          It is not a bug. If you're using Chrome, they recently implemented an autoplay policy that blocks video autoplay if the user doesn't show immediate activity. 
+          A way around this is to input "chrome://flags/#autoplay-policy" in your Chrome search bar and select "No user gesture is required" to disable the policy.
+        </p>
+        <br>
+      </div>
+
+
+
     </div>
 
   </div>

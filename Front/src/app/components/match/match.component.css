@@ -6,14 +6,6 @@
     margin-top: 15px;
 }
 
-.who-sent-dots {
-    width: 15px;
-    height: 15px;
-    margin-left: 4px;
-    margin-right: 4px;
-    border-radius: 50%;
-}
-
 .score {
     font-size: 80px;
 }

@@ -70,7 +70,7 @@ In this chapter, we will look into the basic theory of CA and how it relates to 
 
 ## 2.1 Basic CA
 
-A cellular automaton consists of a regular grid of cells, each in one of a finite number of states, such as 'on' and 'off'. 
+A cellular automaton consists of a regular grid of cells, each cell being in one of a finite number of states, such as 'on' and 'off'. 
 The grid can be in any finite number of dimensions. 
 For each cell, a set of cells called its neighborhood is defined relative to the specified cell. 
 An initial state (time t = 0) is selected by assigning a state for each cell of the grid.
@@ -259,6 +259,43 @@ The next state is:
 
 After this state follows simultaneous death for both players’ cells.
 
+# Chapter IV - User Interface
+
+
+![The Droplet](images/ui/droplet.png){width=75px}
+
+The Droplet: When activated, you can erase your 'alive' cells by clicking or dragging on them.
+
+
+![The Hash](images/ui/hash.png){width=75px}
+
+The Hash: When activated, the black border of the grid will become white thus giving the play view a different look.
+
+
+![The Exit](images/ui/exit.png){width=75px}
+
+The Exit: When clicked, it opens a confirmation dialogue before exiting.
+
+
+#### The following buttons appear only after the game has finished and right before resetting the game.
+
+
+![The Media Buttons](images/ui/media-buttons.png){height=75px}
+
+The Media Buttons: They work exactly like video player buttons but instead of frame they go through CA generations.
+
+
+![The Save](images/ui/save.png){width=75px}
+
+The Save: When clicked, it automatically downloads each CA generation as png in the default download folder of your browser.
+
+
+![The 'Who-Sent' Dots](images/ui/who-sent.png){width=75px}
+
+The 'Who-Sent' Dots: Each dot means that the player of that color already sent its initial configuration. 
+The order of the dots, from left to right corresponds to the real order in which the players sent their respective initial configurations. 
+So in the example above, the 'blue' player sent first, followed by the 'orange' and then the 'green' player.
+
 # Conclusion
 
 The main goal of this thesis was to put cellular automata in a completely new, fresh, perspective that would appeal to anyone.
@@ -304,5 +341,17 @@ I am also more confident now in my ability to produce good looking and dynamic U
 
 All in all, it was a thrilling experience that only made me more passionate and less scared about real-life, big projects.
 
+# Bibliography
 
+1. https://docs.microsoft.com/en-us/aspnet/core/signalr/?view=aspnetcore-2.1
+2. http://psoup.math.wisc.edu/mcell/rullex_life.html
+3. https://angular.io/docs
+4. http://docs.automapper.org/en/stable/index.html
+5. https://css-tricks.com/
+6. https://mdbootstrap.com/
+7. https://github.com/michaelbazos/angular-feather
+8. https://en.wikipedia.org/wiki/Cellular_automaton
+9. https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+10. https://en.wikipedia.org/wiki/Life-like_cellular_automaton
+11. http://www.mirekw.com/ca/whatis_mcell.html
 

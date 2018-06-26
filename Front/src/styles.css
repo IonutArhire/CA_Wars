@@ -191,3 +191,13 @@ i {
     width: 40px !important;
     height: 40px !important;
 }
+
+/* Game */
+
+.who-sent-dots {
+    width: 15px;
+    height: 15px;
+    margin-left: 4px;
+    margin-right: 4px;
+    border-radius: 50%;
+}
