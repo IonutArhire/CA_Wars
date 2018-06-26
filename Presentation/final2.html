@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Arhire Ionut" />
+  <title>Cellular Automata Wars</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">Cellular Automata Wars</h1>
+<p class="author">Arhire Ionut</p>
+<p class="date">15 mai 2018</p>
+</header>
+
+<h1 id="introduction">Introduction</h1>
+<h4 id="main-idea">Main Idea</h4>
+<p>This application is targeted towards users that want to learn more about cellular automata (CA) or that already have an interest in this domain, offering them the opportunity to discover new types of cellular automata and new rules while also having fun and interacting with friends.</p>
+<h4 id="motivation">Motivation</h4>
+<p>My main inspiration for this project was my interest in cellular automata. I wanted to do something innovative with it, something that would appeal to anyone, from CA enthusiast to people without a technical knowledge background.</p>
+<p>As such, a browser-based multiplayer game was the ideal solution. Furthermore, it was a new technological challenge for me as I never used websockets-based frameworks until now and never did a multiplayer game before, so I took it as my chance to try it, learn something new, and have fun with it.</p>
+<h4 id="methodology">Methodology</h4>
+<p>Server-Client architecture using websockets for live match events and REST api for request-response type of tasks (like match creation).</p>
+<h4 id="summary-of-solution">Summary of Solution</h4>
+<p>The matches will be created by a single user. This user can share the link to the match with anyone, and after enough users entered the match, the first game can start. The idea of each game is to win by having the most live cells on the board by the end of the last generation.</p>
+<h1 id="contributions">Contributions</h1>
+<p>Most CA simulators have an ‘old’ look to them accompanied by an even ‘older’ looking page design, and none of them can be experienced between multiple people. My app does exactly the opposite while offering a fun experience to the user.</p>
+<p>My contributions are:</p>
+<ul>
+<li>reframing of an old concept, that of cellular automata.</li>
+<li>pleasant and modern front-end design.</li>
+<li>modern user interface mechanics (transparent menus, background animation, overlayed modals).</li>
+<li>an architecture that can be easily expanded upon, both on front-end and on back-end.</li>
+<li>designing the app with performance in mind (e.g.: the matches are in RAM memory for faster memory access).</li>
+<li>intuitive and easily extendable persistence (using relational database instead of a NoSql one for more flexibility in the future).</li>
+<li>intuitive and ‘to-the-point’ game design.</li>
+<li>supporting a community of enthusiasts.</li>
+</ul>
+<p>I decided that this documentation would be best separated in 5 chapters:</p>
+<ul>
+<li><p>App Flow - this chapter summarises the functionalities found in the menus and general mechanic behind starting to play.</p></li>
+<li><p>CA theory in CA Wars - this chapter briefly explains the theory behind cellular automata, the rules used in CA Wars and most of all, the particularities of the app in the context of CA theory.</p></li>
+<li><p>Game Flow - this chapter thoroughly explains the flow of a single game using relevant examples. Reading this chapter will probably make the best job in painting the big picture of the app.</p></li>
+<li><p>User Iterface - this chapter throughly explains the bonus functionalities the user can access during playing that make the game more customizable, easy to play, and fun.</p></li>
+<li><p>Architecture - this chapter summarises the front-end and back-end achitectures, also explaining why certain strategies were chosen instead of others.</p></li>
+</ul>
+<h1 id="chapter-i---app-flow">Chapter I - App Flow</h1>
+<p>The app will welcome the user through a main menu after which the user can opt for:</p>
+<ul>
+<li>creating a new multiplayer match.</li>
+<li>learn how the game works and what each option does.</li>
+<li>find about the author through an ‘About’ section.</li>
+</ul>
+<p>When creating a new multiplayer match, the user will be able to customize the following settings:</p>
+<ul>
+<li>Number of players.</li>
+<li>CA rule set which will determine the evolution of each game of the match.</li>
+<li>Maximum number of generations resulted from the CA evolution.</li>
+<li>Number of rows of the play field.</li>
+<li>Number of columns of the play field.</li>
+</ul>
+<p>After match creation, the user will receive an url from the server, which he will use to share the match with his/her friends. Then, the match will begin. A match is a succession of games, each game ending in a win or a draw between more players.</p>
+<h1 id="chapter-ii---ca-theory-in-ca-wars">Chapter II - CA theory in CA Wars</h1>
+<p>In this chapter, we will look into the basic theory of CA and how it relates to the flow of a game.</p>
+<h2 id="basic-ca">2.1 Basic CA</h2>
+<p>A cellular automaton consists of a regular grid of cells, each cell being in one of a finite number of states, such as ‘on’ and ‘off’. The grid can be in any finite number of dimensions. For each cell, a set of cells called its neighborhood is defined relative to the specified cell. An initial state (time t = 0) is selected by assigning a state for each cell of the grid. A new generation is created (advancing t by 1), according to some fixed rule that determines the new state of each cell in terms of the current state of the cell and the states of the cells in its neighborhood. Typically, the rule for updating the state of cells is the same for each cell and does not change over time, and is applied to the whole grid simultaneously.</p>
+<h2 id="ca-in-the-game">2.2 CA in the game</h2>
+<p>For CA Wars, only 2-dimensional CA are used, so the generations will evolve on a 2-dimensional grid.</p>
+<p>Cellular automata are often simulated on a finite grid rather than an infinite one. In two dimensions, the universe would be a rectangle instead of an infinite plane. The obvious problem with finite grids is how to handle the cells on the edges.</p>
+<p>CA Wars uses finite grids. Finite grids were chosen to make the games more competitive by shifting the focus from ‘expanding’ to ‘attacking’ and ‘defending’. Another great reason is performance (easier to compute on a finite grid).</p>
+<p>In CA Wars, ‘edge’ cells are handled with a ‘toroidal’ arrangement: when one goes off the top, one comes in at the corresponding position on the bottom, and when one goes off the left, one comes in on the right.</p>
+<p>This can be visualized as taping the left and right edges of the rectangle to form a tube, then taping the top and bottom edges of the tube to form a torus (doughnut shape).</p>
+<figure>
+<img src="images/torus.png" alt="A torus" width="100" /><figcaption>A torus</figcaption>
+</figure>
+<p>The reason for using this ‘toroidal’ arrangement is ease of programming (using modular arithmetic functions).</p>
+<p>The rules used in CA Wars are called ‘Life-like’ rules.</p>
+<p>To understand what ‘Life-like’ rules refer to, we will have to analyze the most renown CA rule:</p>
+<h3 id="game-of-life">2.2.1 Game of Life</h3>
+<p>The universe of the Game of Life is a 2-dimensional grid of square cells, each of which is in one of two possible states, ‘alive’ or ‘dead’, (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. This is called the ‘Moore neighbourhood’.</p>
+<figure>
+<img src="images/moore.png" alt="Moore neighbourhood" width="100" /><figcaption>Moore neighbourhood</figcaption>
+</figure>
+<p>At each step in time, the following transitions occur:</p>
+<ol type="1">
+<li>Any live cell with fewer than two live neighbors dies, as if caused by under population.</li>
+<li>Any live cell with two or three live neighbors lives on to the next generation.</li>
+<li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
+<li>Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.</li>
+</ol>
+<p>The first generation is created by applying the above rules simultaneously to every cell in the seed; births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. Each generation is a pure function of the preceding one. The rules continue to be applied repeatedly to create further generations.</p>
+<h3 id="life-like-ca">2.2.2 Life-like CA</h3>
+<p>A CA is ‘Life-like’ (in the sense of being similar to Conway’s Game of Life) if it meets the following criteria:</p>
+<ul>
+<li>The array of cells of the automaton has two dimensions.</li>
+<li>Each cell of the automaton has two states, ‘alive’ and ‘dead’.</li>
+<li>The neighborhood of each cell is the Moore neighborhood.</li>
+<li>In each time step of the automaton, the new state of a cell can be expressed as a function of the number of adjacent cells that are in the alive state and of the cell’s own state; that is, the rule is outer totalistic (sometimes called semitotalistic).</li>
+</ul>
+<p>This class of cellular automata is named for the Game of Life, the most famous rule, which meets all of these criteria. Many different terms are used to describe this class. It is common to refer to it as the “Life family” or to simply use phrases like “similar to Life”.</p>
+<p>There are three standard notations for describing these rules. In the notation we will be using, Game of Life can be expressed like this: ‘S23/B3’. S stands for ‘survival’ and ‘B’ stands for ‘birth’. ‘S23/B3’ would thus be read as “The cell will survive if it has exactly 2 or 3 live neghbours/ The cell will become alive if it has exactly 3 live neghbours”.</p>
+<p>There are 2<sup>18</sup> = 262,144 possible Life-like rules, only a small fraction of which have been studied in detail.</p>
+<h3 id="mireks-cellebration-mcell">2.2.3 Mirek’s Cellebration (MCell)</h3>
+<p>Mirek’s Cellebration (MCell) is a 32-bit Windows program whose main purpose is exploring existing and creating new rules and patterns of 1-D and 2-D Cellular Automata.</p>
+<p>CA Wars uses all the MCell built-in Life-like rules:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Rule(S/B)</th>
+<th>Character</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2x2</td>
+<td>125/36</td>
+<td>Chaotic</td>
+</tr>
+<tr class="even">
+<td>34 Life</td>
+<td>34/34</td>
+<td>Exploding</td>
+</tr>
+<tr class="odd">
+<td>Amoeba</td>
+<td>1358/357</td>
+<td>Chaotic</td>
+</tr>
+<tr class="even">
+<td>Assimilation</td>
+<td>4567/345</td>
+<td>Stable</td>
+</tr>
+<tr class="odd">
+<td>Coagulations</td>
+<td>235678/378</td>
+<td>Exploding</td>
+</tr>
+<tr class="even">
+<td>Conway’s Life</td>
+<td>23/3</td>
+<td>Chaotic</td>
+</tr>
+<tr class="odd">
+<td>Coral</td>
+<td>45678/3</td>
+<td>Exploding</td>
+</tr>
+<tr class="even">
+<td>Day &amp; Night</td>
+<td>34678/3678</td>
+<td>Stable</td>
+</tr>
+<tr class="odd">
+<td>Diamoeba</td>
+<td>5678/35678</td>
+<td>Chaotic</td>
+</tr>
+<tr class="even">
+<td>Flakes</td>
+<td>012345678/3</td>
+<td>Expanding</td>
+</tr>
+<tr class="odd">
+<td>Gnarl</td>
+<td>1/1</td>
+<td>Exploding</td>
+</tr>
+<tr class="even">
+<td>HighLife</td>
+<td>23/36</td>
+<td>Chaotic</td>
+</tr>
+<tr class="odd">
+<td>Long life</td>
+<td>5/345</td>
+<td>Stable</td>
+</tr>
+<tr class="even">
+<td>Maze</td>
+<td>12345/3</td>
+<td>Exploding</td>
+</tr>
+<tr class="odd">
+<td>Mazectric</td>
+<td>1234/3</td>
+<td>Exploding</td>
+</tr>
+<tr class="even">
+<td>Move</td>
+<td>245/368</td>
+<td>Stable</td>
+</tr>
+<tr class="odd">
+<td>Pseudo life</td>
+<td>238/357</td>
+<td>Chaotic</td>
+</tr>
+<tr class="even">
+<td>Replicator</td>
+<td>1357/1357</td>
+<td>Exploding</td>
+</tr>
+<tr class="odd">
+<td>Seeds (2)</td>
+<td>/2</td>
+<td>Exploding</td>
+</tr>
+<tr class="even">
+<td>Serviettes</td>
+<td>/234</td>
+<td>Exploding</td>
+</tr>
+<tr class="odd">
+<td>Stains</td>
+<td>235678/3678</td>
+<td>Stable</td>
+</tr>
+<tr class="even">
+<td>WalledCities</td>
+<td>2345/45678</td>
+<td>Stable</td>
+</tr>
+</tbody>
+</table>
+<h1 id="chapter-iii---game-flow">Chapter III - Game Flow</h1>
+<ul>
+<li>Step 1: Map Generation</li>
+</ul>
+<p>A simple 2-dimensional orthogonal grid of minimum size 4x4 and maximum size 50x50, that is partitioned such as each player would get the same amount of territory.</p>
+<figure>
+<img src="images/randmap.png" alt="Example of generated map" width="100" /><figcaption>Example of generated map</figcaption>
+</figure>
+<p>The strategy for map generation is randomly selecting, for each cell, which player can ‘own’ it. Given the uniform distribution of number of ‘viable’ cells per player, we can be sure of the fact that each player will get approximately the same amount of ‘territory’.</p>
+<p>Another plus of using this method is the fact that there are very low chances for a player to get a large clump of ‘territory’ thus meaning that the player is constrained to using patterns that don’t require a lot of cells, meaning he can more easily predict a game and employ a certain strategy.</p>
+<ul>
+<li>Step 2: Initial Configurations</li>
+</ul>
+<p>Each player will activate cells as to create the most favorable initial configuration for himself.</p>
+<ul>
+<li>Step 3: Automata Evolution</li>
+</ul>
+<p>We will now analyze a simplified case of automata evolution that can happen during a game:</p>
+<p>We will start from the following initial configuration:</p>
+<figure>
+<img src="images/init.png" alt="Initial Configuration" width="100" /><figcaption>Initial Configuration</figcaption>
+</figure>
+<p>Here, player I has the orange cells and player II the blue ones.</p>
+<p>The CA we will be using is Game of Life (GOF).</p>
+<p>GOF consists of the following transitions:</p>
+<ol type="1">
+<li>Any live cell with fewer than two live neighbors dies, as if caused by under population.</li>
+<li>Any live cell with two or three live neighbors lives on to the next generation.</li>
+<li>Any live cell with more than three live neighbors dies, as if by overpopulation.</li>
+<li>Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.</li>
+</ol>
+<p>We can see in the picture that player I has a “Glider”, a pattern of GOF under the category: “spaceship” (for the way it “moves”). Player II has a “Boat”, also called a “still life”.</p>
+<p>The initial configuration evolves as follows:</p>
+<figure>
+<img src="images/first-evolution-stages.png" alt="First Evolution Stages" width="100" /><figcaption>First Evolution Stages</figcaption>
+</figure>
+
+<p>The last panel shows how a cell can overwrite an opponent cell.</p>
+<p>At each iteration of the evolution, the transitions for a player are calculated as if the opponent’s cells are all dead. The only problem here would be the case when a cell wants to be activated with orange and blue at the same time. In this case the cell will remain dead.</p>
+<p>Getting back to the evolution, the next state is:</p>
+<figure>
+<img src="images/fifth-generation.png" alt="Fifth Generation" width="100" /><figcaption>Fifth Generation</figcaption>
+</figure>
+<p>To analyze how we arrived at this state we will use this:</p>
+<figure>
+<img src="images/evolution-analysis.png" alt="Evolution Analysis" width="300" /><figcaption>Evolution Analysis</figcaption>
+</figure>
+<p>Cell 1: died because of transition 1<br />
+Cell 2: was born because of transition 4; neighbors: {1,5,6}<br />
+Cell 3: died because of transition 1<br />
+Cell 4: lived because of transition 2<br />
+Cell 5: died because of transition 3<br />
+Cell 6: was reborn as a blue cell because of transition 4; neighbors: {3,4,12}<br />
+Cell 7: stayed dead<br />
+Cell 8: lived because of transition 2<br />
+Cell 9: lived because of transition 2<br />
+Cell 10: lived because of transition 2<br />
+Cell 11: was born because of transition 4; neighbors: {5,6,10}<br />
+Cell 12: died because of transition 1</p>
+
+<p>The next state is:</p>
+<figure>
+<img src="images/last-generation.png" alt="Last Generation" width="100" /><figcaption>Last Generation</figcaption>
+</figure>
+<p>After this state follows simultaneous death for both players’ cells.</p>
+<h1 id="chapter-iv---user-interface">Chapter IV - User Interface</h1>
+<figure>
+<img src="images/ui/droplet.png" alt="The Droplet" width="75" /><figcaption>The Droplet</figcaption>
+</figure>
+<p>The Droplet: When activated, you can erase your ‘alive’ cells by clicking or dragging on them.</p>
+<figure>
+<img src="images/ui/hash.png" alt="The Hash" width="75" /><figcaption>The Hash</figcaption>
+</figure>
+<p>The Hash: When activated, the black border of the grid will become white thus giving the play view a different look.</p>
+<figure>
+<img src="images/ui/exit.png" alt="The Exit" width="75" /><figcaption>The Exit</figcaption>
+</figure>
+<p>The Exit: When clicked, it opens a confirmation dialogue before exiting.</p>
+<h4 id="the-following-buttons-appear-only-after-the-game-has-finished-and-right-before-resetting-the-game.">The following buttons appear only after the game has finished and right before resetting the game.</h4>
+<figure>
+<img src="images/ui/media-buttons.png" alt="The Media Buttons" height="75" /><figcaption>The Media Buttons</figcaption>
+</figure>
+<p>The Media Buttons: They work exactly like video player buttons but instead of frame they go through CA generations.</p>
+<figure>
+<img src="images/ui/save.png" alt="The Save" width="75" /><figcaption>The Save</figcaption>
+</figure>
+<p>The Save: When clicked, it automatically downloads each CA generation as png in the default download folder of your browser.</p>
+<figure>
+<img src="images/ui/who-sent.png" alt="The ‘Who-Sent’ Dots" width="75" /><figcaption>The ‘Who-Sent’ Dots</figcaption>
+</figure>
+<p>The ‘Who-Sent’ Dots: Each dot means that the player of that color already sent its initial configuration. The order of the dots, from left to right corresponds to the real order in which the players sent their respective initial configurations. So in the example above, the ‘blue’ player sent first, followed by the ‘orange’ and then the ‘green’ player.</p>
+<h4 id="the-game-view-is-also-dynamic-in-the-sense-that-you-can-move-the-camera-around-by-dragging-with-right-click-over-the-canvas-surface-or-zooming-in-and-out-using-the-mouse-scroll.">The game view is also dynamic in the sense that you can move the camera around by dragging with right click over the canvas surface or zooming in and out using the mouse scroll.</h4>
+<h1 id="chapter-vi---architecture">Chapter VI - Architecture</h1>
+<h2 id="server-side-architecture">Server-side Architecture</h2>
+<figure>
+<img src="images/uml/server-arch.png" alt="The Server Architecture" width="800" /><figcaption>The Server Architecture</figcaption>
+</figure>
+<p>This is the dependency graph of the server architecture with details about the MatchesManagerService class that acts like a container class for the state of the server.</p>
+<p>Going from top to bottom, we have the two classes that control the traffic of the server, the MatchHub class that concerns itself with real-time communication and the MatchController class that concerns itself with request-response type of communication.</p>
+<p>The MatchController class was mainly implemented so that the MatchHub wouldn’t get overworked and we would have explicit separation of types of communication for easier extendability and maintainability.</p>
+<p>The MatchesManagerService class has two concurrent dictionaries that hold the state of the server, namely:<br />
+* _matches dictionary, that stores the correspondence between a match’s matchKey and the match object from RAM memory; * _connections, that stores the correspondence between a connection id of a user and a match object from RAM memory.</p>
+<p>The _connections dictionary’s purpose is to more easily get the match a player is in case the player disconnects from the match.</p>
+<p>The MatchesManagerService class also has three very important methods:</p>
+<ul>
+<li>Create: Stores a match in _matches dictionary.</li>
+<li>RegisterPlayer: Stores the connection in _connections dictionary and adds the player model to the match model.</li>
+<li>UnRegisterPlayer: Is called when a player disconnects from the match. The method makes sure the information about the player is erased so that the match can continue normally.</li>
+</ul>
+<p>In the lower half of the diagram we can see all the other services used on the back-end.</p>
+<ul>
+<li><p>MatchResourcesService: Creates match models for storing them in the MatchesManagerService</p></li>
+<li><p>PlayerResourcesService: Creates player models that will be stored in a match model. This service is also responsible with producing personalized maps for each player (for more details, see the “Code Examples” section).</p></li>
+<li><p>AlgorithmService: Runs the CA evolution based on the ruleset found in the match model and returns all a list of generations and the winner (or let’s you know a draw happened if that is the case).</p></li>
+<li><p>MapGenerationService: Returns the match map. The match map is stored in memory as a grid with each element being the assigned number of a player. So if the first cell of the grid has the value ‘1’ that means that only player ‘1’ has control over that cell.</p></li>
+<li><p>MatrixService: A wrapper for basic matrix operations that should be globally available.</p></li>
+<li><p>RuleSetService: A wrapper for the repository that is used to parse the rules stored in the database (for more details, see the “Code Examples” section).</p></li>
+</ul>
+<h2 id="client-side-architecture">Client-side Architecture</h2>
+<figure>
+<img src="images/uml/client-arch.png" alt="The Client Architecture" width="800" /><figcaption>The Client Architecture</figcaption>
+</figure>
+<p>This is the dependency graph of the client architecture with details about the service classes.</p>
+<p>In the upper half of the diagram we have the components and in the lower half we got the services.</p>
+<h3 id="parent-components">Parent Components:</h3>
+<ul>
+<li><p>MatchComponent: this component establishes the connection with the MatchHub on the back-end and manages the communication between the hub and the component. This component delegates its computing tasks to the MatchService.</p></li>
+<li><p>MenuComponent: this component establishes a template for all the menus of the app and is the parent for all its child components, meaning that a child component can’t be rendered without first rendering the MenuComponent. For a menu like the ‘help’ menu the url will be ‘menu/help’ and for ‘about’ menu the url will be ‘menu/about’. In other words, menu is a parent to those components also from a routing perspective.</p></li>
+</ul>
+<h3 id="other-components">Other Components:</h3>
+<ul>
+<li>ErrorComponent: this component is instantiated by the MatchComponent whenever there was an error in connecting to the match.</li>
+</ul>
+<p>Possible errors are:</p>
+<ul>
+<li>The match key isn’t a valid Guid.</li>
+<li>The match is full (the match already started).</li>
+<li>The match is non-existent.</li>
+</ul>
+<h4 id="the-remaining-components-are-self-explanatory-in-that-they-correspond-to-their-respective-views.-for-example-the-matchcreatecomponent-is-the-match-creation-menu.">The remaining components are self-explanatory, in that they correspond to their respective views. For example, the MatchCreateComponent is the match creation menu.</h4>
+<h3 id="services">Services:</h3>
+<ul>
+<li>MatchService: as stated above, MatchService is used by the MatchComponent to delegate its computing tasks. The service also maintains the state of the grid in the _cells 2d array.</li>
+</ul>
+<p>MatchService functions:</p>
+<ul>
+<li>drawGrid: is used to render the grid. The color of the grid border can be modified through the activation of the “Hash” button (for more details, see the “User Interface” section).</li>
+<li>startSimulation: is used to set a recurring task (recurs at every 60 ms) that renders a new generation of the finished game at every firing.</li>
+<li><p>renderSimulationStep: is used to set the _cells to the current generation and then call drawGrid to render everything on the game view.</p></li>
+<li><p>MatchCreateService: this service is where the MatchCreateComponent gets its rulesets from. MatchCreateService also has the responsability of sending the match create model to the back-end for actual creation.</p></li>
+</ul>
+<p>MatchCreateService functions:</p>
+<ul>
+<li>getRuleSets: this function returns the _rulesets array.</li>
+<li>createMatch: this function makes a http post request with the match create model to the corresponding endpoint in MatchController of the server. It also returns an observable that can be used to easily track and manage the response of the server.</li>
+</ul>
+<h2 id="code-examples">Code Examples</h2>
+<pre class="{r}"><code>public async Task SendConfig(string unparsedMatchKey, float[,] playerConfig, int assignedNumber) {
+    var matchKey = Guid.Parse(unparsedMatchKey);
+    var match = this._matchesManagerService.GetMatchModel(matchKey);
+    var playerId = this._matchesManagerService.FindPlayerId(Context.ConnectionId, match);
+    match.InitialConfigs.Add(new InitialConfigModel(playerConfig, playerId));
+
+    await Clients.Group(matchKey.ToString()).SendAsync(&quot;PlayerSent&quot;, assignedNumber);
+
+    if (match.InitialConfigs.Count == match.Players.Count) {
+        var result = this._algorithmService.RunGame(match);
+
+        await Clients.Group(matchKey.ToString()).SendAsync(&quot;Game&quot;, result);
+        match.InitialConfigs.Clear();
+    }
+}</code></pre>
+<h1 id="conclusion">Conclusion</h1>
+<p>The main goal of this thesis was to put cellular automata in a completely new, fresh, perspective that would appeal to anyone. However, I didn’t want it to only seem like a fun idea, but also be a fun idea and experience, so I knew there was a long way to go in terms of front-end work, which was quite scary for me, given that I wasn’t confident of my front-end engineering and design skills.</p>
+<p>I also wanted to learn a lot and explore, so I chose to use the latest updates for each major technology in the project, even though I knew I wouldn’t find the most extensive documentation given their recent launches.</p>
+<p>At the beginning, it was pretty hard researching and getting used to signalR. I also had to open some issues on the aspnet/signalR github repository to better understand what this and the older version of singalR have in common and what is different.</p>
+<p>I also had to get used to the front-end canvas and its mouse input event handling and had to do a lot of brainstorming to figure out the design on the go, because I wanted it to be my own invention, with as little outside help as possible.</p>
+<p>However, I think the hardest thing was to make hard architectural choices. I made some architectural decisions that turned out to be not as succesful as I had hoped and then had to redo the whole thing. But all those bad decision were great lessons for me and I discovered how much more important was ‘planning ahead’ than I originally thought.</p>
+<p>I also experimented with when to refactor my code and found out it’s better to do it early most of the times.</p>
+<p>Visual Studio Code offered me the flexibility I needed for both back-end and front-end and its lightness probably saved my calm a few times.</p>
+<h4 id="ideas-for-the-future">Ideas for the future</h4>
+<p>In the future, the game could accommodate multiple classes of CAs, not only life-like CAs. However, the greatest addition would be a singleplayer mode in which you can test out new ideas by playing with a single color or more and see how they interact.</p>
+<h4 id="personal-opinion">Personal Opinion</h4>
+<p>The result of my work until now is an application meeting the basic objectives I was set out to achieve. I also learned a lot from working on this project, both technical knowledge and organizational wisdom.</p>
+<p>When I say ‘organizational wisdom’ I’m referring to:</p>
+<ul>
+<li>reading as much as you can about the used frameworks before deciding on the architecture.</li>
+<li>refactoring early (even when you are the only person working on the project).</li>
+<li>realizing the importance of OOP principles.</li>
+<li>discussing your ideas with someone else.</li>
+</ul>
+<p>I am also more confident now in my ability to produce good looking and dynamic UI.</p>
+<p>All in all, it was a thrilling experience that only made me more passionate and less scared about real-life, big projects.</p>
+<h1 id="technologies">Technologies</h1>
+<h4 id="c">C</h4>
+<p>C# is a very versatile programming language, that can be used for game development, web development, and many more.<br />
+It’s easier to use than lower-level language like C++ and more flexible than higher-level languages like Python.<br />
+It’s also a very popular programming language, ranking 4th in the 2018 Stack Overflow Developer Survey in the “Most Popular Technologies” after Javascript, Java and Python.</p>
+<h4 id="net-core">.NET Core</h4>
+<p>.NET Core is a server-side framework that is open-source, cross-platform, lightweight and easy to use. It can be said it is the “new kid on the block” compared to its predecesor, .NET Framework, and is very appealing for newcomer programmers given its lightness and well documented features. It is also the 4th most popular framework in the 2018 Stack Overflow Developer Survey.</p>
+<h4 id="signalr">SignalR</h4>
+<p>ASP.NET Core SignalR is a library that simplifies adding real-time web functionality to apps. Real-time web functionality enables server-side code to push content to clients instantly.</p>
+<p>SignalR provides an API for creating server-to-client remote procedure calls (RPC). The RPCs call JavaScript functions on clients from server-side .NET Core code.</p>
+<p>Naturally, the client-side version of signalR was used in conjuction with the .NET one so that functions could be registered and thus made visible to the server-side hub (A hub is a high-level pipeline that allows your client and server to call methods on each other). The client-side version can also make RPCs to server-side functions, thus making the communication between client-side and server-side very simple and intuitive.</p>
+<h4 id="angular-6">Angular 6</h4>
+<p>Angular is a framework that makes it easy to build client-side apps.<br />
+Angular combines declarative templates, dependency injection, end to end tooling, and integrated best practices to solve development challenges.</p>
+<p>Angular was the chosen client-side framework because of its following advantages: is trustwhorty, familiar, and has a strong ecosystem.<br />
+Angular is trustworthy because The Angular team is committed to evolving Angular in a careful and planned manner, with a publicly announced release schedule that allows developers to understand and plan for future changes to the framework. They roll out new versions pretty frequently so it’s pretty obvious the framework is here to stay and evolve.</p>
+<p>Angular is familiar for a developer with C#/.NET background. Both C# and typescript rely on type specification which makes working with them safer and clearer.</p>
+<p>Angular also has a strong ecosystem. There are thousands of libraries and code samples across the web for Angular and given it has the giant tech company Google as its parent, we know for sure it has enough resources to grow.</p>
+<h4 id="automapper">Automapper</h4>
+<p>AutoMapper is an object-object mapper.<br />
+Object-object mapping works by transforming an input object of one type into an output object of a different type. What makes AutoMapper interesting is that it provides some interesting conventions to take the dirty work out of figuring out how to map type A to type B. As long as type B follows AutoMapper’s established convention, almost zero configuration is needed to map two types.</p>
+<h4 id="material-design-bootstrap">Material Design Bootstrap</h4>
+<p>MD Bootstrap is a very popular desing framework meant to make front-end design easy and intuitive.</p>
+<h1 id="bibliography">Bibliography</h1>
+<ol type="1">
+<li>https://docs.microsoft.com/en-us/aspnet/core/signalr/?view=aspnetcore-2.1</li>
+<li>http://psoup.math.wisc.edu/mcell/rullex_life.html</li>
+<li>https://angular.io/docs</li>
+<li>http://docs.automapper.org/en/stable/index.html</li>
+<li>https://css-tricks.com/</li>
+<li>https://mdbootstrap.com/</li>
+<li>https://github.com/michaelbazos/angular-feather</li>
+<li>https://en.wikipedia.org/wiki/Cellular_automaton</li>
+<li>https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life</li>
+<li>https://en.wikipedia.org/wiki/Life-like_cellular_automaton</li>
+<li>http://www.mirekw.com/ca/whatis_mcell.html</li>
+<li>https://medium.com/angular-japan-user-group/why-developers-and-companies-choose-angular-4c9ba6098e1c</li>
+<li>https://insights.stackoverflow.com/survey/2018/</li>
+</ol>
+</body>
+</html>

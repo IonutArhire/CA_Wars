@@ -430,6 +430,77 @@ MatchCreateService functions:
 * createMatch: this function makes a http post request with the match create model to the corresponding endpoint in MatchController of the server. 
 It also returns an observable that can be used to easily track and manage the response of the server.
 
+## Code Examples
+
+### Back-End Samples
+
+```{r}
+public async Task SendConfig(string unparsedMatchKey, float[,] playerConfig, int assignedNumber) {
+    var matchKey = Guid.Parse(unparsedMatchKey);
+    var match = this._matchesManagerService.GetMatchModel(matchKey);
+    var playerId = this._matchesManagerService.FindPlayerId(Context.ConnectionId, match);
+    match.InitialConfigs.Add(new InitialConfigModel(playerConfig, playerId));
+
+    await Clients.Group(matchKey.ToString()).SendAsync("PlayerSent", assignedNumber);
+
+    if (match.InitialConfigs.Count == match.Players.Count) {
+        var result = this._algorithmService.RunGame(match);
+
+        await Clients.Group(matchKey.ToString()).SendAsync("Game", result);
+        match.InitialConfigs.Clear();
+    }
+}
+```
+
+MatchHub SendConfig method:  
+
+This method is invoked remotely by the client-side, which also is responsible with providing all the parameters.
+
+#### The Parameters:
+
+1. unparsedMatchKey: guid converted to string that represents the match key.
+2. playerConfig: a 2d uniform array of float elements that represents the initial configuration of the player.
+
+The 2d uniform float array has the following cell values:
+
+* the assigned number of the player, which means that the cell is 'alive'.
+* '-1', which means that the cell is 'dead'.
+* '-2', which means that the cell is part of enemy territory.  
+
+3. assignedNumber: the number assigned to the player. If the player has the assigned number '2' then we call him player '2'.
+
+#### What it does:
+
+The method registers the initial configuration that the player sent with the correspoding match (extracted using the match key) and 
+notifies all the players in that match which player sent his/her initial configuration.
+
+If the number of initial configurations is equal to the number of all the players currently in the match, so, if all
+players connected to the match sent their initial configurations, then the algorithm service is used to compute all the generations of 
+the game, until the number o generations reaches the maximum iterations number (or until all cells are dead). At the end,
+Each player receives the results and the initial configurations are erased from memory.
+
+```{r}
+public float[,] GetPersonalizedMap(float[,] map, int assignedNumber) {
+    var pmap = this._matrixService.CopyMatrix(map);
+
+    for (int i = 0; i < pmap.GetLength(0); i++)
+    {
+        for (int j = 0; j < pmap.GetLength(1); j++)
+        {
+            if(pmap[i,j] == assignedNumber) {
+                pmap[i,j] = -1;
+            }
+            else {
+                pmap[i,j] = -2;
+            }
+        }
+    }
+
+    return pmap;
+}
+```
+
+
 
 # Conclusion
 

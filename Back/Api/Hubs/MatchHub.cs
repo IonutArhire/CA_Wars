@@ -81,14 +81,14 @@ namespace Api.Hubs {
                     throw new HubException($"The match with the key \"{unparsedMatchKey}\" is already full!");
                 }
 
-                var gameModelDto = this._mapper.Map<MatchModelDto>(match);
+                var matchModelDto = this._mapper.Map<MatchModelDto>(match);
 
-                gameModelDto.AssignedNumber = this._playerResourcesService.AssignNumber(match);
-                gameModelDto.Map = this._playerResourcesService.GetPersonalizedMap(match.Map, gameModelDto.AssignedNumber);
+                matchModelDto.AssignedNumber = this._playerResourcesService.AssignNumber(match);
+                matchModelDto.Map = this._playerResourcesService.GetPersonalizedMap(match.Map, matchModelDto.AssignedNumber);
 
-                await Clients.Caller.SendAsync("Resources", gameModelDto);
+                await Clients.Caller.SendAsync("Resources", matchModelDto);
                 await Groups.AddToGroupAsync(Context.ConnectionId, matchKey.ToString());
-                this._matchesManagerService.RegisterPlayer(Context.ConnectionId, gameModelDto.AssignedNumber, matchKey);
+                this._matchesManagerService.RegisterPlayer(Context.ConnectionId, matchModelDto.AssignedNumber, matchKey);
             }
             else {
                 throw new HubException($"The match with the key \"{unparsedMatchKey}\" is non-existent!");
