@@ -2,15 +2,7 @@
 title: "Cellular Automata Wars"
 author: "Arhire Ionut"
 date: "15 mai 2018"
-output:
-  pdf_document: 
-    number_sections: true
-fontsize: 12pt
 ---
-
-\newpage
-\tableofcontents
-\newpage
 
 # Introduction
 
@@ -78,7 +70,7 @@ customizable, easy to play, and fun.
 others.
 
 
-# Chapter I - App Flow
+# App Flow
 
 The app will welcome the user through a main menu after which the user can opt for:
 
@@ -98,11 +90,11 @@ After match creation, the user will receive an url from the server, which he wil
 Then, the match will begin. A match is a succession of games, each game ending in a win or a draw between more players.
 
 
-# Chapter II - CA theory in CA Wars
+# CA theory in CA Wars
 
 In this chapter, we will look into the basic theory of CA and how it relates to the flow of a game.
 
-## 2.1 Basic CA
+## Basic CA
 
 A cellular automaton consists of a regular grid of cells, each cell being in one of a finite number of states, such as 'on' and 'off'. 
 The grid can be in any finite number of dimensions. 
@@ -111,7 +103,7 @@ An initial state (time t = 0) is selected by assigning a state for each cell of 
 A new generation is created (advancing t by 1), according to some fixed rule that determines the new state of each cell in terms of the current state of the cell and the states of the cells in its neighborhood. 
 Typically, the rule for updating the state of cells is the same for each cell and does not change over time, and is applied to the whole grid simultaneously.
 
-## 2.2 CA in the game
+## CA in the game
 
 For CA Wars, only 2-dimensional CA are used, so the generations will evolve on a 2-dimensional grid.
 
@@ -138,7 +130,7 @@ The rules used in CA Wars are called 'Life-like' rules.
 
 To understand what 'Life-like' rules refer to, we will have to analyze the most renown CA rule:
 
-### 2.2.1 Game of Life
+### Game of Life
 
 The universe of the Game of Life is a 2-dimensional grid of square cells, 
 each of which is in one of two possible states, 'alive' or 'dead', (or populated and unpopulated, respectively). 
@@ -159,7 +151,7 @@ births and deaths occur simultaneously, and the discrete moment at which this ha
 Each generation is a pure function of the preceding one. 
 The rules continue to be applied repeatedly to create further generations.
 
-### 2.2.2 Life-like CA
+### Life-like CA
 
 A CA is 'Life-like' (in the sense of being similar to Conway's Game of Life) if it meets the following criteria:
 
@@ -181,7 +173,7 @@ S stands for 'survival' and 'B' stands for 'birth'.
 
 There are 2^18^ = 262,144 possible Life-like rules, only a small fraction of which have been studied in detail.
 
-### 2.2.3 Mirek's Cellebration (MCell)
+### Mirek's Cellebration (MCell)
 
 Mirek's Cellebration (MCell) is a 32-bit Windows program whose main purpose is exploring existing and creating new rules and patterns of 1-D and 2-D Cellular Automata.
 
@@ -212,7 +204,7 @@ Serviettes	  | /234	        | Exploding
 Stains	      | 235678/3678	  | Stable
 WalledCities	| 2345/45678	  | Stable
 
-# Chapter III - Game Flow
+# Game Flow
 
 * Step 1: Map Generation
 
@@ -293,7 +285,7 @@ The next state is:
 
 After this state follows simultaneous death for both players’ cells.
 
-# Chapter IV - User Interface
+# User Interface
 
 
 ![The Droplet](images/ui/droplet.png){width=75px}
@@ -332,7 +324,7 @@ So in the example above, the 'blue' player sent first, followed by the 'orange' 
 
 #### The game view is also dynamic in the sense that you can move the camera around by dragging with right click over the canvas surface or zooming in and out using the mouse scroll.
 
-# Chapter VI - Architecture
+# Architecture
 
 ## Server-side Architecture
 
@@ -430,7 +422,7 @@ MatchCreateService functions:
 * createMatch: this function makes a http post request with the match create model to the corresponding endpoint in MatchController of the server. 
 It also returns an observable that can be used to easily track and manage the response of the server.
 
-## Code Examples
+# Code Examples
 
 ### Back-End Samples
 
@@ -917,6 +909,10 @@ As long as type B follows AutoMapper’s established convention, almost zero con
 #### Material Design Bootstrap
 
 MD Bootstrap is a very popular desing framework meant to make front-end design easy and intuitive.
+
+#### SQL Server
+
+SQL Server is a central part of the Microsoft data platform and it is the second most popular database technology according to 2018 Stack Overflow Developer Survey.
 
 # Bibliography
 
