@@ -11,7 +11,7 @@ namespace Api.Validators
         public MatchCreateResourceValidator(ILifeLikeRepo lifeLikeRepo) {
             this._lifeLikeRepo = lifeLikeRepo;
 
-            RuleFor(mc => mc.NrPlayers).InclusiveBetween(2, 4);
+            RuleFor(mc => mc.NrPlayers).InclusiveBetween(1, 4);
             RuleFor(mc => mc.RuleSet).Must(BeAValidRuleSet);
             RuleFor(mc => mc.MaxIters).InclusiveBetween(1, 10000);
             RuleFor(mc => mc.Rows).InclusiveBetween(2, 50);
