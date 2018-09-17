@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
@@ -55,7 +55,10 @@ export class MatchComponent {
   public _hasGameArrived: boolean;
   public _hasSent: boolean;
 
-  constructor(private _matchService: MatchService, private _route: ActivatedRoute) {
+  constructor(private _matchService: MatchService, 
+              private _route: ActivatedRoute,
+              private _router: Router) {
+                
     this._hasResources = false;
     this._resourcesStatus = new BehaviorSubject<boolean>(false);
     
@@ -233,5 +236,10 @@ export class MatchComponent {
 
   public exit(): void {
     this.side.show();
+  }
+
+  public exitMatch(): void {
+    this._hubConnection.stop();
+    this._router.navigateByUrl('menu/main');
   }
 }

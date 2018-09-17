@@ -65,7 +65,7 @@ INSERT INTO [dbo].[LifeLikes]
            ,[Character])
      VALUES
            (NEWID(),
-		    'GOF', 
+		    'GOL', 
 		    '23',
 			'3',
 			'Chaotic')

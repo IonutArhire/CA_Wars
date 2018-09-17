@@ -3763,26 +3763,23 @@
   },
   "packageFolders": {
     "C:\\Users\\EL Diesel\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Services\\Services.csproj",
+      "projectUniqueName": "c:\\DIESEL\\Others\\College\\Final Project\\Back\\Services\\Services.csproj",
       "projectName": "Services",
-      "projectPath": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Services\\Services.csproj",
+      "projectPath": "c:\\DIESEL\\Others\\College\\Final Project\\Back\\Services\\Services.csproj",
       "packagesPath": "C:\\Users\\EL Diesel\\.nuget\\packages\\",
-      "outputPath": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Services\\obj\\",
+      "outputPath": "c:\\DIESEL\\Others\\College\\Final Project\\Back\\Services\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\EL Diesel\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.1"
@@ -3794,8 +3791,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\Persistence.csproj": {
-              "projectPath": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\Persistence.csproj"
+            "c:\\DIESEL\\Others\\College\\Final Project\\Back\\Persistence\\Persistence.csproj": {
+              "projectPath": "c:\\DIESEL\\Others\\College\\Final Project\\Back\\Persistence\\Persistence.csproj"
             }
           }
         }

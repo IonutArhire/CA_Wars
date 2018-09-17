@@ -3566,26 +3566,23 @@
   },
   "packageFolders": {
     "C:\\Users\\EL Diesel\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\Persistence.csproj",
+      "projectUniqueName": "C:\\DIESEL\\Others\\College\\Final Project\\Back\\Persistence\\Persistence.csproj",
       "projectName": "Persistence",
-      "projectPath": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\Persistence.csproj",
+      "projectPath": "C:\\DIESEL\\Others\\College\\Final Project\\Back\\Persistence\\Persistence.csproj",
       "packagesPath": "C:\\Users\\EL Diesel\\.nuget\\packages\\",
-      "outputPath": "C:\\DIESEL\\Others\\Facultate\\Final Project\\Back\\Persistence\\obj\\",
+      "outputPath": "C:\\DIESEL\\Others\\College\\Final Project\\Back\\Persistence\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\EL Diesel\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.1"

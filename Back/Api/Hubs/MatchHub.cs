@@ -42,7 +42,7 @@ namespace Api.Hubs {
         }
 
         private void TestingInitializations() {
-            var test_gameModel1 = this._matchResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "GOF");
+            var test_gameModel1 = this._matchResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "GOL");
             var test_gameModel2 = this._matchResourcesService.GetMatchResources(new DimensionsModel(15, 30), 2, 100, "Coagulations");
             var test_gameModel3 = this._matchResourcesService.GetMatchResources(new DimensionsModel(60, 90), 4, 150, "Coagulations");
 
@@ -56,7 +56,6 @@ namespace Api.Hubs {
         }
 
         public override async Task OnConnectedAsync() {
-            TestingInitializations();
             await Clients.Caller.SendAsync("Connected", Context.ConnectionId);
         }
 

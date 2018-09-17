@@ -29,12 +29,14 @@ export class MatchCreateService {
 		"Coagulations",
 		"Stains",
 		"Gnarl",
-		"GOF",
+		"GOL",
 		"Serviettes",
 		"LongLife",
 		"Move",
 		"Mazectric",
 		"Flakes"]; 
+
+		this.rulesets.sort();
 	}
 
 	public getRulesets(): Array<string> {

@@ -38,7 +38,7 @@ export class MatchCreateComponent {
               private _router: Router) {
 
     this._selectedNrPlayers = 2;
-    this._selectedRuleSet = "GOF";
+    this._selectedRuleSet = "GOL";
 
     this._maxItersError = -1;
     this._rowsError = -1;
