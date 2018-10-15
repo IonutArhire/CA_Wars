@@ -21,4 +21,4 @@ Cellular Automata Wars is a browser-based game in which players compete using st
 
 ## DEMO 
 
-ToDo
+https://www.youtube.com/watch?v=C_-R3LQUXm0&t=40s&ab_channel=IonutArhire
