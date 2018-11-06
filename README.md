@@ -15,7 +15,7 @@ Cellular Automata Wars is a browser-based game in which players compete using st
 - Sql Server
 
 ### Client-side
-- Angular 6
+- Angular 5
 - RxJS
 - Material Design Bootstrap
 
